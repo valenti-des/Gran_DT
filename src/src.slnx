@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Biblio/Biblio.csproj" />
+  <Project Path="BiblioConDapper/BiblioConDapper.csproj" />
+  <Project Path="GranDTApi/GranDTApi.csproj" />
+  <Project Path="TestDapper/TestDapper.csproj" />
+</Solution>

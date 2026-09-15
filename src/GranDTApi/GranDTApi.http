@@ -1,0 +1,11 @@
+@GranDTApi_HostAddress = http://localhost:5201
+
+GET {{GranDTApi_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{GranDTApi_HostAddress}}/todos/1
+Accept: application/json
+
+###
