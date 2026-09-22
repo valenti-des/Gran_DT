@@ -3,6 +3,7 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 // Agregar OpenAPI
 builder.Services.AddOpenApi();
