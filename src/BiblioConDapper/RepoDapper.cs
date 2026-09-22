@@ -1,9 +1,10 @@
 using System.Data;
-namespace Dapper;
+
+namespace BiblioConDapper;
 
 public abstract class RepoDapper
 {
-    protected readonly IDbConnection _conexion;
+    protected readonly IDbConnection Conexion;
 
-    public RepoDapper(IDbConnection conexion) => _conexion = conexion;
+    public RepoDapper(IDbConnection conexion) => Conexion = conexion;
 }
