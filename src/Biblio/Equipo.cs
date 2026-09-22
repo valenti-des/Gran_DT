@@ -2,7 +2,6 @@
 
 public class Equipo
 {
-    public int idequipo { get; set; }
+    public byte idEquipo { get; set; }
     public string nombre { get; set; } = string.Empty;
-    
 }
