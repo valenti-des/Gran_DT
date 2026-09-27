@@ -5,12 +5,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.17.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BiblioConDapper\BiblioConDapper.csproj" />
   </ItemGroup>
   
 </Project>

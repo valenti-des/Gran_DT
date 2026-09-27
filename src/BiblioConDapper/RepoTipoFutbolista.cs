@@ -14,6 +14,12 @@ namespace BiblioConDapper
         {
             return Conexion.Query<TipoFutbolista>(Sql);
         }
+
+        public async Task<IEnumerable<TipoFutbolista>> ObtenerTiposFutbolistasAsync(CancellationToken cancellationToken)
+        {
+            var command = new CommandDefinition(Sql, cancellationToken: cancellationToken);
+            return await Conexion.QueryAsync<TipoFutbolista>(command);
+        }
     }
     
     

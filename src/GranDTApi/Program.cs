@@ -1,31 +1,45 @@
 using Scalar.AspNetCore;
+using System.Data;
+using Biblio.IRepo;
+using BiblioConDapper;
+using GranDTApi.Servicios;
+using MySqlConnector;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-// Agregar OpenAPI
 builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
+
+builder.Services.AddScoped<IDbConnection>(_ =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("GranDT");
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException(
+            "Configura ConnectionStrings:GranDT antes de usar los endpoints que consultan la base de datos.");
+    }
+
+    return new MySqlConnection(connectionString);
+});
+builder.Services.AddScoped<IRepoTipoFutbolista, RepoTipoFutbolista>();
+builder.Services.AddScoped<ITipoFutbolistaServicio, TipoFutbolistaServicio>();
 
 var app = builder.Build();
 
-app.MapGet("/", () => Results.Redirect("/scalar/v1"));
 
-// Configuración de OpenAPI y Scalar
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
 
-// HTTPS
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
-
-// Autorización
 app.UseAuthorization();
-
-// Controladores
 app.MapControllers();
 
 app.Run();
