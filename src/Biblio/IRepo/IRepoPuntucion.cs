@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Biblio.IRepo
 {
-    public interface IRepoEquipo
+    public class IRepoPuntucion
     {
-        
         
     }
 }

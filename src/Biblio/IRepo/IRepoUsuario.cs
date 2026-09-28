@@ -4,7 +4,8 @@ namespace BiblioConDapper.IRepo;
 
 public interface IRepoUsuario
 {
-    void AltaUsuario(Usuario usuario, string contraseña);
 
-    Usuario? UsuarioPorContraseña(string email, string contraseña);
+    int AltaUsuario(Usuario usuario);
+    Usuario? LoginUsuario(string email, string contrasena);
+
 }

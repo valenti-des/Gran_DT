@@ -1,8 +1,6 @@
 using Scalar.AspNetCore;
 using System.Data;
-using Biblio.IRepo;
 using BiblioConDapper;
-using GranDTApi.Servicios;
 using MySqlConnector;
 
 
@@ -25,8 +23,6 @@ builder.Services.AddScoped<IDbConnection>(_ =>
 
     return new MySqlConnection(connectionString);
 });
-builder.Services.AddScoped<IRepoTipoFutbolista, RepoTipoFutbolista>();
-builder.Services.AddScoped<ITipoFutbolistaServicio, TipoFutbolistaServicio>();
 
 var app = builder.Build();
 
