@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Biblio.IRepo
 {
-    public class IRepoPuntucion
+    public interface  IRepoPuntucion
     {
-        
+        int Obtenerpuntucion(Puntuacion puntuacion);
+        Puntuacion? ObtenerPuntuacionPorId(int idPuntuacion);
     }
 }
