@@ -4,8 +4,9 @@ namespace BiblioConDapper.IRepo;
 
 public interface IRepoUsuario
 {
-
-    int AltaUsuario(Usuario usuario);
-    Usuario? LoginUsuario(string email, string contrasena);
-
+    List<Usuario> ObtenerTodos();
+    Usuario? ObtenerPorEmail(string email);
+    Usuario Agregar(Usuario usuario);
+    bool Eliminar(string email);
 }
+

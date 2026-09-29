@@ -12,4 +12,5 @@ public class Futbolista
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
     public List<Puntuacion>? puntuaciones { get; set; }
+    
 }

@@ -1,21 +1,17 @@
-using System.Data;
+﻿using System.Data;
 using MySqlConnector;
 
-namespace Gran_DT.TestDapper;
+namespace Test;
 
-public class RepoTest
+/// <summary>
+/// Provee una conexión MySql para tests de integración locales.
+/// Usa la cadena por defecto o puede recibir una diferente.
+/// </summary>
+public class TestRepo
 {
-    protected readonly IDbConnection Conexion;
+    protected readonly IDbConnection _conexion;
+    private const string _cadena = "Server=localhost;User ID=5to_agbd;Password=Trigg3rs!;Database=bd_gran_dt;";
 
-    public RepoTest()
-    {
-        var connectionString = Environment.GetEnvironmentVariable("GRAN_DT_TEST_CONNECTION_STRING");
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            throw new InvalidOperationException(
-                "Define GRAN_DT_TEST_CONNECTION_STRING con la conexión a la base de datos de pruebas.");
-        }
-
-        Conexion = new MySqlConnection(connectionString);
-    }
+    public TestRepo() => _conexion = new MySqlConnection(_cadena);
+    public TestRepo(string cadena) => _conexion = new MySqlConnection(cadena);
 }

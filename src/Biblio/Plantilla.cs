@@ -1,3 +1,6 @@
+
+using Biblio.IRepo;
+
 namespace Biblio;
 
 public class Plantilla
@@ -8,4 +11,5 @@ public class Plantilla
     public byte? cantMaxFutbolista { get; set; }
     public short? idUsuario { get; set; }
     public uint? idPuntuacion { get; set; }
+    
 }

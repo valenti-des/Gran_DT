@@ -18,6 +18,16 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
         WHERE email = @Email AND contraseña = @Contrasena
         LIMIT 1;";
 
+    private const string UpdateSql = @"
+        UPDATE Usuario
+        SET nombre = @Nombre,
+            apellido = @Apellido,
+            email = @Email,
+            fechaNac = @FechaNac,
+            contraseña = @Contrasena,
+            es_admin = @EsAdmin
+        WHERE idUsuario = @IdUsuario;";
+
     public RepoUsuario(IDbConnection conexion) : base(conexion)
     {
     }
@@ -50,6 +60,25 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
         return id;
     }
+
+    public int ModificarUsuario(Usuario usuario)
+    {
+        ArgumentNullException.ThrowIfNull(usuario);
+
+        return Conexion.Execute(UpdateSql, new
+        {
+            IdUsuario = usuario.idUsuario,
+            Nombre = usuario.nombre.Trim(),
+            Apellido = usuario.apellido.Trim(),
+            Email = usuario.email.Trim(),
+            FechaNac = usuario.fechaNac,
+            Contrasena = usuario.contraseña,
+            EsAdmin = usuario.es_admin
+        });
+    }
+
+    public int EliminarUsuario(int idUsuario) =>
+        Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @IdUsuario", new { IdUsuario = idUsuario });
 
     public Usuario? LoginUsuario(string email, string contrasena)
     {

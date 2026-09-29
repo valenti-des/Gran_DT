@@ -1,6 +1,6 @@
 namespace Biblio;
 
-public class PlantillaJugador
+public class PlantillaFutbolista
 {
     public byte idFutbolistaPlantilla { get; set; }
     public bool futbolistaTitular { get; set; }
