@@ -1,6 +1,4 @@
-using Biblio;
-
-namespace BiblioConDapper.IRepo;
+namespace Biblio.IRepo;
 
 public interface IRepoUsuario
 {

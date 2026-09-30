@@ -1,6 +1,6 @@
 using System.Data;
 using Biblio;
-using BiblioConDapper.IRepo;
+using Biblio.IRepo;
 using Dapper;
 
 namespace BiblioConDapper;
@@ -79,6 +79,33 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
     public int EliminarUsuario(int idUsuario) =>
         Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @IdUsuario", new { IdUsuario = idUsuario });
+
+    public List<Usuario> ObtenerTodos() =>
+        Conexion.Query<Usuario>(@"
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            FROM Usuario").AsList();
+
+    public Usuario? ObtenerPorEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return null;
+
+        return Conexion.QuerySingleOrDefault<Usuario>(@"
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            FROM Usuario
+            WHERE email = @Email
+            LIMIT 1;", new { Email = email.Trim() });
+    }
+
+    public Usuario Agregar(Usuario usuario)
+    {
+        var id = AltaUsuario(usuario);
+        usuario.idUsuario = (short)id;
+        return usuario;
+    }
+
+    public bool Eliminar(string email) =>
+        Conexion.Execute("DELETE FROM Usuario WHERE email = @Email", new { Email = email }) > 0;
 
     public Usuario? LoginUsuario(string email, string contrasena)
     {
