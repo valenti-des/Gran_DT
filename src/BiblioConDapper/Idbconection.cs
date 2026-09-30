@@ -2,7 +2,7 @@ using MySqlConnector;
 
 namespace BiblioConDapper
 {
-    internal class Conexion
+    internal class Idbconection
     {
         private static readonly string servidor = "localhost";
         private static readonly string bd = "Gran_DT";
