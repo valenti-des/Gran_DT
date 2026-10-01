@@ -57,21 +57,18 @@ CREATE TABLE Puntuacion (
 );
 
 CREATE TABLE Plantilla (
-	idPlantilla TINYINT UNSIGNED AUTO_INCREMENT,
-	nombreP VARCHAR(45) NOT NULL,
-	cantMaxMonto DECIMAL(11,2),
-	cantMaxFutbolista TINYINT,
-	idUsuario SMALLINT,
-	idPuntuacion INT UNSIGNED,
-	CONSTRAINT pk_Plantilla PRIMARY KEY (idPlantilla ASC),
-	CONSTRAINT fk_Plantilla_Usuario FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario) ON DELETE NO ACTION ON UPDATE NO ACTION,
-	CONSTRAINT fk_Plantilla_Puntuacion FOREIGN KEY (idPuntuacion) REFERENCES Puntuacion (idPuntuacion) ON DELETE NO ACTION ON UPDATE NO ACTION
+    idPlantilla TINYINT UNSIGNED AUTO_INCREMENT,
+    nombreP VARCHAR(45) NOT NULL,
+    cantMaxMonto DECIMAL(11,2),
+    cantMaxFutbolista TINYINT,
+    idUsuario SMALLINT,
+    CONSTRAINT pk_Plantilla PRIMARY KEY (idPlantilla ASC),
+    CONSTRAINT fk_Plantilla_Usuario FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE TABLE Futbolista_Plantilla (
 	idFutbolistaPlantilla TINYINT UNSIGNED AUTO_INCREMENT,
 	futbolistaTitular TINYINT DEFAULT 0,
-	futbolistaSuplente TINYINT DEFAULT 0,
 	validacionP TINYINT DEFAULT 0,
 	validacionR TINYINT DEFAULT 0,
 	idPlantilla TINYINT UNSIGNED NOT NULL,
