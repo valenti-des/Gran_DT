@@ -1,6 +1,6 @@
 namespace Biblio.IRepo;
 
-public interface IPuntuacionRepository
+public interface IRepoPuntuacion
 {
     List<Puntuacion> ObtenerTodos();
     Puntuacion? ObtenerPorId(uint idPuntuacion);

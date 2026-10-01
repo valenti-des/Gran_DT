@@ -25,7 +25,7 @@ builder.Services.AddScoped<IDbConnection>(_ =>
 
     return new MySqlConnection(connectionString);
 });
-builder.Services.AddScoped<IEquipoRepository, RepoEquipo>();
+builder.Services.AddScoped<IRepoEquipo, RepoEquipo>();
 builder.Services.AddScoped<IEquipoService, EquipoService>();
 
 var app = builder.Build();

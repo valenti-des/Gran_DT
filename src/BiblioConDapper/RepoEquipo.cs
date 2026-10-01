@@ -5,7 +5,7 @@ using Dapper;
 
 namespace BiblioConDapper;
 
-public class RepoEquipo : RepoDapper, IEquipoRepository
+public class RepoEquipo : RepoDapper, IRepoEquipo
 {
     public RepoEquipo(IDbConnection conexion) : base(conexion)
     {

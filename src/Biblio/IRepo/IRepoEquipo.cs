@@ -1,6 +1,6 @@
 namespace Biblio.IRepo;
 
-public interface IEquipoRepository
+public interface IRepoEquipo
 {
     List<Equipo> ObtenerTodos();
     Equipo? ObtenerPorId(byte id);

@@ -5,7 +5,7 @@ using Dapper;
 
 namespace BiblioConDapper;
 
-public class RepoPuntuacion : RepoDapper, IPuntuacionRepository
+public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
 {
     private const string SelectSql = @"
         SELECT idPuntuacion, idFutbolista, puntuacion, cantFech

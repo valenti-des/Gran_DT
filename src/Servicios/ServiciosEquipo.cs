@@ -13,9 +13,9 @@ public interface IEquipoService
 
 public sealed class EquipoService : IEquipoService
 {
-    private readonly IEquipoRepository _equipoRepository;
+    private readonly IRepoEquipo _equipoRepository;
 
-    public EquipoService(IEquipoRepository equipoRepository)
+    public EquipoService(IRepoEquipo equipoRepository)
     {
         _equipoRepository = equipoRepository;
     }

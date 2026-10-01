@@ -5,19 +5,19 @@ using Dapper;
 
 namespace BiblioConDapper;
 
-public class RepoPlantillaFutbolista : RepoDapper, IPlantillaJugadorRepository
+public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
 {
-
-        private const string SelectSql = @"
-                 SELECT idFutbolistaPlantilla, futbolistaTitular, validacionP, validacionR,
-                     idPlantilla, idFutbolista
-            FROM Futbolista_Plantilla";
+    private const string SelectSql = @"
+        SELECT idFutbolistaPlantilla, futbolistaTitular, validacionP, validacionR,
+               idPlantilla, idFutbolista
+        FROM Futbolista_Plantilla";
 
     public RepoPlantillaFutbolista(IDbConnection conexion) : base(conexion)
     {
     }
 
-    public List<PlantillaFutbolista> ObtenerTodos() => Conexion.Query<PlantillaFutbolista>(SelectSql).AsList();
+    public List<PlantillaFutbolista> ObtenerTodos() =>
+        Conexion.Query<PlantillaFutbolista>(SelectSql).AsList();
 
     public PlantillaFutbolista? ObtenerPorId(byte idPlantilla, ushort idJugador) =>
         Conexion.QuerySingleOrDefault<PlantillaFutbolista>(

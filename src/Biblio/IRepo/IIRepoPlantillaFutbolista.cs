@@ -1,6 +1,6 @@
 namespace Biblio.IRepo;
 
-public interface IPlantillaJugadorRepository
+public interface IRepoPlantillaFutbolista
 {
     List<PlantillaFutbolista> ObtenerTodos();
     PlantillaFutbolista? ObtenerPorId(byte idPlantilla, ushort idJugador);

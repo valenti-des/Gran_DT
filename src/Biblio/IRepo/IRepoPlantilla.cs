@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Biblio;
+namespace Biblio.IRepo;
 
-namespace Biblio.IRepo
+public interface IRepoPlantilla
 {
-    public interface IRepoPlantilla
-    {
-        int AltaPlantilla(Plantilla plantilla);
-        Plantilla? AltaPlantillaPorId(int idPlantilla);
-    }
+    List<Plantilla> ObtenerTodos();
+    Plantilla? ObtenerPorId(byte idPlantilla);
+    Plantilla Agregar(Plantilla plantilla);
+    bool Eliminar(byte idPlantilla);
 }
