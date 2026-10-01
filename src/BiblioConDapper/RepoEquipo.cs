@@ -14,6 +14,11 @@ public class RepoEquipo : RepoDapper, IEquipoRepository
     public List<Equipo> ObtenerTodos() =>
         Conexion.Query<Equipo>("SELECT idEquipo, nombre FROM Equipo").AsList();
 
+    public Equipo? ObtenerPorId(byte id) =>
+        Conexion.QuerySingleOrDefault<Equipo>(
+            "SELECT idEquipo, nombre FROM Equipo WHERE idEquipo = @Id LIMIT 1",
+            new { Id = id });
+
     public Equipo? ObtenerPorNombre(string nombre)
     {
         if (string.IsNullOrWhiteSpace(nombre))
@@ -32,10 +37,12 @@ public class RepoEquipo : RepoDapper, IEquipoRepository
             throw new ArgumentException("El nombre es obligatorio.", nameof(equipo));
 
         equipo.nombre = equipo.nombre.Trim();
-        equipo.idEquipo = Conexion.QuerySingle<byte>(@"
-            INSERT INTO Equipo (nombre)
-            VALUES (@Nombre);
-            SELECT LAST_INSERT_ID();", new { Nombre = equipo.nombre });
+        var parametros = new DynamicParameters();
+        parametros.Add("unidEquipo", dbType: DbType.Byte, direction: ParameterDirection.Output);
+        parametros.Add("unnombre", equipo.nombre);
+
+        Conexion.Execute("AltaEquipo", parametros, commandType: CommandType.StoredProcedure);
+        equipo.idEquipo = parametros.Get<byte>("unidEquipo");
 
         return equipo;
     }

@@ -36,19 +36,18 @@ public class RepoFutbolista : RepoDapper, IJugadorRepository
         jugador.nombre = jugador.nombre.Trim();
         jugador.apellido = jugador.apellido.Trim();
         jugador.apodo = jugador.apodo?.Trim();
-        jugador.idFutbolista = Conexion.QuerySingle<ushort>(@"
-            INSERT INTO Futbolista (nombre, apellido, apodo, fechaNac, cotizacion, idEquipo, idTipoFutbolista)
-            VALUES (@Nombre, @Apellido, @Apodo, @FechaNac, @Cotizacion, @IdEquipo, @IdTipoFutbolista);
-            SELECT LAST_INSERT_ID();", new
-        {
-            Nombre = jugador.nombre,
-            Apellido = jugador.apellido,
-            Apodo = jugador.apodo,
-            FechaNac = jugador.fechaNac,
-            Cotizacion = jugador.cotizacion,
-            IdEquipo = jugador.idEquipo,
-            IdTipoFutbolista = jugador.idTipoFutbolista
-        });
+        var parametros = new DynamicParameters();
+        parametros.Add("unidFutbolista", dbType: DbType.UInt16, direction: ParameterDirection.Output);
+        parametros.Add("unnombre", jugador.nombre);
+        parametros.Add("unapellido", jugador.apellido);
+        parametros.Add("unapodo", jugador.apodo);
+        parametros.Add("unfechaNac", jugador.fechaNac);
+        parametros.Add("uncotizacion", jugador.cotizacion);
+        parametros.Add("unidEquipo", jugador.idEquipo);
+        parametros.Add("unidTipoFutbolista", jugador.idTipoFutbolista);
+
+        Conexion.Execute("AltaFutbolista", parametros, commandType: CommandType.StoredProcedure);
+        jugador.idFutbolista = parametros.Get<ushort>("unidFutbolista");
 
         return jugador;
     }

@@ -3,7 +3,7 @@ namespace Biblio.IRepo;
 public interface IEquipoRepository
 {
     List<Equipo> ObtenerTodos();
-    Equipo? ObtenerPorNombre(string nombre);
+    Equipo? ObtenerPorId(byte id);
     Equipo Agregar(Equipo equipo);
-    bool Eliminar(string nombre);
+    bool Eliminar(byte id);
 }

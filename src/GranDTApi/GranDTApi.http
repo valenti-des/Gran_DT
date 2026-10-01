@@ -4,3 +4,20 @@ GET {{GranDTApi_HostAddress}}/api/tipos-futbolista
 Accept: application/json
 
 ###
+
+GET {{GranDTApi_HostAddress}}/api/equipo
+Accept: application/json
+
+###
+
+GET {{GranDTApi_HostAddress}}/api/equipo/1
+Accept: application/json
+
+###
+
+POST {{GranDTApi_HostAddress}}/api/equipo
+Content-Type: application/json
+
+{
+	"nombre": "River Plate"
+}

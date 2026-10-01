@@ -8,7 +8,7 @@ namespace BiblioConDapper;
 public class RepoPlantilla : RepoDapper, IPlantillaRepository
 {
     private const string SelectSql = @"
-        SELECT idPlantilla, nombreP, cantMaxMonto, cantMaxFutbolista, idUsuario, idPuntuacion
+        SELECT idPlantilla, nombreP, cantMaxMonto, cantMaxFutbolista, idUsuario
         FROM Plantilla";
 
     public RepoPlantilla(IDbConnection conexion) : base(conexion)
@@ -30,17 +30,15 @@ public class RepoPlantilla : RepoDapper, IPlantillaRepository
             throw new ArgumentException("El nombre de la plantilla es obligatorio.", nameof(plantilla));
 
         plantilla.nombreP = plantilla.nombreP.Trim();
-        plantilla.idPlantilla = Conexion.QuerySingle<byte>(@"
-            INSERT INTO Plantilla (nombreP, cantMaxMonto, cantMaxFutbolista, idUsuario, idPuntuacion)
-            VALUES (@NombreP, @CantMaxMonto, @CantMaxFutbolista, @IdUsuario, @IdPuntuacion);
-            SELECT LAST_INSERT_ID();", new
-        {
-            NombreP = plantilla.nombreP,
-            CantMaxMonto = plantilla.cantMaxMonto,
-            CantMaxFutbolista = plantilla.cantMaxFutbolista,
-            IdUsuario = plantilla.idUsuario,
-            IdPuntuacion = plantilla.idPuntuacion
-        });
+        var parametros = new DynamicParameters();
+        parametros.Add("unidPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
+        parametros.Add("unnombreP", plantilla.nombreP);
+        parametros.Add("uncantMaxMonto", plantilla.cantMaxMonto);
+        parametros.Add("uncantMaxFutbolista", plantilla.cantMaxFutbolista);
+        parametros.Add("unidUsuario", plantilla.idUsuario);
+
+        Conexion.Execute("AltaPlantilla", parametros, commandType: CommandType.StoredProcedure);
+        plantilla.idPlantilla = parametros.Get<byte>("unidPlantilla");
 
         return plantilla;
     }

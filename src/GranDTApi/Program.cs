@@ -1,7 +1,9 @@
 using Scalar.AspNetCore;
 using System.Data;
 using BiblioConDapper;
+using Biblio.IRepo;
 using MySqlConnector;
+using Servicios;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,8 @@ builder.Services.AddScoped<IDbConnection>(_ =>
 
     return new MySqlConnection(connectionString);
 });
+builder.Services.AddScoped<IEquipoRepository, RepoEquipo>();
+builder.Services.AddScoped<IEquipoService, EquipoService>();
 
 var app = builder.Build();
 

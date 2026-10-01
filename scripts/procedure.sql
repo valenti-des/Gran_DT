@@ -1,26 +1,6 @@
 DELIMITER $$
 USE bd_gran_dt $$
 DELIMITER $$
-DROP PROCEDURE IF EXISTS AltaUsuario $$
-CREATE PROCEDURE AltaUsuario (
-    OUT unidUsuario SMALLINT, 
-    unnombre VARCHAR(45), 
-    unapellido VARCHAR(45), 
-    unemail VARCHAR(100), 
-    unfechaNac DATE, 
-    uncontraseña CHAR(64), 
-    unes_admin TINYINT
-)
-BEGIN
-    INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
-    VALUES (unnombre, unapellido, unemail, unfechaNac, uncontraseña, unes_admin);
-    
-    SET unidUsuario = LAST_INSERT_ID();
-END $$
-DELIMITER ;
-
-
-
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaEquipo $$
 CREATE PROCEDURE AltaEquipo (
@@ -97,12 +77,14 @@ DROP PROCEDURE IF EXISTS AltaFutbolistaP $$
 CREATE PROCEDURE AltaFutbolistaP (
     OUT unidFutbolistaPlantilla TINYINT UNSIGNED, 
     unfutbolistaTitular TINYINT, 
+    unvalidacionP TINYINT,
+    unvalidacionR TINYINT,
     unidPlantilla TINYINT UNSIGNED, 
     unidFutbolista SMALLINT UNSIGNED
 )
 BEGIN
-    INSERT INTO Futbolista_Plantilla (futbolistaTitular, idPlantilla, idFutbolista)
-    VALUES (unfutbolistaTitular, unidPlantilla, unidFutbolista);
+    INSERT INTO Futbolista_Plantilla (futbolistaTitular, validacionP, validacionR, idPlantilla, idFutbolista)
+    VALUES (unfutbolistaTitular, unvalidacionP, unvalidacionR, unidPlantilla, unidFutbolista);
     
     SET unidFutbolistaPlantilla = LAST_INSERT_ID();
 END $$
@@ -174,6 +156,7 @@ BEGIN
     INNER JOIN Puntuacion pt ON f.idFutbolista = pt.idFutbolista
     WHERE p.idPlantilla = unidPlantilla
       AND fp.futbolistaTitular = 1
-      AND pt.cantFech = unfecha;
+            AND pt.cantFech = unfecha
+        GROUP BY p.idPlantilla, p.nombreP;
 END $$
 DELIMITER ;

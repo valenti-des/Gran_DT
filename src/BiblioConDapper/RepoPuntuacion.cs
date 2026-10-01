@@ -26,15 +26,14 @@ public class RepoPuntuacion : RepoDapper, IPuntuacionRepository
     {
         ArgumentNullException.ThrowIfNull(puntuacion);
 
-        puntuacion.idPuntuacion = Conexion.QuerySingle<uint>(@"
-            INSERT INTO Puntuacion (idFutbolista, puntuacion, cantFech)
-            VALUES (@IdFutbolista, @Puntuacion, @CantFech);
-            SELECT LAST_INSERT_ID();", new
-        {
-            puntuacion.idFutbolista,
-            puntuacion.puntuacion,
-            puntuacion.cantFech
-        });
+        var parametros = new DynamicParameters();
+        parametros.Add("unidPuntuacion", dbType: DbType.UInt32, direction: ParameterDirection.Output);
+        parametros.Add("unidFutbolista", puntuacion.idFutbolista);
+        parametros.Add("unpuntuacion", puntuacion.puntuacion);
+        parametros.Add("uncantFech", puntuacion.cantFech);
+
+        Conexion.Execute("AltaPuntuacion", parametros, commandType: CommandType.StoredProcedure);
+        puntuacion.idPuntuacion = parametros.Get<uint>("unidPuntuacion");
 
         return puntuacion;
     }

@@ -1,15 +1,14 @@
 using MySqlConnector;
 
-namespace BiblioConDapper
+namespace Biblio.BiblioConDapper
 {
     internal class Idbconection
     {
         private static readonly string servidor = "localhost";
         private static readonly string bd = "bd_gran_dt";
         private static readonly string usuario = "root";
-        private static readonly string password = "Trigg3rs!";
+        private static readonly string password = "12345"; //Trigg3rs!
         private static readonly string puerto = "3306";
-
         private readonly string cadenaConexion = $"server={servidor};database={bd};uid={usuario};pwd={password};port={puerto};";
 
         

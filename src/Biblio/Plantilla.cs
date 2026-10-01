@@ -10,6 +10,4 @@ public class Plantilla
     public decimal? cantMaxMonto { get; set; }
     public byte? cantMaxFutbolista { get; set; }
     public short? idUsuario { get; set; }
-    public uint? idPuntuacion { get; set; }
-    
 }

@@ -7,11 +7,6 @@ namespace BiblioConDapper;
 
 public class RepoUsuario : RepoDapper, IRepoUsuario
 {
-    private const string InsertSql = @"
-        INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
-        VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
-        SELECT LAST_INSERT_ID();";
-
     private const string LoginSql = @"
         SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
         FROM Usuario
@@ -48,17 +43,17 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
         if (string.IsNullOrWhiteSpace(usuario.contraseña))
             throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
 
-        var id = Conexion.QuerySingle<int>(InsertSql, new
-        {
-            Nombre = usuario.nombre.Trim(),
-            Apellido = usuario.apellido.Trim(),
-            Email = usuario.email.Trim(),
-            FechaNac = usuario.fechaNac,
-            Contrasena = usuario.contraseña,
-            EsAdmin = usuario.es_admin
-        });
+        var parametros = new DynamicParameters();
+        parametros.Add("unidUsuario", dbType: DbType.Int16, direction: ParameterDirection.Output);
+        parametros.Add("unnombre", usuario.nombre.Trim());
+        parametros.Add("unapellido", usuario.apellido.Trim());
+        parametros.Add("unemail", usuario.email.Trim());
+        parametros.Add("unfechaNac", usuario.fechaNac);
+        parametros.Add("uncontraseña", usuario.contraseña);
+        parametros.Add("unes_admin", usuario.es_admin);
 
-        return id;
+        Conexion.Execute("AltaUsuario", parametros, commandType: CommandType.StoredProcedure);
+        return parametros.Get<short>("unidUsuario");
     }
 
     public int ModificarUsuario(Usuario usuario)

@@ -90,7 +90,7 @@ VALUES
 ('Juan Pablo', 'Cozzani', 'Juampi', '1998-05-09', 12000000.00, 5, 1),
 ('Joaquín', 'Blázquez', 'Joaco', '2001-01-28', 9000000.00, 5, 1),
 ('Gastón', 'Suso', 'Gaston', '1991-03-12', 13000000.00, 5, 2),
-('Ignacio', me='Vázquez', apodo='Nacho', fechaNac='1997-06-15', cotizacion=14000000.00, 5, 2),
+('Ignacio', 'Vázquez', 'Nacho', '1997-06-15', 14000000.00, 5, 2),
 ('Sasha', 'Marcich', 'Sasha', '1998-05-29', 12000000.00, 5, 2),
 ('Bautista', 'Barros Schelotto', 'Bauti', '2000-01-13', 13000000.00, 5, 2),
 ('Carlos', 'Villalba', 'Carlitos', '1998-07-19', 14000000.00, 5, 3),
@@ -127,19 +127,18 @@ INSERT INTO Plantilla (
     nombreP,
     cantMaxMonto,
     cantMaxFutbolista,
-    idUsuario,
-    idPuntuacion
+    idUsuario
 ) VALUES
-('Plantilla Inicial', 500000000.00, 11, 1, 1),
-('Equipo de Prueba', 350000000.00, 11, 2, 4);
+('Plantilla Inicial', 500000000.00, 11, 1),
+('Equipo de Prueba', 350000000.00, 11, 2);
 
 -- 7. Inserción en Futbolista_Plantilla
 INSERT INTO Futbolista_Plantilla (
-    futbolistaTitular, futbolistaSuplente, validacionP, validacionR, idPlantilla, idFutbolista
+    futbolistaTitular, validacionP, validacionR, idPlantilla, idFutbolista
 ) VALUES
-(1, 0, 1, 0, 1, 1),   -- Armani en Plantilla 1
-(0, 1, 0, 1, 1, 8),   -- Enzo Pérez en Plantilla 1
-(1, 0, 1, 0, 1, 13),  -- Colidio en Plantilla 1
-(0, 1, 0, 1, 1, 27),  -- Cavani en Plantilla 1
-(1, 0, 1, 0, 2, 54),  -- Mateo Pellegrino (Platense) en Plantilla 2
-(1, 0, 0, 0, 2, 8);   -- Enzo Pérez en Plantilla 2
+(1, 1, 0, 1, 1),   -- Armani en Plantilla 1
+(0, 0, 1, 1, 8),   -- Enzo Pérez en Plantilla 1
+(1, 1, 0, 1, 13),  -- Colidio en Plantilla 1
+(0, 0, 1, 1, 27),  -- Cavani en Plantilla 1
+(1, 1, 0, 2, 54),  -- Mateo Pellegrino (Platense) en Plantilla 2
+(1, 0, 0, 2, 8);   -- Enzo Pérez en Plantilla 2
