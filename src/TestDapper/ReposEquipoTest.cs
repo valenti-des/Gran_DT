@@ -30,7 +30,7 @@ public class ReposEquipoTest : IDisposable
         var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
         var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "bd_gran_dt";
         var user = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
-        var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
+        var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Trigg3rs!";
 
         return $"Server={server};Port={port};User ID={user};Password={password};Database={database};";
     }
