@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BiblioConDapper\BiblioConDapper.csproj" />
+    <ProjectReference Include="..\Servicios\Servicios.csproj" />
   </ItemGroup>
   
 </Project>
