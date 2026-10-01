@@ -16,12 +16,44 @@ public class RepoFutbolista : RepoDapper, IJugadorRepository
     {
     }
 
-    public List<Futbolista> ObtenerTodos() => Conexion.Query<Futbolista>(SelectSql).AsList();
+    public List<Futbolista> ObtenerTodos()
+    {
+        var futbolistas = Conexion.Query<Futbolista>(SelectSql).AsList();
+        CargarPuntuaciones(futbolistas);
+        return futbolistas;
+    }
 
-    public Futbolista? ObtenerPorId(ushort id) =>
-        Conexion.QuerySingleOrDefault<Futbolista>(
+    public Futbolista? ObtenerPorId(ushort id)
+    {
+        var futbolista = Conexion.QuerySingleOrDefault<Futbolista>(
             $"{SelectSql} WHERE idFutbolista = @IdFutbolista LIMIT 1",
             new { IdFutbolista = id });
+
+        if (futbolista is null)
+            return null;
+
+        futbolista.puntuaciones = Conexion.Query<Puntuacion>(
+            "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion WHERE idFutbolista = @IdFutbolista",
+            new { IdFutbolista = id }).AsList();
+
+        return futbolista;
+    }
+
+    private void CargarPuntuaciones(IList<Futbolista> futbolistas)
+    {
+        if (futbolistas.Count == 0)
+            return;
+
+        var puntuaciones = Conexion.Query<Puntuacion>(
+            "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion").ToList();
+
+        foreach (var futbolista in futbolistas)
+        {
+            futbolista.puntuaciones = puntuaciones
+                .Where(p => p.idFutbolista == futbolista.idFutbolista)
+                .ToList();
+        }
+    }
 
     public Futbolista Agregar(Futbolista jugador)
     {
@@ -36,19 +68,24 @@ public class RepoFutbolista : RepoDapper, IJugadorRepository
         jugador.nombre = jugador.nombre.Trim();
         jugador.apellido = jugador.apellido.Trim();
         jugador.apodo = jugador.apodo?.Trim();
-        var parametros = new DynamicParameters();
-        parametros.Add("unidFutbolista", dbType: DbType.UInt16, direction: ParameterDirection.Output);
-        parametros.Add("unnombre", jugador.nombre);
-        parametros.Add("unapellido", jugador.apellido);
-        parametros.Add("unapodo", jugador.apodo);
-        parametros.Add("unfechaNac", jugador.fechaNac);
-        parametros.Add("uncotizacion", jugador.cotizacion);
-        parametros.Add("unidEquipo", jugador.idEquipo);
-        parametros.Add("unidTipoFutbolista", jugador.idTipoFutbolista);
 
-        Conexion.Execute("AltaFutbolista", parametros, commandType: CommandType.StoredProcedure);
-        jugador.idFutbolista = parametros.Get<ushort>("unidFutbolista");
+        var sql = @"
+            INSERT INTO Futbolista (nombre, apellido, apodo, fechaNac, cotizacion, idEquipo, idTipoFutbolista)
+            VALUES (@Nombre, @Apellido, @Apodo, @FechaNac, @Cotizacion, @IdEquipo, @IdTipoFutbolista);
+            SELECT LAST_INSERT_ID();";
 
+        var idGenerado = Conexion.ExecuteScalar<ulong>(sql, new
+        {
+            Nombre = jugador.nombre,
+            Apellido = jugador.apellido,
+            Apodo = jugador.apodo,
+            FechaNac = jugador.fechaNac,
+            Cotizacion = jugador.cotizacion,
+            IdEquipo = jugador.idEquipo,
+            IdTipoFutbolista = jugador.idTipoFutbolista
+        });
+
+        jugador.idFutbolista = (ushort)idGenerado;
         return jugador;
     }
 

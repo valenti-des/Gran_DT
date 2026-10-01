@@ -146,6 +146,7 @@ CREATE PROCEDURE ObtenerPuntajePlantillaPorFecha (
 )
 BEGIN
     SELECT 
+	
         p.idPlantilla,
         p.nombreP,
         unfecha AS fechaConsultada,

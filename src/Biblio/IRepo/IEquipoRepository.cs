@@ -4,6 +4,7 @@ public interface IEquipoRepository
 {
     List<Equipo> ObtenerTodos();
     Equipo? ObtenerPorId(byte id);
+    Equipo? ObtenerPorNombre(string nombre);
     Equipo Agregar(Equipo equipo);
-    bool Eliminar(byte id);
+    bool Eliminar(string nombre);
 }

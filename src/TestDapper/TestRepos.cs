@@ -10,8 +10,18 @@ namespace Test;
 public class TestRepo
 {
     protected readonly IDbConnection _conexion;
-    private const string _cadena = "Server=localhost;User ID=5to_agbd;Password=Trigg3rs!;Database=bd_gran_dt;";
 
-    public TestRepo() => _conexion = new MySqlConnection(_cadena);
+    public TestRepo() => _conexion = new MySqlConnection(BuildConnectionString());
     public TestRepo(string cadena) => _conexion = new MySqlConnection(cadena);
+
+    private static string BuildConnectionString()
+    {
+        var server = Environment.GetEnvironmentVariable("DB_SERVER") ?? "localhost";
+        var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
+        var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "bd_gran_dt";
+        var user = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
+        var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
+
+        return $"Server={server};Port={port};User ID={user};Password={password};Database={database};";
+    }
 }
