@@ -10,19 +10,19 @@ public class Plantilla
     public decimal? cantMaxMonto { get; set; }
     public byte? cantMaxFutbolista { get; set; }
     public short? idUsuario { get; set; }
-    // idPuntuacion ELIMINADO
     
-    // Lista de jugadores asociados a la plantilla
+    // Lista de futbolistas asociados a esta plantilla
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
-    // Método dinámico requerido en el diagrama UML
+    // Método dinámico: calcula la suma del puntaje de TODOS los integrantes en la fecha indicada
     public float PuntajeFecha(short cantFech)
     {
-        if (!detalles.Any()) return 0f;
+        if (detalles == null || !detalles.Any()) 
+            return 0f;
 
-        // Suma los puntajes de la fecha SOLAMENTE de los jugadores titulares
+        // Suma los puntos de todos los futbolistas de la plantilla en esa fecha
         return detalles
-            .Where(d => d.futbolistaTitular && d.futbolista != null)
+            .Where(d => d.futbolista != null)
             .Sum(d => d.futbolista!.ObtenerPuntuacionPorFecha(cantFech));
     }
 }
