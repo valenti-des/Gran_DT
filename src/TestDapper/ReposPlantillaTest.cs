@@ -27,10 +27,10 @@ public class ReposPlantillaTest : IDisposable
 
     private static string BuildConnectionString()
     {
-        var server = Environment.GetEnvironmentVariable("DB_SERVER") ?? "localhost";
+        var server = Environment.GetEnvironmentVariable("DB_SERVER") ?? "127.0.0.1";
         var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
-        var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "bd_gran_dt";
-        var user = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
+        var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "5to_agbd";
+        var user = Environment.GetEnvironmentVariable("DB_USER") ?? "5to_agbd";
         var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Trigg3rs!";
 
         return $"Server={server};Port={port};User ID={user};Password={password};Database={database};";
