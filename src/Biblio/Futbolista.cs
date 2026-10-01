@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Biblio;
 
 public class Futbolista
@@ -7,10 +10,17 @@ public class Futbolista
     public string nombre { get; set; } = string.Empty;
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
-    public DateTime? fechaNac { get; set; }
+    public DateOnly? fechaNac { get; set; } // Cambiado a DateOnly
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
-    public List<Puntuacion>? puntuaciones { get; set; }
     
+    // Lista inicializada para evitar NullReferenceExceptions
+    public List<Puntuacion> puntuaciones { get; set; } = new List<Puntuacion>();
+
+    // Método que busca la puntuación del jugador para una fecha específica
+    public float ObtenerPuntuacionPorFecha(short cantFech)
+    {
+        return puntuaciones.FirstOrDefault(p => p.cantFech == cantFech)?.puntuacion ?? 0f;
+    }
 }
