@@ -95,6 +95,18 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             LIMIT 1;", new { Email = email.Trim() });
     }
 
+    public Usuario? ObtenerPorNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return null;
+
+        return Conexion.QuerySingleOrDefault<Usuario>(@"
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            FROM Usuario
+            WHERE nombre = @Nombre
+            LIMIT 1;", new { Nombre = nombre.Trim() });
+    }
+
     public Usuario Agregar(Usuario usuario)
     {
         var id = AltaUsuario(usuario);

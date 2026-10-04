@@ -35,6 +35,21 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         return plantilla;
     }
 
+    public Plantilla? ObtenerPorNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return null;
+
+        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
+            $"{SelectSql} WHERE nombreP = @Nombre LIMIT 1",
+            new { Nombre = nombre.Trim() });
+
+        if (plantilla is not null)
+            CargarDetalles(new List<Plantilla> { plantilla });
+
+        return plantilla;
+    }
+
     private void CargarDetalles(IList<Plantilla> plantillas)
     {
         if (plantillas.Count == 0)
@@ -108,4 +123,8 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
     public bool Eliminar(byte idPlantilla) =>
         Conexion.Execute("DELETE FROM Plantilla WHERE idPlantilla = @IdPlantilla", new { IdPlantilla = idPlantilla }) > 0;
+
+    public bool Eliminar(string nombre) =>
+        !string.IsNullOrWhiteSpace(nombre) &&
+        Conexion.Execute("DELETE FROM Plantilla WHERE nombreP = @Nombre", new { Nombre = nombre.Trim() }) > 0;
 }

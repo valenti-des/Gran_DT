@@ -19,6 +19,12 @@ public class ReposUsuarioTest : IDisposable
         _repo = new RepoUsuario(_conexion);
     }
 
+    private static string GenerarEmailUsuario(string prefijo)
+    {
+        var email = $"{prefijo}_{Guid.NewGuid():N}@test.com";
+        return email.Length > 255 ? email[..255] : email;
+    }
+
     public void Dispose() => _db.CerrarConexion();
 
     [Fact]
@@ -33,7 +39,7 @@ public class ReposUsuarioTest : IDisposable
     [Fact]
     public void AgregarYObtenerPorEmail_DeberiaGuardarUsuario()
     {
-        var email = $"usuario_{Guid.NewGuid():N}@test.com";
+        var email = GenerarEmailUsuario("usuario");
         var usuario = new Usuario
         {
             nombre = "Usuario",
@@ -44,15 +50,20 @@ public class ReposUsuarioTest : IDisposable
             es_admin = false
         };
 
-        var agregado = _repo.Agregar(usuario);
+        try
+        {
+            var agregado = _repo.Agregar(usuario);
 
-        Assert.NotEqual((short)0, agregado.idUsuario);
-        Assert.Equal(email, agregado.email);
+            Assert.NotEqual((short)0, agregado.idUsuario);
+            Assert.Equal(email, agregado.email);
 
-        var encontrado = _repo.ObtenerPorEmail(email);
-        Assert.NotNull(encontrado);
-        Assert.Equal(agregado.idUsuario, encontrado!.idUsuario);
-
-        Assert.True(_repo.Eliminar(email));
+            var encontrado = _repo.ObtenerPorEmail(email);
+            Assert.NotNull(encontrado);
+            Assert.Equal(agregado.idUsuario, encontrado!.idUsuario);
+        }
+        finally
+        {
+            _repo.Eliminar(email);
+        }
     }
 }

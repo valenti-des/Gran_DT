@@ -4,28 +4,28 @@ using Biblio.IRepo;
 
 namespace Servicios ;
 
-public class ServiceEquipo
+public class ServiciosPlantilla
 {
-    private readonly IRepoEquipo repository;
+    private readonly IRepoPlantilla repository;
 
-    public ServiceEquipo(IRepoEquipo repository)
+    public ServiciosPlantilla(IRepoPlantilla repository)
     {
         this.repository = repository;
     }
 
-    public List<Equipo> ObtenerTodos()
+    public List<Plantilla> ObtenerTodos()
     {
         return repository.ObtenerTodos();
     }
 
-    public Equipo? ObtenerPorNombre(string nombre)
+    public Plantilla? ObtenerPorNombre(string nombre)
     {
         return repository.ObtenerPorNombre(nombre);
     }
 
-    public Equipo Agregar(Equipo equipo)
+    public Plantilla Agregar(Plantilla Plantilla)
     {
-        return repository.Agregar(equipo);
+        return repository.Agregar(Plantilla);
     }
 
     public bool Eliminar(string nombre)

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Biblio;
+using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
@@ -19,9 +20,9 @@ public sealed record CrearEquipoRequest
 [Route("api/[controller]")]
 public class EquipoController : ControllerBase
 {
-    private readonly IEquipoService _equipoService;
+    private readonly ServiceEquipo _equipoService;
 
-    public EquipoController(IEquipoService equipoService)
+    public EquipoController(ServiceEquipo equipoService)
     {
         _equipoService = equipoService;
     }
@@ -33,10 +34,10 @@ public class EquipoController : ControllerBase
         return Ok(equipos);
     }
 
-    [HttpGet("{id:int}")]
-    public IActionResult ObtenerPorId(byte id)
+    [HttpGet("{nombre}")]
+    public IActionResult ObtenerPorNombre(string nombre)
     {
-        var equipo = _equipoService.ObtenerPorId(id);
+        var equipo = _equipoService.ObtenerPorNombre(nombre);
 
         if (equipo == null)
         {
@@ -80,21 +81,11 @@ public class EquipoController : ControllerBase
             });
         }
 
-        var equipo = _equipoService.Crear(new Equipo { nombre = request.Nombre });
-
-        if (equipo is null)
-        {
-            return Conflict(new ProblemDetails
-            {
-                Status = StatusCodes.Status409Conflict,
-                Title = "Ya existe un equipo con ese nombre."
-            });
-        }
+        var equipo = _equipoService.Agregar(new Equipo { nombre = request.Nombre });
 
         var respuesta = Mapear(equipo);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = equipo.idEquipo }, respuesta);
+        return CreatedAtAction(nameof(ObtenerPorNombre), new { nombre = equipo.nombre }, respuesta);
     }
 
     private static EquipoResponse Mapear(Equipo equipo) => new(equipo.idEquipo, equipo.nombre);
 }
-

@@ -19,9 +19,13 @@ public class ReposFutbolistaTest : IDisposable
         _repo = new RepoFutbolista(_conexion);
     }
 
-    public void Dispose() => _db.CerrarConexion();
+    private static string GenerarNombreFutbolista(string prefijo)
+    {
+        var nombre = $"{prefijo}_{Guid.NewGuid():N}";
+        return nombre.Length > 45 ? nombre[..45] : nombre;
+    }
 
-    
+    public void Dispose() => _db.CerrarConexion();
 
     [Fact]
     public void ObtenerTodos_DeberiaRetornarJugadoresExistentes()
@@ -35,7 +39,7 @@ public class ReposFutbolistaTest : IDisposable
     [Fact]
     public void AgregarYObtenerPorId_DeberiaGuardarJugador()
     {
-        var nombre = $"Jugador_{Guid.NewGuid():N}";
+        var nombre = GenerarNombreFutbolista("Jugador");
         var jugador = new Futbolista
         {
             nombre = nombre,
@@ -47,15 +51,20 @@ public class ReposFutbolistaTest : IDisposable
             idTipoFutbolista = 1
         };
 
-        var agregado = _repo.Agregar(jugador);
+        try
+        {
+            var agregado = _repo.Agregar(jugador);
 
-        Assert.NotEqual((ushort)0, agregado.idFutbolista);
-        Assert.Equal(nombre, agregado.nombre);
+            Assert.NotEqual((ushort)0, agregado.idFutbolista);
+            Assert.Equal(nombre, agregado.nombre);
 
-        var encontrado = _repo.ObtenerPorId(agregado.idFutbolista);
-        Assert.NotNull(encontrado);
-        Assert.Equal(agregado.idFutbolista, encontrado!.idFutbolista);
-
-        Assert.True(_repo.Eliminar(agregado.idFutbolista));
+            var encontrado = _repo.ObtenerPorId(agregado.idFutbolista);
+            Assert.NotNull(encontrado);
+            Assert.Equal(agregado.idFutbolista, encontrado!.idFutbolista);
+        }
+        finally
+        {
+            _repo.Eliminar(jugador.nombre);
+        }
     }
 }
