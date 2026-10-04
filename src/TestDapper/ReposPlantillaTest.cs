@@ -1,5 +1,6 @@
 using System;
 using Biblio;
+using Biblio.BiblioConDapper;
 using BiblioConDapper;
 using MySqlConnector;
 
@@ -9,31 +10,21 @@ public class ReposPlantillaTest : IDisposable
 {
     private readonly MySqlConnection _conexion;
     private readonly RepoPlantilla _repo;
+    private readonly Idbconection _db;
 
     public ReposPlantillaTest()
     {
-        _conexion = new MySqlConnection(BuildConnectionString());
-        _conexion.Open();
+        _db = new Idbconection();
+        _conexion = _db.EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
         _repo = new RepoPlantilla(_conexion);
     }
 
-    public void Dispose() => _conexion.Dispose();
+    public void Dispose() => _db.CerrarConexion();
 
     private static string GenerarNombrePlantilla(string prefijo)
     {
         var nombre = $"{prefijo}_{Guid.NewGuid():N}";
         return nombre.Length > 45 ? nombre[..45] : nombre;
-    }
-
-    private static string BuildConnectionString()
-    {
-        var server = Environment.GetEnvironmentVariable("DB_SERVER") ?? "127.0.0.1";
-        var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
-        var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "5to_agbd";
-        var user = Environment.GetEnvironmentVariable("DB_USER") ?? "5to_agbd";
-        var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Trigg3rs!";
-
-        return $"Server={server};Port={port};User ID={user};Password={password};Database={database};";
     }
 
     [Fact]
