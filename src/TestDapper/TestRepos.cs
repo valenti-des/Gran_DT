@@ -11,7 +11,6 @@ namespace Test;
 public class TestRepo
 {
     protected readonly IDbConnection _conexion;
-
     public TestRepo() => _conexion = new Idbconection().EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
     public TestRepo(string cadena) => _conexion = new MySqlConnection(cadena);
 }

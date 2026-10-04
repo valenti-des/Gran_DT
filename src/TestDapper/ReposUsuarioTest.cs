@@ -6,6 +6,7 @@ using MySqlConnector;
 
 namespace TestDapper;
 
+[Trait("Category", "Integration")]
 public class ReposUsuarioTest : IDisposable
 {
     private readonly MySqlConnection _conexion;
