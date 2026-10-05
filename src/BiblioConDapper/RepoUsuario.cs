@@ -7,12 +7,6 @@ namespace BiblioConDapper;
 
 public class RepoUsuario : RepoDapper, IRepoUsuario
 {
-    private const string LoginSql = @"
-        SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
-        FROM Usuario
-        WHERE email = @Email AND contraseña = @Contrasena
-        LIMIT 1;";
-
     private const string UpdateSql = @"
         UPDATE Usuario
         SET nombre = @Nombre,
@@ -117,15 +111,4 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     public bool Eliminar(string email) =>
         Conexion.Execute("DELETE FROM Usuario WHERE email = @Email", new { Email = email }) > 0;
 
-    public Usuario? LoginUsuario(string email, string contrasena)
-    {
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(contrasena))
-            return null;
-
-        return Conexion.QuerySingleOrDefault<Usuario>(LoginSql, new
-        {
-            Email = email.Trim(),
-            Contrasena = contrasena
-        });
-    }
 }

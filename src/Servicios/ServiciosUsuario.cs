@@ -25,6 +25,12 @@ public class ServiciosUsuario
 
     public Usuario Agregar(Usuario usuario)
     {
+        ArgumentNullException.ThrowIfNull(usuario);
+
+        if (string.IsNullOrWhiteSpace(usuario.contraseña))
+            throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
+
+        usuario.contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.contraseña);
         return repository.Agregar(usuario);
     }
 

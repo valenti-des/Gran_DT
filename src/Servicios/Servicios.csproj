@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Biblio\Biblio.csproj" />
     <ProjectReference Include="..\BiblioConDapper\BiblioConDapper.csproj" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <PropertyGroup>
