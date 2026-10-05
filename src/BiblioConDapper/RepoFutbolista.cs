@@ -58,21 +58,6 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         return futbolista;
     }
 
-    private void CargarPuntuaciones(IList<Futbolista> futbolistas)
-    {
-        if (futbolistas.Count == 0)
-            return;
-
-        var puntuaciones = Conexion.Query<Puntuacion>(
-            "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion").ToList();
-
-        foreach (var futbolista in futbolistas)
-        {
-            futbolista.puntuaciones = puntuaciones
-                .Where(p => p.idFutbolista == futbolista.idFutbolista)
-                .ToList();
-        }
-    }
 
     public Futbolista Agregar(Futbolista jugador)
     {
