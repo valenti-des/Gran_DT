@@ -12,12 +12,12 @@ public class LogicaDominioTests
         {
             puntuaciones =
             [
-                new Puntuacion { cantFech = 1, puntuacion = 8.4f },
-                new Puntuacion { cantFech = 2, puntuacion = 6.5f }
+                new Puntuacion { cantFech = new DateOnly(2026, 1, 1), puntuacion = 8.4f },
+                new Puntuacion { cantFech = new DateOnly(2026, 1, 2), puntuacion = 6.5f }
             ]
         };
 
-        Assert.Equal(6.5f, futbolista.ObtenerPuntuacionPorFecha(2));
+        Assert.Equal(6.5f, futbolista.ObtenerPuntuacionPorFecha(new DateOnly(2026, 1, 2)));
     }
 
     [Fact]
@@ -25,10 +25,10 @@ public class LogicaDominioTests
     {
         var futbolista = new Futbolista
         {
-            puntuaciones = [new Puntuacion { cantFech = 1, puntuacion = 8.4f }]
+            puntuaciones = [new Puntuacion { cantFech = new DateOnly(2026, 1, 1), puntuacion = 8.4f }]
         };
 
-        Assert.Equal(0f, futbolista.ObtenerPuntuacionPorFecha(2));
+        Assert.Equal(0f, futbolista.ObtenerPuntuacionPorFecha(new DateOnly(2026, 1, 2)));
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class LogicaDominioTests
                     futbolistaTitular = true,
                     futbolista = new Futbolista
                     {
-                        puntuaciones = [new Puntuacion { cantFech = 1, puntuacion = 8.4f }]
+                        puntuaciones = [new Puntuacion { cantFech = new DateOnly(2026, 1, 1), puntuacion = 8.4f }]
                     }
                 },
                 new PlantillaFutbolista
@@ -51,7 +51,7 @@ public class LogicaDominioTests
                     futbolistaTitular = false,
                     futbolista = new Futbolista
                     {
-                        puntuaciones = [new Puntuacion { cantFech = 1, puntuacion = 9f }]
+                        puntuaciones = [new Puntuacion { cantFech = new DateOnly(2026, 1, 1), puntuacion = 9f }]
                     }
                 },
                 new PlantillaFutbolista
@@ -62,7 +62,7 @@ public class LogicaDominioTests
             ]
         };
 
-        Assert.Equal(8.4f, plantilla.PuntajeFecha(1));
+        Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
     }
 
     [Fact]
@@ -70,6 +70,6 @@ public class LogicaDominioTests
     {
         var plantilla = new Plantilla();
 
-        Assert.Equal(0f, plantilla.PuntajeFecha(1));
+        Assert.Equal(0f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
     }
 }

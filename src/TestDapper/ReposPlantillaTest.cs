@@ -44,6 +44,6 @@ public class ReposPlantillaTest : IDisposable
 
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
-        Assert.Equal(8.4f, plantilla.PuntajeFecha(1));
+        Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
     }
 }

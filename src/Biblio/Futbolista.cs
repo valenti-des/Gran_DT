@@ -11,7 +11,7 @@ public class Futbolista
     
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
-    public DateOnly? fechaNac { get; set; } // Cambiado a DateOnly
+    public DateOnly? fechaNac { get; set; } 
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
@@ -20,7 +20,7 @@ public class Futbolista
     public List<Puntuacion> puntuaciones { get; set; } = new List<Puntuacion>();
 
     // Método que busca la puntuación del jugador para una fecha específica
-    public float ObtenerPuntuacionPorFecha(short cantFech)
+    public float ObtenerPuntuacionPorFecha(DateOnly cantFech)
     {
         return puntuaciones.FirstOrDefault(p => p.cantFech == cantFech)?.puntuacion ?? 0f;
     }

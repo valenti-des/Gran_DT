@@ -116,11 +116,11 @@ INSERT INTO Usuario (
 
 -- 5. Inserción de Puntuaciones
 INSERT INTO Puntuacion (idFutbolista, puntuacion, cantFech) VALUES
-(1, 8.4, 1),
-(8, 7.8, 2),
-(13, 9.1, 3),
-(27, 10.0, 4),
-(54, 8.5, 2);
+(1, 8.4, '2026-01-01'),
+(8, 7.8, '2026-01-01'),
+(13, 9.1, '2026-01-02'),
+(27, 10.0, '2026-01-03'),
+(54, 8.5, '2026-01-01');
 
 -- 6. Inserción de Plantillas
 INSERT INTO Plantilla (

@@ -51,7 +51,7 @@ CREATE TABLE Puntuacion (
 	idPuntuacion INT UNSIGNED AUTO_INCREMENT,
 	idFutbolista SMALLINT UNSIGNED NOT NULL,
 	puntuacion FLOAT,
-	cantFech SMALLINT,
+	cantFech DATE,
 	CONSTRAINT pk_Puntuacion PRIMARY KEY (idPuntuacion ASC),
 	CONSTRAINT fk_Puntuacion_Futbolista FOREIGN KEY (idFutbolista) REFERENCES Futbolista (idFutbolista) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

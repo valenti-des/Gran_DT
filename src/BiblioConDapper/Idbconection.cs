@@ -8,7 +8,7 @@ namespace Biblio.BiblioConDapper
         private static readonly string servidor = Environment.GetEnvironmentVariable("DB_SERVER") ?? "Localhost";
         private static readonly string bd = Environment.GetEnvironmentVariable("DB_NAME") ?? "bd_gran_dt";
         private static readonly string usuario = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
-        private static readonly string password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345"; //Trigg3rs! //12345
+        private static readonly string password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Trigg3rs!"; //Trigg3rs! //12345
         private static readonly string puerto = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
 
         private readonly string cadenaConexion = $"server={servidor};database={bd};uid={usuario};pwd={password};port={puerto};";

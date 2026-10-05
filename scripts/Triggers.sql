@@ -57,7 +57,7 @@ DELIMITER ;
 /*
 Trigger para la carga de Puntuaciones
 
-Controla las notas que ingresa el administrador: la fecha no puede ser 50 o mayor, la nota debe estar entre 1 y 10, y un jugador no puede tener dos puntuaciones en la misma fecha.
+Controla las notas que ingresa el administrador: la nota debe estar entre 1 y 10, y un jugador no puede tener dos puntuaciones en la misma fecha.
 
 */
 
@@ -69,12 +69,7 @@ FOR EACH ROW
 BEGIN
     DECLARE existe INT;
 
-    -- 1. Validar que la fecha sea entre 1 y 49
-    IF NEW.cantFech >= 50 OR NEW.cantFech < 1 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha debe ser un número entero mayor a 0 y menor a 50.';
-    END IF;
-
-    -- 2. Validar que la nota del jugador esté entre 1 y 10
+    -- Validar que la nota del jugador esté entre 1 y 10
     IF NEW.puntuacion < 1.0 OR NEW.puntuacion > 10.0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La puntuación debe ser un decimal entre 1 y 10.';
     END IF;

@@ -13,7 +13,7 @@ public class Plantilla
 
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
-    public float PuntajeFecha(short cantFech)
+    public float PuntajeFecha(DateOnly cantFech)
     {
         if (!detalles.Any())
             return 0f;

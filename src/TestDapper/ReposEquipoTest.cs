@@ -87,7 +87,7 @@ public class ReposEquipoTest : IDisposable
 
         Assert.NotNull(futbolista);
         Assert.NotEmpty(futbolista!.puntuaciones);
-        Assert.Equal(8.4f, futbolista.ObtenerPuntuacionPorFecha(1));
+        Assert.Equal(8.4f, futbolista.ObtenerPuntuacionPorFecha(new DateOnly(2026, 1, 1)));
     }
 
     [Fact]
@@ -99,6 +99,6 @@ public class ReposEquipoTest : IDisposable
 
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
-        Assert.Equal(8.4f, plantilla.PuntajeFecha(1));
+        Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
     }
 }

@@ -97,7 +97,7 @@ CREATE PROCEDURE AltaPuntuacion (
     OUT unidPuntuacion INT UNSIGNED,
     unidFutbolista SMALLINT UNSIGNED,
     unpuntuacion FLOAT,
-    uncantFech SMALLINT
+    uncantFech DATE
 )
 BEGIN
     INSERT INTO Puntuacion (idFutbolista, puntuacion, cantFech)
@@ -130,9 +130,9 @@ DELIMITER ;
 
 
 /*
-Propósito: Calcular dinámicamente el puntaje cuando la aplicación lo solicite (por ejemplo, al llamar a plantilla.PuntajeFecha(4)).
+Propósito: Calcular dinámicamente el puntaje cuando la aplicación lo solicite para una fecha de calendario.
 
-Operación: Recibe dos parámetros (unidPlantilla, unfecha), realiza un cálculo con SUM() y retorna el valor a C#.
+Operación: Recibe el identificador de una plantilla y una fecha, realiza un cálculo con SUM() y retorna el valor a C#.
 
 Incompatibilidad con Trigger: Los Triggers no se pueden invocar a demanda pasándoles argumentos desde el código de la aplicación, ni retornan un resultado directo a la interfaz.
 */
@@ -142,7 +142,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS ObtenerPuntajePlantillaPorFecha $$
 CREATE PROCEDURE ObtenerPuntajePlantillaPorFecha (
     IN unidPlantilla TINYINT UNSIGNED,
-    IN unfecha SMALLINT
+    IN unfecha DATE
 )
 BEGIN
     SELECT 
