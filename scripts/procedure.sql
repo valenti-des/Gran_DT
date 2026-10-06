@@ -1,11 +1,13 @@
-DELIMITER $$
-USE bd_gran_dt $$
-DELIMITER $$
+USE bd5_gran_dt;
+
+-- -----------------------------------------------------
+-- Procedure: AltaEquipo
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaEquipo $$
 CREATE PROCEDURE AltaEquipo (
     OUT unidEquipo TINYINT UNSIGNED, 
-    unnombre VARCHAR(45)
+    IN unnombre VARCHAR(45)
 )
 BEGIN
     INSERT INTO Equipo (nombre)
@@ -15,13 +17,14 @@ BEGIN
 END $$
 DELIMITER ;
 
-
-
+-- -----------------------------------------------------
+-- Procedure: AltaTipoFutbolista
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaTipoFutbolista $$
 CREATE PROCEDURE AltaTipoFutbolista (
     OUT unidTipoFutbolista TINYINT UNSIGNED, 
-    unTipoFutbolista VARCHAR(45)
+    IN unTipoFutbolista VARCHAR(45)
 )
 BEGIN
     INSERT INTO Tipo_Futbolista (tipoFutbolista)
@@ -31,18 +34,20 @@ BEGIN
 END $$
 DELIMITER ;
 
-
+-- -----------------------------------------------------
+-- Procedure: AltaFutbolista
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaFutbolista $$
 CREATE PROCEDURE AltaFutbolista (
     OUT unidFutbolista SMALLINT UNSIGNED, 
-    unnombre VARCHAR(45), 
-    unapellido VARCHAR(45), 
-    unapodo VARCHAR(45), 
-    unfechaNac DATE, 
-    uncotizacion DECIMAL(11,2), 
-    unidEquipo TINYINT UNSIGNED, 
-    unidTipoFutbolista TINYINT UNSIGNED
+    IN unnombre VARCHAR(45), 
+    IN unapellido VARCHAR(45), 
+    IN unapodo VARCHAR(45), 
+    IN unfechaNac DATE, 
+    IN uncotizacion DECIMAL(10,2), 
+    IN unidEquipo TINYINT UNSIGNED, 
+    IN unidTipoFutbolista TINYINT UNSIGNED
 )
 BEGIN
     INSERT INTO Futbolista (nombre, apellido, apodo, fechaNac, cotizacion, idEquipo, idTipoFutbolista)
@@ -52,104 +57,120 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- Procedure: AltaUsuario
+-- -----------------------------------------------------
+DELIMITER $$
+DROP PROCEDURE IF EXISTS AltaUsuario $$
+CREATE PROCEDURE AltaUsuario (
+    OUT unidUsuario SMALLINT UNSIGNED,
+    IN unnombreUsuario VARCHAR(45),
+    IN unnombre VARCHAR(45),
+    IN unapellido VARCHAR(45),
+    IN unemail VARCHAR(100),
+    IN unfechaNac DATE,
+    IN uncontrasena CHAR(64),
+    IN unes_admin TINYINT(1)
+)
+BEGIN
+    INSERT INTO Usuario (nombreUsuario, nombre, apellido, email, fechaNac, contrasena, es_admin)
+    VALUES (unnombreUsuario, unnombre, unapellido, unemail, unfechaNac, uncontrasena, IFNULL(unes_admin, 0));
+    
+    SET unidUsuario = LAST_INSERT_ID();
+END $$
+DELIMITER ;
 
-
+-- -----------------------------------------------------
+-- Procedure: AltaPlantilla
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaPlantilla $$
 CREATE PROCEDURE AltaPlantilla (
-    OUT unidPlantilla TINYINT UNSIGNED, 
-    unnombreP VARCHAR(45), 
-    uncantMaxMonto DECIMAL(11,2), 
-    uncantMaxFutbolista TINYINT, 
-    unidUsuario SMALLINT
+    OUT unidPlantilla INT UNSIGNED, 
+    IN unnombreP VARCHAR(45), 
+    IN uncantMaxMonto DECIMAL(10,2), 
+    IN uncantMaxFutbolista TINYINT UNSIGNED, 
+    IN unidUsuario SMALLINT UNSIGNED
 )
 BEGIN
     INSERT INTO Plantilla (nombreP, cantMaxMonto, cantMaxFutbolista, idUsuario)
-    VALUES (unnombreP, uncantMaxMonto, uncantMaxFutbolista, unidUsuario);
+    VALUES (
+        unnombreP, 
+        IFNULL(uncantMaxMonto, 99999999.99), 
+        IFNULL(uncantMaxFutbolista, 20), 
+        unidUsuario
+    );
     
     SET unidPlantilla = LAST_INSERT_ID();
 END $$
 DELIMITER ;
 
-
+-- -----------------------------------------------------
+-- Procedure: AgregarFutbolistaAPlantilla
+-- -----------------------------------------------------
 DELIMITER $$
-DROP PROCEDURE IF EXISTS AltaFutbolistaP $$
-CREATE PROCEDURE AltaFutbolistaP (
-    OUT unidFutbolistaPlantilla TINYINT UNSIGNED, 
-    unfutbolistaTitular TINYINT, 
-    unvalidacionP TINYINT,
-    unvalidacionR TINYINT,
-    unidPlantilla TINYINT UNSIGNED, 
-    unidFutbolista SMALLINT UNSIGNED
+DROP PROCEDURE IF EXISTS AgregarFutbolistaAPlantilla $$
+CREATE PROCEDURE AgregarFutbolistaAPlantilla (
+    IN unidPlantilla INT UNSIGNED, 
+    IN unidFutbolista SMALLINT UNSIGNED,
+    IN unfutbolistaTitular TINYINT(1)
 )
 BEGIN
-    INSERT INTO Futbolista_Plantilla (futbolistaTitular, validacionP, validacionR, idPlantilla, idFutbolista)
-    VALUES (unfutbolistaTitular, unvalidacionP, unvalidacionR, unidPlantilla, unidFutbolista);
-    
-    SET unidFutbolistaPlantilla = LAST_INSERT_ID();
+    INSERT INTO Futbolista_Plantilla (idPlantilla, idFutbolista, futbolistaTitular)
+    VALUES (unidPlantilla, unidFutbolista, IFNULL(unfutbolistaTitular, 0));
 END $$
 DELIMITER ;
 
-
+-- -----------------------------------------------------
+-- Procedure: AltaPuntuacion
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS AltaPuntuacion $$
 CREATE PROCEDURE AltaPuntuacion (
     OUT unidPuntuacion INT UNSIGNED,
-    unidFutbolista SMALLINT UNSIGNED,
-    unpuntuacion FLOAT,
-    uncantFech DATE
+    IN unidFutbolista SMALLINT UNSIGNED,
+    IN unpuntuacion DECIMAL(3,1),
+    IN unnroFecha TINYINT UNSIGNED
 )
 BEGIN
-    INSERT INTO Puntuacion (idFutbolista, puntuacion, cantFech)
-    VALUES (unidFutbolista, unpuntuacion, uncantFech);
+    INSERT INTO Puntuacion (idFutbolista, puntuacion, nroFecha)
+    VALUES (unidFutbolista, unpuntuacion, unnroFecha);
     
     SET unidPuntuacion = LAST_INSERT_ID();
 END $$
 DELIMITER ;
 
-
-/*
-Propósito: Validar el acceso consultando la tabla Usuario.
-
-Operación: Requiere recibir parámetros desde C# (unemail, uncontraseña) y realizar una lectura (SELECT) para devolver los datos del usuario autenticado.
-*/
+-- -----------------------------------------------------
+-- Procedure: LoginUsuario (soporta email o nombreUsuario)
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS LoginUsuario $$
 CREATE PROCEDURE LoginUsuario (
-    IN unemail VARCHAR(100),
-    IN uncontraseña CHAR(64)
+    IN unIdentificador VARCHAR(100), -- Puede ser email o nombreUsuario
+    IN uncontrasena CHAR(64)
 )
 BEGIN
-    SELECT idUsuario, nombre, apellido, email, es_admin
+    SELECT idUsuario, nombreUsuario, nombre, apellido, email, es_admin
     FROM Usuario
-    WHERE email = unemail AND contraseña = uncontraseña;
+    WHERE (email = unIdentificador OR nombreUsuario = unIdentificador) 
+      AND contrasena = uncontrasena;
 END $$
 DELIMITER ;
 
-
-
-
-/*
-Propósito: Calcular dinámicamente el puntaje cuando la aplicación lo solicite para una fecha de calendario.
-
-Operación: Recibe el identificador de una plantilla y una fecha, realiza un cálculo con SUM() y retorna el valor a C#.
-
-Incompatibilidad con Trigger: Los Triggers no se pueden invocar a demanda pasándoles argumentos desde el código de la aplicación, ni retornan un resultado directo a la interfaz.
-*/
-
-
+-- -----------------------------------------------------
+-- Procedure: ObtenerPuntajePlantillaPorFecha
+-- -----------------------------------------------------
 DELIMITER $$
 DROP PROCEDURE IF EXISTS ObtenerPuntajePlantillaPorFecha $$
 CREATE PROCEDURE ObtenerPuntajePlantillaPorFecha (
-    IN unidPlantilla TINYINT UNSIGNED,
-    IN unfecha DATE
+    IN unidPlantilla INT UNSIGNED,
+    IN unnroFecha TINYINT UNSIGNED
 )
 BEGIN
     SELECT 
-	
         p.idPlantilla,
         p.nombreP,
-        unfecha AS fechaConsultada,
+        unnroFecha AS nroFechaConsultada,
         IFNULL(SUM(pt.puntuacion), 0) AS puntajeTotal
     FROM Plantilla p
     INNER JOIN Futbolista_Plantilla fp ON p.idPlantilla = fp.idPlantilla
@@ -157,7 +178,58 @@ BEGIN
     INNER JOIN Puntuacion pt ON f.idFutbolista = pt.idFutbolista
     WHERE p.idPlantilla = unidPlantilla
       AND fp.futbolistaTitular = 1
-            AND pt.cantFech = unfecha
-        GROUP BY p.idPlantilla, p.nombreP;
+      AND pt.nroFecha = unnroFecha
+    GROUP BY p.idPlantilla, p.nombreP;
+END $$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Procedure: BuscarPlantillaPorNombreUsuario
+-- -----------------------------------------------------
+DELIMITER $$
+DROP PROCEDURE IF EXISTS BuscarPlantillaPorNombreUsuario $$
+CREATE PROCEDURE BuscarPlantillaPorNombreUsuario (
+    IN unnombreUsuario VARCHAR(45)
+)
+BEGIN
+    SELECT 
+        p.idPlantilla,
+        p.nombreP,
+        u.nombreUsuario,
+        f.idFutbolista,
+        f.nombre AS nombreFutbolista,
+        f.apellido AS apellidoFutbolista,
+        tf.tipoFutbolista,
+        f.cotizacion,
+        fp.futbolistaTitular
+    FROM Usuario u
+    INNER JOIN Plantilla p ON u.idUsuario = p.idUsuario
+    INNER JOIN Futbolista_Plantilla fp ON p.idPlantilla = fp.idPlantilla
+    INNER JOIN Futbolista f ON fp.idFutbolista = f.idFutbolista
+    INNER JOIN Tipo_Futbolista tf ON f.idTipoFutbolista = tf.idTipoFutbolista
+    WHERE u.nombreUsuario = unnombreUsuario;
+END $$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Procedure: CalcularPresupuestoConsumido
+-- -----------------------------------------------------
+DELIMITER $$
+DROP PROCEDURE IF EXISTS CalcularPresupuestoConsumido $$
+CREATE PROCEDURE CalcularPresupuestoConsumido (
+    IN unidPlantilla INT UNSIGNED
+)
+BEGIN
+    SELECT 
+        p.idPlantilla,
+        p.nombreP,
+        p.cantMaxMonto AS presupuestoMaximo,
+        IFNULL(SUM(f.cotizacion), 0) AS presupuestoConsumido,
+        (p.cantMaxMonto - IFNULL(SUM(f.cotizacion), 0)) AS presupuestoRestante
+    FROM Plantilla p
+    LEFT JOIN Futbolista_Plantilla fp ON p.idPlantilla = fp.idPlantilla
+    LEFT JOIN Futbolista f ON fp.idFutbolista = f.idFutbolista
+    WHERE p.idPlantilla = unidPlantilla
+    GROUP BY p.idPlantilla, p.nombreP, p.cantMaxMonto;
 END $$
 DELIMITER ;

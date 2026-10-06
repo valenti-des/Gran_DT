@@ -1,25 +1,31 @@
-USE bd_gran_dt;
+USE bd5_gran_dt;
 
+-- =====================================================
 -- 1. Inserción de Tipos de Futbolista
+-- =====================================================
 INSERT INTO Tipo_Futbolista (tipoFutbolista) VALUES
 ('Arquero'),
 ('Defensor'),
 ('Mediocampista'),
 ('Delantero');
 
+-- =====================================================
 -- 2. Inserción de Equipos
+-- =====================================================
 INSERT INTO Equipo (nombre) VALUES
-('River Plate'),             -- idEquipo: 1
-('Boca Juniors'),            -- idEquipo: 2
-('Independiente'),           -- idEquipo: 3
-('Racing Club'),             -- idEquipo: 4
+('River Plate'),            -- idEquipo: 1
+('Boca Juniors'),           -- idEquipo: 2
+('Independiente'),          -- idEquipo: 3
+('Racing Club'),            -- idEquipo: 4
 ('Club Atlético Platense'); -- idEquipo: 5
 
+-- =====================================================
 -- 3. Inserción de Futbolistas
--- idTipoFutbolista: 1 = Arquero, 2 = Defensor, 3 = Mediocampista, 4 = Delantero
+-- (1 = Arquero, 2 = Defensor, 3 = Mediocampista, 4 = Delantero)
+-- =====================================================
 INSERT INTO Futbolista (nombre, apellido, apodo, fechaNac, cotizacion, idEquipo, idTipoFutbolista) 
 VALUES
--- ================= RIVER PLATE (idEquipo: 1) =================
+-- River Plate (idEquipo: 1)
 ('Franco', 'Armani', 'El Pulpo', '1986-10-16', 15000000.00, 1, 1),
 ('Jeremías', 'Ledesma', 'Conan', '1993-02-13', 12000000.00, 1, 1),
 ('Paulo', 'Díaz', 'Paulo', '1994-08-25', 25000000.00, 1, 2),
@@ -36,7 +42,7 @@ VALUES
 ('Miguel', 'Borja', 'El Colibrí', '1993-01-26', 28000000.00, 1, 4),
 ('Pablo', 'Solari', 'Pablito', '2001-03-22', 20000000.00, 1, 4),
 
--- ================= BOCA JUNIORS (idEquipo: 2) =================
+-- Boca Juniors (idEquipo: 2)
 ('Sergio', 'Romero', 'Chiquito', '1987-02-22', 14000000.00, 2, 1),
 ('Leandro', 'Brey', 'Lea', '2002-09-21', 10000000.00, 2, 1),
 ('Marcos', 'Rojo', 'Marquitos', '1990-03-20', 18000000.00, 2, 2),
@@ -53,7 +59,7 @@ VALUES
 ('Exequiel', 'Zeballos', 'El Changuito', '2002-04-24', 20000000.00, 2, 4),
 ('Milton', 'Giménez', 'Milton', '1996-08-12', 18000000.00, 2, 4),
 
--- ================= INDEPENDIENTE (idEquipo: 3) =================
+-- Independiente (idEquipo: 3)
 ('Rodrigo', 'Rey', 'Rey', '1991-03-08', 16000000.00, 3, 1),
 ('Diego', 'Segovia', 'Diego', '2000-05-15', 8000000.00, 3, 1),
 ('Joaquín', 'Laso', 'Laso', '1990-07-04', 12000000.00, 3, 2),
@@ -69,7 +75,7 @@ VALUES
 ('Alexis', 'Canelo', 'Canelo', '1992-02-03', 14000000.00, 3, 4),
 ('Matías', 'Giménez', 'Mati', '1999-03-06', 16000000.00, 3, 4),
 
--- ================= RACING CLUB (idEquipo: 4) =================
+-- Racing Club (idEquipo: 4)
 ('Gabriel', 'Arias', 'Gabi', '1987-09-13', 15000000.00, 4, 1),
 ('Facundo', 'Cambeses', 'Facu', '1997-04-09', 11000000.00, 4, 1),
 ('Leonardo', 'Sigali', 'El Oso', '1987-05-29', 12000000.00, 4, 2),
@@ -86,7 +92,7 @@ VALUES
 ('Luciano', 'Vietto', 'Lucho', '1993-12-05', 20000000.00, 4, 4),
 ('Johan', 'Carbonero', 'Johan', '1999-07-20', 19000000.00, 4, 4),
 
--- ================= PLATENSE (idEquipo: 5) =================
+-- Platense (idEquipo: 5)
 ('Juan Pablo', 'Cozzani', 'Juampi', '1998-05-09', 12000000.00, 5, 1),
 ('Joaquín', 'Blázquez', 'Joaco', '2001-01-28', 9000000.00, 5, 1),
 ('Gastón', 'Suso', 'Gaston', '1991-03-12', 13000000.00, 5, 2),
@@ -102,43 +108,55 @@ VALUES
 ('Augusto', 'Lotti', 'Lotti', '1996-06-10', 16000000.00, 5, 4),
 ('Ignacio', 'Schor', 'El Pájaro', '2000-08-04', 14000000.00, 5, 4);
 
+-- =====================================================
 -- 4. Inserción de Usuarios
+-- (Contraseñas en SHA-256 de 64 caracteres)
+-- =====================================================
 INSERT INTO Usuario (
+    nombreUsuario,
     nombre,
     apellido,
     email,
     fechaNac,
-    contraseña,
+    contrasena,
     es_admin
 ) VALUES
-('Valengiu', 'Sigma', 'valengiu0708@gmail.com', '2008-08-07', '1234', 0),
-('Admin', 'Sistema', 'admin@gran_dt.com', '1990-01-01', 'admin123', 1);
+('valengiu', 'Valengiu', 'Sigma', 'valengiu0708@gmail.com', '2008-08-07', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 0),
+('admin', 'Admin', 'Sistema', 'admin@gran_dt.com', '1990-01-01', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 1);
 
+-- =====================================================
 -- 5. Inserción de Puntuaciones
-INSERT INTO Puntuacion (idFutbolista, puntuacion, cantFech) VALUES
-(1, 8.4, '2026-01-01'),
-(8, 7.8, '2026-01-01'),
-(13, 9.1, '2026-01-02'),
-(27, 10.0, '2026-01-03'),
-(54, 8.5, '2026-01-01');
+-- (nroFecha: número de jornada del 1 al 50)
+-- =====================================================
+INSERT INTO Puntuacion (idFutbolista, puntuacion, nroFecha) VALUES
+(1, 8.4, 1),
+(8, 7.8, 1),
+(13, 9.1, 2),
+(27, 10.0, 3),
+(54, 8.5, 1);
 
+-- =====================================================
 -- 6. Inserción de Plantillas
+-- =====================================================
 INSERT INTO Plantilla (
     nombreP,
     cantMaxMonto,
     cantMaxFutbolista,
     idUsuario
 ) VALUES
-('Plantilla Inicial', 500000000.00, 11, 1),
-('Equipo de Prueba', 350000000.00, 11, 2);
+('Plantilla Inicial', 99999999.99, 20, 1),
+('Equipo de Prueba', 99999999.99, 20, 2);
 
+-- =====================================================
 -- 7. Inserción en Futbolista_Plantilla
+-- (futbolistaTitular: 1 = Titular, 0 = Suplente)
+-- =====================================================
 INSERT INTO Futbolista_Plantilla (
-    futbolistaTitular, validacionP, validacionR, idPlantilla, idFutbolista
+    idPlantilla, idFutbolista, futbolistaTitular
 ) VALUES
-(1, 1, 0, 1, 1),   -- Armani en Plantilla 1
-(0, 0, 1, 1, 8),   -- Enzo Pérez en Plantilla 1
-(1, 1, 0, 1, 13),  -- Colidio en Plantilla 1
-(0, 0, 1, 1, 27),  -- Cavani en Plantilla 1
-(1, 1, 0, 2, 54),  -- Mateo Pellegrino (Platense) en Plantilla 2
-(1, 0, 0, 2, 8);   -- Enzo Pérez en Plantilla 2
+(1, 1, 1),   -- Armani en Plantilla 1 (Titular)
+(1, 8, 0),   -- Enzo Pérez en Plantilla 1 (Suplente)
+(1, 13, 1),  -- Colidio en Plantilla 1 (Titular)
+(1, 27, 0),  -- Cavani en Plantilla 1 (Suplente)
+(2, 54, 1),  -- Mateo Pellegrino en Plantilla 2 (Titular)
+(2, 8, 1);   -- Enzo Pérez en Plantilla 2 (Titular)
