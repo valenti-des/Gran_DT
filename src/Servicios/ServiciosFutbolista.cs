@@ -1,42 +1,103 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Biblio;
 using Biblio.IRepo;
 
-namespace Servicios ;
+namespace Servicios;
 
-public class ServiciosFutbolista
+public sealed record CrearFutbolistaRequest(
+    [Required(ErrorMessage = "El nombre es obligatorio")] string Nombre,
+    [Required(ErrorMessage = "El apellido es obligatorio")] string Apellido,
+    string? Apodo,
+    DateOnly? FechaNacimiento,
+    decimal? Cotizacion,
+    byte? IdEquipo,
+    byte? IdTipoFutbolista);
+
+public sealed record FutbolistaResponse(
+    ushort IdFutbolista,
+    string Nombre,
+    string Apellido,
+    string? Apodo,
+    DateOnly? FechaNacimiento,
+    decimal? Cotizacion,
+    byte? IdEquipo,
+    byte? IdTipoFutbolista,
+    IReadOnlyList<PuntuacionResponse> Puntuaciones);
+
+public sealed record PuntuacionResponse(
+    uint IdPuntuacion,
+    float? Puntuacion,
+    DateOnly? Fecha);
+
+public interface IServiciosFutbolista
 {
-    private readonly IRepoFutbolista repository;
+    List<FutbolistaResponse> ObtenerTodos();
+    FutbolistaResponse? ObtenerPorNombre(string nombre);
+    FutbolistaResponse Agregar(CrearFutbolistaRequest request);
+    bool Eliminar(string nombre);
+}
+
+public class ServiciosFutbolista : IServiciosFutbolista
+{
+    private readonly IRepoFutbolista _repository;
 
     public ServiciosFutbolista(IRepoFutbolista repository)
     {
-        this.repository = repository;
+        _repository = repository;
     }
 
-    public List<Futbolista> ObtenerTodos()
+    public List<FutbolistaResponse> ObtenerTodos()
     {
-        return repository.ObtenerTodos();
+        return _repository.ObtenerTodos().Select(MapearResponse).ToList();
     }
 
-    public Futbolista? ObtenerPorNombre(string nombre)
+    public FutbolistaResponse? ObtenerPorNombre(string nombre)
     {
-        return repository.ObtenerPorNombre(nombre);
+        var futbolista = _repository.ObtenerPorNombre(nombre);
+        return futbolista is null ? null : MapearResponse(futbolista);
     }
 
-    public Futbolista Agregar(Futbolista futbolista)
+    public FutbolistaResponse Agregar(CrearFutbolistaRequest request)
     {
-        return repository.Agregar(futbolista);
+        ArgumentNullException.ThrowIfNull(request);
+
+        var nuevoFutbolista = new Futbolista
+        {
+            nombre = request.Nombre,
+            apellido = request.Apellido,
+            apodo = request.Apodo,
+            fechaNac = request.FechaNacimiento,
+            cotizacion = request.Cotizacion,
+            idEquipo = request.IdEquipo,
+            idTipoFutbolista = request.IdTipoFutbolista
+        };
+
+        return MapearResponse(_repository.Agregar(nuevoFutbolista));
     }
 
     public bool Eliminar(string nombre)
     {
-        return repository.Eliminar(nombre);
+        return _repository.Eliminar(nombre);
     }
-}
 
-public class ServiceFutbolista : ServiciosFutbolista
-{
-    public ServiceFutbolista(IRepoFutbolista repository) : base(repository)
+    private static FutbolistaResponse MapearResponse(Futbolista futbolista)
     {
+        return new FutbolistaResponse(
+            futbolista.idFutbolista,
+            futbolista.nombre,
+            futbolista.apellido,
+            futbolista.apodo,
+            futbolista.fechaNac,
+            futbolista.cotizacion,
+            futbolista.idEquipo,
+            futbolista.idTipoFutbolista,
+            futbolista.puntuaciones?
+                .Select(puntuacion => new PuntuacionResponse(
+                    puntuacion.idPuntuacion,
+                    puntuacion.puntuacion,
+                    puntuacion.cantFech))
+                .ToList() ?? new List<PuntuacionResponse>());
     }
 }

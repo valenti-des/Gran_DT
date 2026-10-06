@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Biblio;
 using Servicios;
 
 namespace GranDTApi.Controllers;
+
+public sealed record CrearEquipoRequest(
+    [Required(ErrorMessage = "El nombre del equipo es obligatorio.")] string Nombre);
 
 /// <summary>Representación de un equipo en la API.</summary>
 public sealed record EquipoResponse(byte IdEquipo, string Nombre);
@@ -66,9 +70,9 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
     /// Crea un nuevo equipo.
     /// </summary>
     [HttpPost]
-    public ActionResult<EquipoResponse> Crear([FromBody] Equipo request)
+    public ActionResult<EquipoResponse> Crear([FromBody] CrearEquipoRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.nombre))
+        if (string.IsNullOrWhiteSpace(request.Nombre))
         {
             return BadRequest(new ProblemDetails
             {
@@ -77,7 +81,7 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
             });
         }
 
-        var equipo = equipoService.Agregar(new Equipo { nombre = request.nombre });
+        var equipo = equipoService.Agregar(new Equipo { nombre = request.Nombre });
 
         var respuesta = Mapear(equipo);
         return CreatedAtAction(nameof(ObtenerPorNombre), new { nombre = equipo.nombre }, respuesta);

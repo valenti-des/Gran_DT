@@ -52,6 +52,38 @@ public class TestdeServiciosPlantilla
     }
 
     [Fact]
+    public void Agregar_RechazaJugadoresDuplicadosPorNombreApellidoYAnioNacimiento()
+    {
+        var repo = new FakeRepo();
+        var svc = new ServiciosPlantilla(repo);
+        var futbolista1 = new Futbolista
+        {
+            nombre = "Ana",
+            apellido = "Perez",
+            fechaNac = new DateOnly(2000, 1, 10)
+        };
+        var futbolista2 = new Futbolista
+        {
+            nombre = "Ana",
+            apellido = "Perez",
+            fechaNac = new DateOnly(2000, 11, 20)
+        };
+        var plantilla = new Plantilla
+        {
+            detalles =
+            {
+                new PlantillaFutbolista { futbolista = futbolista1 },
+                new PlantillaFutbolista { futbolista = futbolista2 }
+            }
+        };
+
+        var excepcion = Assert.Throws<ArgumentException>(() => svc.Agregar(plantilla));
+
+        Assert.Equal("No se puede agregar la plantilla: contiene jugadores duplicados.", excepcion.Message);
+        Assert.Empty(repo.Lista);
+    }
+
+    [Fact]
     public void Eliminar_RetornaTrueCuandoExiste()
     {
         var repo = new FakeRepo();

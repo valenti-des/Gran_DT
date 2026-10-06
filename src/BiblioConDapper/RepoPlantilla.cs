@@ -115,8 +115,55 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         parametros.Add("uncantMaxFutbolista", plantilla.cantMaxFutbolista);
         parametros.Add("unidUsuario", plantilla.idUsuario);
 
-        Conexion.Execute("AltaPlantilla", parametros, commandType: CommandType.StoredProcedure);
-        plantilla.idPlantilla = parametros.Get<byte>("unidPlantilla");
+        var conexionYaAbierta = Conexion.State == ConnectionState.Open;
+        if (!conexionYaAbierta)
+            Conexion.Open();
+
+        try
+        {
+            using var transaccion = Conexion.BeginTransaction();
+            try
+            {
+                Conexion.Execute(
+                    "AltaPlantilla",
+                    parametros,
+                    transaction: transaccion,
+                    commandType: CommandType.StoredProcedure);
+                plantilla.idPlantilla = parametros.Get<byte>("unidPlantilla");
+
+                foreach (var detalle in plantilla.detalles)
+                {
+                    var parametrosDetalle = new DynamicParameters();
+                    parametrosDetalle.Add("unidFutbolistaPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
+                    parametrosDetalle.Add("unfutbolistaTitular", detalle.futbolistaTitular);
+                    parametrosDetalle.Add("unvalidacionP", detalle.validacionP);
+                    parametrosDetalle.Add("unvalidacionR", detalle.validacionR);
+                    parametrosDetalle.Add("unidPlantilla", plantilla.idPlantilla);
+                    parametrosDetalle.Add("unidFutbolista", detalle.idFutbolista);
+
+                    Conexion.Execute(
+                        "AltaFutbolistaP",
+                        parametrosDetalle,
+                        transaction: transaccion,
+                        commandType: CommandType.StoredProcedure);
+
+                    detalle.idFutbolistaPlantilla = parametrosDetalle.Get<byte>("unidFutbolistaPlantilla");
+                    detalle.idPlantilla = plantilla.idPlantilla;
+                }
+
+                transaccion.Commit();
+            }
+            catch
+            {
+                transaccion.Rollback();
+                throw;
+            }
+        }
+        finally
+        {
+            if (!conexionYaAbierta && Conexion.State == ConnectionState.Open)
+                Conexion.Close();
+        }
 
         return plantilla;
     }

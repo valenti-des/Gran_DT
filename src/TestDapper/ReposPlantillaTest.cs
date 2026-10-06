@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Biblio;
 using Biblio.BiblioConDapper;
 using BiblioConDapper;
@@ -45,5 +46,48 @@ public class ReposPlantillaTest : IDisposable
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
         Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
+    }
+
+    [Fact]
+    public void Agregar_ConDetalles_DeberiaPersistirLaAsociacion()
+    {
+        var plantillaExistente = _repo.ObtenerPorId(1);
+        Assert.NotNull(plantillaExistente);
+        Assert.NotEmpty(plantillaExistente!.detalles);
+
+        var idFutbolista = plantillaExistente.detalles[0].idFutbolista;
+        var plantillaNueva = new Plantilla
+        {
+            nombreP = GenerarNombrePlantilla("Plantilla_detalle"),
+            detalles =
+            {
+                new PlantillaFutbolista
+                {
+                    idFutbolista = idFutbolista,
+                    futbolistaTitular = true
+                }
+            }
+        };
+
+        Plantilla? creada = null;
+        try
+        {
+            creada = _repo.Agregar(plantillaNueva);
+
+            var recargada = _repo.ObtenerPorNombre(creada.nombreP);
+
+            Assert.NotNull(recargada);
+            var detalle = Assert.Single(recargada!.detalles);
+            Assert.Equal(idFutbolista, detalle.idFutbolista);
+            Assert.Equal(creada.idPlantilla, detalle.idPlantilla);
+        }
+        finally
+        {
+            if (creada is not null)
+            {
+                new RepoPlantillaFutbolista(_conexion).Eliminar(creada.idPlantilla, idFutbolista);
+                _repo.Eliminar(creada.idPlantilla);
+            }
+        }
     }
 }

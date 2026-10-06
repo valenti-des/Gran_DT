@@ -1,8 +1,28 @@
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Servicios;
 
 namespace GranDTApi.Controllers;
+
+public sealed record CrearPlantillaRequest(
+    [Required(ErrorMessage = "El nombre de la plantilla es obligatorio.")] string NombreP,
+    decimal? CantMaxMonto,
+    byte? CantMaxFutbolista,
+    short? IdUsuario,
+    IReadOnlyList<CrearDetallePlantillaRequest>? Detalles);
+
+public sealed record CrearDetallePlantillaRequest(
+    bool FutbolistaTitular,
+    bool ValidacionP,
+    bool ValidacionR,
+    ushort IdFutbolista,
+    FutbolistaIdentidadRequest? Futbolista);
+
+public sealed record FutbolistaIdentidadRequest(
+    string Nombre,
+    string Apellido,
+    DateOnly? FechaNac);
 
 /// <summary>
 /// Representación pública de una plantilla en la API.
@@ -87,9 +107,9 @@ public class PlantillaController(ServiciosPlantilla plantillaService) : Controll
     /// Crea una nueva plantilla.
     /// </summary>
     [HttpPost]
-    public ActionResult<PlantillaResponse> Crear([FromBody] Plantilla request)
+    public ActionResult<PlantillaResponse> Crear([FromBody] CrearPlantillaRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.nombreP))
+        if (string.IsNullOrWhiteSpace(request.NombreP))
         {
             return BadRequest(new ProblemDetails
             {
@@ -98,13 +118,38 @@ public class PlantillaController(ServiciosPlantilla plantillaService) : Controll
             });
         }
 
-        var plantilla = plantillaService.Agregar(new Plantilla
+        Plantilla plantilla;
+        try
         {
-            nombreP = request.nombreP,
-            cantMaxMonto = request.cantMaxMonto,
-            cantMaxFutbolista = request.cantMaxFutbolista,
-            idUsuario = request.idUsuario
-        });
+            plantilla = plantillaService.Agregar(new Plantilla
+            {
+                nombreP = request.NombreP,
+                cantMaxMonto = request.CantMaxMonto,
+                cantMaxFutbolista = request.CantMaxFutbolista,
+                idUsuario = request.IdUsuario,
+                detalles = request.Detalles?.Select(detalle => new PlantillaFutbolista
+                {
+                    futbolistaTitular = detalle.FutbolistaTitular,
+                    validacionP = detalle.ValidacionP,
+                    validacionR = detalle.ValidacionR,
+                    idFutbolista = detalle.IdFutbolista,
+                    futbolista = detalle.Futbolista is null ? null : new Futbolista
+                    {
+                        nombre = detalle.Futbolista.Nombre,
+                        apellido = detalle.Futbolista.Apellido,
+                        fechaNac = detalle.Futbolista.FechaNac
+                    }
+                }).ToList() ?? new List<PlantillaFutbolista>()
+            });
+        }
+        catch (ArgumentException excepcion)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = excepcion.Message
+            });
+        }
 
         return CreatedAtAction(
             nameof(ObtenerPorNombre),

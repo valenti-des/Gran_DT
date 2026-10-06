@@ -1,8 +1,18 @@
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Servicios;
 
 namespace GranDTApi.Controllers;
+
+public sealed record CrearUsuarioRequest(
+    [Required(ErrorMessage = "El nombre es obligatorio.")] string Nombre,
+    [Required(ErrorMessage = "El apellido es obligatorio.")] string Apellido,
+    [Required(ErrorMessage = "El email es obligatorio.")]
+    [EmailAddress(ErrorMessage = "El email no tiene un formato válido.")] string Email,
+    DateOnly? FechaNacimiento,
+    [Required(ErrorMessage = "La contraseña es obligatoria.")] string Contraseña,
+    bool EsAdmin);
 
 /// <summary>
 /// Controlador para gestionar los usuarios.
@@ -44,16 +54,16 @@ public class UsuarioController(ServiciosUsuario usuarioService) : ControllerBase
     /// Crea un nuevo usuario.
     /// </summary>
     [HttpPost]
-    public ActionResult<UsuarioResponse> Crear([FromBody] Usuario request)
+    public ActionResult<UsuarioResponse> Crear([FromBody] CrearUsuarioRequest request)
     {
         var usuario = usuarioService.Agregar(new Usuario
         {
-            nombre = request.nombre,
-            apellido = request.apellido,
-            email = request.email,
-            fechaNac = request.fechaNac,
-            contraseña = request.contraseña,
-            es_admin = request.es_admin
+            nombre = request.Nombre,
+            apellido = request.Apellido,
+            email = request.Email,
+            fechaNac = request.FechaNacimiento,
+            contraseña = request.Contraseña,
+            es_admin = request.EsAdmin
         });
 
         var respuesta = Mapear(usuario);

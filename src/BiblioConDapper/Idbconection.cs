@@ -5,9 +5,9 @@ namespace Biblio.BiblioConDapper
 {
     public class Idbconection
     {
-        private static readonly string servidor = Environment.GetEnvironmentVariable("DB_SERVER") ?? "Localhost";
+        private static readonly string servidor = Environment.GetEnvironmentVariable("DB_SERVER") ?? "127.0.0.1";
         private static readonly string bd = Environment.GetEnvironmentVariable("DB_NAME") ?? "bd_gran_dt";
-        private static readonly string usuario = Environment.GetEnvironmentVariable("DB_USER") ?? "root";
+        private static readonly string usuario = Environment.GetEnvironmentVariable("DB_USER") ?? "5to_agbd";
         private static readonly string password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Trigg3rs!"; //Trigg3rs! //12345
         private static readonly string puerto = Environment.GetEnvironmentVariable("DB_PORT") ?? "3306";
 

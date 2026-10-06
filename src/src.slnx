@@ -5,5 +5,4 @@
   <Project Path="Servicios/Servicios.csproj" />
   <Project Path="TestDapper/TestDapper.csproj" />
   <Project Path="TestUnitarios/TestUnitarios.csproj" />
-  <Project Path="TestModel/TestModel.csproj" />
 </Solution>

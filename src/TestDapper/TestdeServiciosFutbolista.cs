@@ -28,22 +28,47 @@ public class TestdeServiciosFutbolista
     public void ObtenerTodos_RetornaLista()
     {
         var repo = new FakeRepo();
-        repo.Lista.Add(new Futbolista { idFutbolista = 1, nombre = "A" });
-        var svc = new ServiceFutbolista(repo);
+        repo.Lista.Add(new Futbolista
+        {
+            idFutbolista = 1,
+            nombre = "A",
+            puntuaciones = [new Puntuacion { idPuntuacion = 4, puntuacion = 8.5f }]
+        });
+        var svc = new ServiciosFutbolista(repo);
         var res = svc.ObtenerTodos();
+
         Assert.Single(res);
-        Assert.Equal("A", res[0].nombre);
+        Assert.Equal("A", res[0].Nombre);
+        Assert.Equal(4u, Assert.Single(res[0].Puntuaciones).IdPuntuacion);
     }
 
     [Fact]
     public void Agregar_RetornaFutbolistaAgregado()
     {
         var repo = new FakeRepo();
-        var svc = new ServiceFutbolista(repo);
-        var nuevo = new Futbolista { idFutbolista = 2, nombre = "B" };
-        var res = svc.Agregar(nuevo);
-        Assert.Contains(res, repo.Lista);
-        Assert.Equal("B", res.nombre);
+        var svc = new ServiciosFutbolista(repo);
+        var request = new CrearFutbolistaRequest(
+            "B", "Apellido", "Apodo", new DateOnly(2000, 1, 2), 120m, 3, 4);
+
+        var res = svc.Agregar(request);
+
+        var agregado = Assert.Single(repo.Lista);
+        Assert.Equal("B", agregado.nombre);
+        Assert.Equal("Apellido", agregado.apellido);
+        Assert.Equal("Apodo", agregado.apodo);
+        Assert.Equal(new DateOnly(2000, 1, 2), agregado.fechaNac);
+        Assert.Equal(120m, agregado.cotizacion);
+        Assert.Equal((byte)3, agregado.idEquipo);
+        Assert.Equal((byte)4, agregado.idTipoFutbolista);
+        Assert.Equal("B", res.Nombre);
+    }
+
+    [Fact]
+    public void ObtenerPorNombre_SinCoincidencia_RetornaNull()
+    {
+        var svc = new ServiciosFutbolista(new FakeRepo());
+
+        Assert.Null(svc.ObtenerPorNombre("Inexistente"));
     }
 
     [Fact]
@@ -51,7 +76,7 @@ public class TestdeServiciosFutbolista
     {
         var repo = new FakeRepo();
         repo.Lista.Add(new Futbolista { idFutbolista = 3, nombre = "C" });
-        var svc = new ServiceFutbolista(repo);
+        var svc = new ServiciosFutbolista(repo);
         var ok = svc.Eliminar("C");
         Assert.True(ok);
         Assert.Empty(repo.Lista);
