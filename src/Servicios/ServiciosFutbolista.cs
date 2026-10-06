@@ -33,3 +33,10 @@ public class ServiciosFutbolista
         return repository.Eliminar(nombre);
     }
 }
+
+public class ServiceFutbolista : ServiciosFutbolista
+{
+    public ServiceFutbolista(IRepoFutbolista repository) : base(repository)
+    {
+    }
+}

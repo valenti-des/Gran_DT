@@ -33,3 +33,10 @@ public class ServiciosPlantilla
         return repository.Eliminar(nombre);
     }
 }
+
+public class ServicePlantilla : ServiciosPlantilla
+{
+    public ServicePlantilla(IRepoPlantilla repository) : base(repository)
+    {
+    }
+}

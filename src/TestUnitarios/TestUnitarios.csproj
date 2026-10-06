@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Biblio\Biblio.csproj" />
+    <ProjectReference Include="..\Servicios\Servicios.csproj" />
   </ItemGroup>
 
 </Project>

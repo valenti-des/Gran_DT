@@ -39,3 +39,10 @@ public class ServiciosUsuario
         return repository.Eliminar(nombre);
     }
 }
+
+public class ServiceUsuario : ServiciosUsuario
+{
+    public ServiceUsuario(IRepoUsuario repository) : base(repository)
+    {
+    }
+}
