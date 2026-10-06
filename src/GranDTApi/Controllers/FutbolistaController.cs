@@ -1,62 +1,58 @@
+using System.ComponentModel.DataAnnotations;
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
 using Servicios;
 
 namespace GranDTApi.Controllers;
 
-/// <summary>
-/// Representación pública de un futbolista en la API.
-/// </summary>
-public sealed record FutbolistaResponse(
-    ushort IdFutbolista,
-    string Nombre,
-    string Apellido,
-    string? Apodo,
-    DateOnly? FechaNacimiento,
-    decimal? Cotizacion,
-    byte? IdEquipo,
-    byte? IdTipoFutbolista,
-    IReadOnlyList<PuntuacionResponse> Puntuaciones);
+/// <summary>Datos necesarios para crear un futbolista.</summary>
+public sealed record CrearFutbolistaRequest
+{
+    [Required]
+    public required string Nombre { get; init; }
 
-/// <summary>
-/// Representación de una puntuación en la API.
-/// </summary>
-public sealed record PuntuacionResponse(uint IdPuntuacion, float? Puntuacion, DateOnly? Fecha);
+    [Required]
+    public required string Apellido { get; init; }
+
+    public string? Apodo { get; init; }
+    public DateOnly? FechaNacimiento { get; init; }
+    public decimal? Cotizacion { get; init; }
+    public byte? IdEquipo { get; init; }
+    public byte? IdTipoFutbolista { get; init; }
+}
 
 /// <summary>Endpoints para gestionar futbolistas.</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class FutbolistaController(ServiciosFutbolista futbolistaService) : ControllerBase
+public class FutbolistaController : ControllerBase
 {
-    /// <summary>
-    /// Obtiene todos los futbolistas.
-    /// </summary>
-    [HttpGet]
-    public ActionResult<IEnumerable<FutbolistaResponse>> ObtenerTodos()
+    private readonly ServiciosFutbolista _futbolistaService;
+
+    public FutbolistaController(ServiciosFutbolista futbolistaService)
     {
-        var futbolistas = futbolistaService.ObtenerTodos().Select(Mapear);
+        _futbolistaService = futbolistaService;
+    }
+
+    [HttpGet]
+    public IActionResult ObtenerTodos()
+    {
+        var futbolistas = _futbolistaService.ObtenerTodos();
         return Ok(futbolistas);
     }
 
-    /// <summary>
-    /// Obtiene un futbolista por su nombre.
-    /// </summary>
     [HttpGet("{nombre}")]
-    public ActionResult<FutbolistaResponse> ObtenerPorNombre(string nombre)
+    public IActionResult ObtenerPorNombre(string nombre)
     {
-        var futbolista = futbolistaService.ObtenerPorNombre(nombre);
+        var futbolista = _futbolistaService.ObtenerPorNombre(nombre);
 
         if (futbolista is null)
         {
             return NotFound();
         }
 
-        return Ok(Mapear(futbolista));
+        return Ok(futbolista);
     }
 
-    /// <summary>
-    /// Elimina un futbolista por su nombre.
-    /// </summary>
     [HttpDelete("{nombre}")]
     public IActionResult Eliminar(string nombre)
     {
@@ -69,7 +65,7 @@ public class FutbolistaController(ServiciosFutbolista futbolistaService) : Contr
             });
         }
 
-        var eliminado = futbolistaService.Eliminar(nombre);
+        var eliminado = _futbolistaService.Eliminar(nombre);
 
         if (!eliminado)
         {
@@ -79,13 +75,10 @@ public class FutbolistaController(ServiciosFutbolista futbolistaService) : Contr
         return NoContent();
     }
 
-    /// <summary>
-    /// Crea un nuevo futbolista.
-    /// </summary>
     [HttpPost]
-    public ActionResult<FutbolistaResponse> Crear([FromBody] Futbolista request)
+    public IActionResult Crear([FromBody] CrearFutbolistaRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.nombre) || string.IsNullOrWhiteSpace(request.apellido))
+        if (string.IsNullOrWhiteSpace(request.Nombre) || string.IsNullOrWhiteSpace(request.Apellido))
         {
             return BadRequest(new ProblemDetails
             {
@@ -94,42 +87,20 @@ public class FutbolistaController(ServiciosFutbolista futbolistaService) : Contr
             });
         }
 
-        var futbolista = futbolistaService.Agregar(new Futbolista
+        var futbolista = _futbolistaService.Agregar(new Futbolista
         {
-            nombre = request.nombre,
-            apellido = request.apellido,
-            apodo = request.apodo,
-            fechaNac = request.fechaNac,
-            cotizacion = request.cotizacion,
-            idEquipo = request.idEquipo,
-            idTipoFutbolista = request.idTipoFutbolista
+            nombre = request.Nombre,
+            apellido = request.Apellido,
+            apodo = request.Apodo,
+            fechaNac = request.FechaNacimiento,
+            cotizacion = request.Cotizacion,
+            idEquipo = request.IdEquipo,
+            idTipoFutbolista = request.IdTipoFutbolista
         });
 
         return CreatedAtAction(
             nameof(ObtenerPorNombre),
             new { nombre = futbolista.nombre },
-            Mapear(futbolista));
-    }
-
-    /// <summary>
-    /// Convierte un Futbolista en FutbolistaResponse.
-    /// </summary>
-    private static FutbolistaResponse Mapear(Futbolista futbolista)
-    {
-        return new FutbolistaResponse(
-            futbolista.idFutbolista,
-            futbolista.nombre,
-            futbolista.apellido,
-            futbolista.apodo,
-            futbolista.fechaNac,
-            futbolista.cotizacion,
-            futbolista.idEquipo,
-            futbolista.idTipoFutbolista,
-            futbolista.puntuaciones
-                .Select(puntuacion => new PuntuacionResponse(
-                    puntuacion.idPuntuacion,
-                    puntuacion.puntuacion,
-                    puntuacion.cantFech))
-                .ToList());
+            futbolista);
     }
 }

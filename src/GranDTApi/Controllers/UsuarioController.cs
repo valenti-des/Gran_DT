@@ -1,36 +1,60 @@
+using System.ComponentModel.DataAnnotations;
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
 using Servicios;
 
 namespace GranDTApi.Controllers;
 
-/// <summary>
-/// Controlador para gestionar los usuarios.
-/// </summary>
+/// <summary>Representación pública de un usuario en la API.</summary>
+public sealed record UsuarioResponse(
+    short IdUsuario,
+    string Nombre,
+    string Apellido,
+    string Email,
+    DateOnly? FechaNacimiento,
+    bool EsAdmin);
+
+/// <summary>Datos necesarios para crear un usuario.</summary>
+public sealed record CrearUsuarioRequest
+{
+    [Required]
+    public required string Nombre { get; init; }
+
+    [Required]
+    public required string Apellido { get; init; }
+
+    [Required, EmailAddress]
+    public required string Email { get; init; }
+
+    public DateOnly? FechaNacimiento { get; init; }
+
+    [Required, MinLength(8)]
+    public required string Contraseña { get; init; }
+}
+
+/// <summary>Endpoints para gestionar usuarios.</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class UsuarioController(ServiciosUsuario usuarioService) : ControllerBase
+public class UsuarioController : ControllerBase
 {
-    /// <summary>
-    /// Obtiene todos los usuarios.
-    /// </summary>
-    [HttpGet]
-    public ActionResult<IEnumerable<UsuarioResponse>> ObtenerTodos()
-    {
-        var usuarios = usuarioService
-            .ObtenerTodos()
-            .Select(Mapear);
+    private readonly ServiciosUsuario _usuarioService;
 
+    public UsuarioController(ServiciosUsuario usuarioService)
+    {
+        _usuarioService = usuarioService;
+    }
+
+    [HttpGet]
+    public IActionResult ObtenerTodos()
+    {
+        var usuarios = _usuarioService.ObtenerTodos().Select(Mapear);
         return Ok(usuarios);
     }
 
-    /// <summary>
-    /// Obtiene un usuario por su nombre.
-    /// </summary>
     [HttpGet("{nombre}")]
-    public ActionResult<UsuarioResponse> ObtenerPorNombre(string nombre)
+    public IActionResult ObtenerPorNombre(string nombre)
     {
-        var usuario = usuarioService.ObtenerPorNombre(nombre);
+        var usuario = _usuarioService.ObtenerPorNombre(nombre);
 
         if (usuario is null)
         {
@@ -40,37 +64,19 @@ public class UsuarioController(ServiciosUsuario usuarioService) : ControllerBase
         return Ok(Mapear(usuario));
     }
 
-    /// <summary>
-    /// Crea un nuevo usuario.
-    /// </summary>
-    [HttpPost]
-    public ActionResult<UsuarioResponse> Crear([FromBody] Usuario request)
-    {
-        var usuario = usuarioService.Agregar(new Usuario
-        {
-            nombre = request.nombre,
-            apellido = request.apellido,
-            email = request.email,
-            fechaNac = request.fechaNac,
-            contraseña = request.contraseña,
-            es_admin = request.es_admin
-        });
-
-        var respuesta = Mapear(usuario);
-
-        return CreatedAtAction(
-            nameof(ObtenerPorNombre),
-            new { nombre = usuario.nombre },
-            respuesta);
-    }
-
-    /// <summary>
-    /// Elimina un usuario por su email.
-    /// </summary>
     [HttpDelete("{email}")]
     public IActionResult Eliminar(string email)
     {
-        var eliminado = usuarioService.Eliminar(email);
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "El email del usuario es obligatorio."
+            });
+        }
+
+        var eliminado = _usuarioService.Eliminar(email);
 
         if (!eliminado)
         {
@@ -80,29 +86,34 @@ public class UsuarioController(ServiciosUsuario usuarioService) : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Convierte un Usuario en UsuarioResponse.
-    /// </summary>
-    private static UsuarioResponse Mapear(Usuario usuario)
+    [HttpPost]
+    public IActionResult Crear([FromBody] CrearUsuarioRequest request)
     {
-        return new UsuarioResponse(
-            usuario.idUsuario,
-            usuario.nombre,
-            usuario.apellido,
-            usuario.email,
-            usuario.fechaNac,
-            usuario.es_admin);
-    }
-}
+        if (string.IsNullOrWhiteSpace(request.Nombre) ||
+            string.IsNullOrWhiteSpace(request.Apellido) ||
+            string.IsNullOrWhiteSpace(request.Email) ||
+            string.IsNullOrWhiteSpace(request.Contraseña))
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Nombre, apellido, email y contraseña son obligatorios."
+            });
+        }
 
-/// <summary>
-/// Representación pública de un usuario en la API.
-/// No incluye la contraseña.
-/// </summary>
-public sealed record UsuarioResponse(
-    short IdUsuario,
-    string Nombre,
-    string Apellido,
-    string Email,
-    DateOnly? FechaNacimiento,
-    bool EsAdmin);
+        var usuario = _usuarioService.Agregar(new Usuario
+        {
+            nombre = request.Nombre,
+            apellido = request.Apellido,
+            email = request.Email,
+            fechaNac = request.FechaNacimiento,
+            contraseña = request.Contraseña
+        });
+
+        var respuesta = Mapear(usuario);
+        return CreatedAtAction(nameof(ObtenerPorNombre), new { nombre = usuario.nombre }, respuesta);
+    }
+
+    private static UsuarioResponse Mapear(Usuario usuario) =>
+        new(usuario.idUsuario, usuario.nombre, usuario.apellido, usuario.email, usuario.fechaNac, usuario.es_admin);
+}

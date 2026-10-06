@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Biblio;
+using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
@@ -7,27 +9,35 @@ namespace GranDTApi.Controllers;
 /// <summary>Representación de un equipo en la API.</summary>
 public sealed record EquipoResponse(byte IdEquipo, string Nombre);
 
+/// <summary>Datos necesarios para crear un equipo.</summary>
+public sealed record CrearEquipoRequest
+{
+    [Required, StringLength(45)]
+    public required string Nombre { get; init; }
+}
+
 [ApiController]
 [Route("api/[controller]")]
-public class EquipoController(ServiceEquipo equipoService) : ControllerBase
+public class EquipoController : ControllerBase
 {
-    /// <summary>
-    /// Obtiene todos los equipos.
-    /// </summary>
-    [HttpGet]
-    public ActionResult<IEnumerable<EquipoResponse>> ObtenerTodos()
+    private readonly ServiceEquipo _equipoService;
+
+    public EquipoController(ServiceEquipo equipoService)
     {
-        var equipos = equipoService.ObtenerTodos().Select(Mapear);
+        _equipoService = equipoService;
+    }
+
+    [HttpGet]
+    public IActionResult ObtenerTodos()
+    {
+        var equipos = _equipoService.ObtenerTodos().Select(Mapear);
         return Ok(equipos);
     }
 
-    /// <summary>
-    /// Obtiene un equipo por su nombre.
-    /// </summary>
     [HttpGet("{nombre}")]
-    public ActionResult<EquipoResponse> ObtenerPorNombre(string nombre)
+    public IActionResult ObtenerPorNombre(string nombre)
     {
-        var equipo = equipoService.ObtenerPorNombre(nombre);
+        var equipo = _equipoService.ObtenerPorNombre(nombre);
 
         if (equipo == null)
         {
@@ -37,9 +47,6 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
         return Ok(Mapear(equipo));
     }
 
-    /// <summary>
-    /// Elimina un equipo por su nombre.
-    /// </summary>
     [HttpDelete("{nombre}")]
     public IActionResult Eliminar(string nombre)
     {
@@ -52,7 +59,7 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
             });
         }
 
-        var eliminado = equipoService.Eliminar(nombre);
+        var eliminado = _equipoService.Eliminar(nombre);
 
         if (!eliminado)
         {
@@ -62,13 +69,10 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Crea un nuevo equipo.
-    /// </summary>
     [HttpPost]
-    public ActionResult<EquipoResponse> Crear([FromBody] Equipo request)
+    public IActionResult Crear([FromBody] CrearEquipoRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.nombre))
+        if (string.IsNullOrWhiteSpace(request.Nombre))
         {
             return BadRequest(new ProblemDetails
             {
@@ -77,14 +81,11 @@ public class EquipoController(ServiceEquipo equipoService) : ControllerBase
             });
         }
 
-        var equipo = equipoService.Agregar(new Equipo { nombre = request.nombre });
+        var equipo = _equipoService.Agregar(new Equipo { nombre = request.Nombre });
 
         var respuesta = Mapear(equipo);
         return CreatedAtAction(nameof(ObtenerPorNombre), new { nombre = equipo.nombre }, respuesta);
     }
 
-    /// <summary>
-    /// Convierte un Equipo en EquipoResponse.
-    /// </summary>
     private static EquipoResponse Mapear(Equipo equipo) => new(equipo.idEquipo, equipo.nombre);
 }

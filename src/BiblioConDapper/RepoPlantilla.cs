@@ -15,6 +15,41 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
     {
     }
 
+    public List<Plantilla> ObtenerTodos()
+    {
+        var plantillas = Conexion.Query<Plantilla>(SelectSql).AsList();
+        CargarDetalles(plantillas);
+        return plantillas;
+    }
+
+    public Plantilla? ObtenerPorId(byte idPlantilla)
+    {
+        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
+            $"{SelectSql} WHERE idPlantilla = @IdPlantilla LIMIT 1",
+            new { IdPlantilla = idPlantilla });
+
+        if (plantilla is null)
+            return null;
+
+        CargarDetalles(new List<Plantilla> { plantilla });
+        return plantilla;
+    }
+
+    public Plantilla? ObtenerPorNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return null;
+
+        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
+            $"{SelectSql} WHERE nombreP = @Nombre LIMIT 1",
+            new { Nombre = nombre.Trim() });
+
+        if (plantilla is not null)
+            CargarDetalles(new List<Plantilla> { plantilla });
+
+        return plantilla;
+    }
+
     private void CargarDetalles(IList<Plantilla> plantillas)
     {
         if (plantillas.Count == 0)
@@ -64,41 +99,6 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
                 .ToList();
         }
     }
-    public List<Plantilla> ObtenerTodos()
-    {
-        var plantillas = Conexion.Query<Plantilla>(SelectSql).AsList();
-        CargarDetalles(plantillas);
-        return plantillas;
-    }
-
-    public Plantilla? ObtenerPorId(byte idPlantilla)
-    {
-        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
-            $"{SelectSql} WHERE idPlantilla = @IdPlantilla LIMIT 1",
-            new { IdPlantilla = idPlantilla });
-
-        if (plantilla is null)
-            return null;
-
-        CargarDetalles(new List<Plantilla> { plantilla });
-        return plantilla;
-    }
-
-    public Plantilla? ObtenerPorNombre(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
-            return null;
-
-        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
-            $"{SelectSql} WHERE nombreP = @Nombre LIMIT 1",
-            new { Nombre = nombre.Trim() });
-
-        if (plantilla is not null)
-            CargarDetalles(new List<Plantilla> { plantilla });
-
-        return plantilla;
-    }
-
 
     public Plantilla Agregar(Plantilla plantilla)
     {

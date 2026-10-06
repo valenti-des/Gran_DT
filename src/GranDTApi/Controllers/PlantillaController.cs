@@ -1,66 +1,53 @@
+using System.ComponentModel.DataAnnotations;
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
 using Servicios;
 
 namespace GranDTApi.Controllers;
 
-/// <summary>
-/// Representación pública de una plantilla en la API.
-/// </summary>
-public sealed record PlantillaResponse(
-    byte IdPlantilla,
-    string Nombre,
-    decimal? CantidadMaximaMonto,
-    byte? CantidadMaximaFutbolistas,
-    short? IdUsuario,
-    IReadOnlyList<PlantillaFutbolistaResponse> Detalles);
+/// <summary>Datos necesarios para crear una plantilla.</summary>
+public sealed record CrearPlantillaRequest
+{
+    [Required]
+    public required string Nombre { get; init; }
 
-/// <summary>
-/// Representación de un futbolista incluido en una plantilla.
-/// </summary>
-public sealed record PlantillaFutbolistaResponse(
-    byte IdFutbolistaPlantilla,
-    bool EsTitular,
-    bool ValidacionP,
-    bool ValidacionR,
-    byte IdPlantilla,
-    ushort IdFutbolista,
-    FutbolistaResponse? Futbolista);
+    public decimal? CantidadMaximaMonto { get; init; }
+    public byte? CantidadMaximaFutbolistas { get; init; }
+    public short? IdUsuario { get; init; }
+}
 
 /// <summary>Endpoints para gestionar plantillas.</summary>
 [ApiController]
 [Route("api/[controller]")]
-public class PlantillaController(ServiciosPlantilla plantillaService) : ControllerBase
+public class PlantillaController : ControllerBase
 {
-    /// <summary>
-    /// Obtiene todas las plantillas.
-    /// </summary>
-    [HttpGet]
-    public ActionResult<IEnumerable<PlantillaResponse>> ObtenerTodos()
+    private readonly ServiciosPlantilla _plantillaService;
+
+    public PlantillaController(ServiciosPlantilla plantillaService)
     {
-        var plantillas = plantillaService.ObtenerTodos().Select(Mapear);
+        _plantillaService = plantillaService;
+    }
+
+    [HttpGet]
+    public IActionResult ObtenerTodos()
+    {
+        var plantillas = _plantillaService.ObtenerTodos();
         return Ok(plantillas);
     }
 
-    /// <summary>
-    /// Obtiene una plantilla por su nombre.
-    /// </summary>
     [HttpGet("{nombre}")]
-    public ActionResult<PlantillaResponse> ObtenerPorNombre(string nombre)
+    public IActionResult ObtenerPorNombre(string nombre)
     {
-        var plantilla = plantillaService.ObtenerPorNombre(nombre);
+        var plantilla = _plantillaService.ObtenerPorNombre(nombre);
 
         if (plantilla is null)
         {
             return NotFound();
         }
 
-        return Ok(Mapear(plantilla));
+        return Ok(plantilla);
     }
 
-    /// <summary>
-    /// Elimina una plantilla por su nombre.
-    /// </summary>
     [HttpDelete("{nombre}")]
     public IActionResult Eliminar(string nombre)
     {
@@ -73,7 +60,7 @@ public class PlantillaController(ServiciosPlantilla plantillaService) : Controll
             });
         }
 
-        var eliminada = plantillaService.Eliminar(nombre);
+        var eliminada = _plantillaService.Eliminar(nombre);
 
         if (!eliminada)
         {
@@ -83,13 +70,10 @@ public class PlantillaController(ServiciosPlantilla plantillaService) : Controll
         return NoContent();
     }
 
-    /// <summary>
-    /// Crea una nueva plantilla.
-    /// </summary>
     [HttpPost]
-    public ActionResult<PlantillaResponse> Crear([FromBody] Plantilla request)
+    public IActionResult Crear([FromBody] CrearPlantillaRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.nombreP))
+        if (string.IsNullOrWhiteSpace(request.Nombre))
         {
             return BadRequest(new ProblemDetails
             {
@@ -98,59 +82,17 @@ public class PlantillaController(ServiciosPlantilla plantillaService) : Controll
             });
         }
 
-        var plantilla = plantillaService.Agregar(new Plantilla
+        var plantilla = _plantillaService.Agregar(new Plantilla
         {
-            nombreP = request.nombreP,
-            cantMaxMonto = request.cantMaxMonto,
-            cantMaxFutbolista = request.cantMaxFutbolista,
-            idUsuario = request.idUsuario
+            nombreP = request.Nombre,
+            cantMaxMonto = request.CantidadMaximaMonto,
+            cantMaxFutbolista = request.CantidadMaximaFutbolistas,
+            idUsuario = request.IdUsuario
         });
 
         return CreatedAtAction(
             nameof(ObtenerPorNombre),
             new { nombre = plantilla.nombreP },
-            Mapear(plantilla));
-    }
-
-    /// <summary>
-    /// Convierte una Plantilla en PlantillaResponse.
-    /// </summary>
-    private static PlantillaResponse Mapear(Plantilla plantilla)
-    {
-        return new PlantillaResponse(
-            plantilla.idPlantilla,
-            plantilla.nombreP,
-            plantilla.cantMaxMonto,
-            plantilla.cantMaxFutbolista,
-            plantilla.idUsuario,
-            plantilla.detalles
-                .Select(detalle => new PlantillaFutbolistaResponse(
-                    detalle.idFutbolistaPlantilla,
-                    detalle.futbolistaTitular,
-                    detalle.validacionP,
-                    detalle.validacionR,
-                    detalle.idPlantilla,
-                    detalle.idFutbolista,
-                    detalle.futbolista is null ? null : FutbolistaControllerMapear(detalle.futbolista)))
-                .ToList());
-    }
-
-    private static FutbolistaResponse FutbolistaControllerMapear(Futbolista futbolista)
-    {
-        return new FutbolistaResponse(
-            futbolista.idFutbolista,
-            futbolista.nombre,
-            futbolista.apellido,
-            futbolista.apodo,
-            futbolista.fechaNac,
-            futbolista.cotizacion,
-            futbolista.idEquipo,
-            futbolista.idTipoFutbolista,
-            futbolista.puntuaciones
-                .Select(puntuacion => new PuntuacionResponse(
-                    puntuacion.idPuntuacion,
-                    puntuacion.puntuacion,
-                    puntuacion.cantFech))
-                .ToList());
+            plantilla);
     }
 }
