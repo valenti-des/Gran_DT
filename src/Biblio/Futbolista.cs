@@ -25,3 +25,17 @@ public class Futbolista
         return puntuaciones.FirstOrDefault(p => p.cantFech == cantFech)?.puntuacion ?? 0f;
     }
 }
+
+public class FutbolistaCreacion
+{
+    public string nombre { get; set; } = string.Empty;//messi es piola
+    
+    public string apellido { get; set; } = string.Empty;
+    public string? apodo { get; set; }
+    public DateOnly? fechaNac { get; set; } 
+    public decimal? cotizacion { get; set; }
+    public byte? idEquipo { get; set; }
+    public byte? idTipoFutbolista { get; set; }
+    
+    public List<Puntuacion>? puntuaciones { get; set; } = new List<Puntuacion>();
+}

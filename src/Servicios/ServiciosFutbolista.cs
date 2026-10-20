@@ -1,35 +1,48 @@
+using System;
 using System.Collections.Generic;
 using Biblio;
 using Biblio.IRepo;
 
-namespace Servicios ;
-
-public class ServiciosFutbolista
+namespace Servicios
 {
-    private readonly IRepoFutbolista repository;
-
-    public ServiciosFutbolista(IRepoFutbolista repository)
+    public class ServiciosFutbolista
     {
-        this.repository = repository;
-    }
+        private readonly IRepoFutbolista _repository;
 
-    public List<Futbolista> ObtenerTodos()
-    {
-        return repository.ObtenerTodos();
-    }
+        public ServiciosFutbolista(IRepoFutbolista repository)
+        {
+            _repository = repository;
+        }
 
-    public Futbolista? ObtenerPorNombre(string nombre)
-    {
-        return repository.ObtenerPorNombre(nombre);
-    }
+        public List<Futbolista> ObtenerTodos()
+        {
+            return _repository.ObtenerTodos();
+        }
 
-    public Futbolista Agregar(Futbolista futbolista)
-    {
-        return repository.Agregar(futbolista);
-    }
+        public Futbolista? ObtenerPorId(int id)
+        {
+            return _repository.ObtenerPorId(id.ToString());
+        }
 
-    public bool Eliminar(string nombre)
-    {
-        return repository.Eliminar(nombre);
+        
+
+        // El servicio valida la regla de negocio y lanza la excepción con el mensaje exacto
+        public int Crear(Futbolista futbolista)
+        {
+            if (string.IsNullOrWhiteSpace(futbolista.nombre) || string.IsNullOrWhiteSpace(futbolista.apellido))
+            {
+                throw new ArgumentException("El nombre y apellido del futbolista son obligatorios.", nameof(futbolista));
+            }
+
+            var resultado = _repository.Agregar(futbolista);
+            return resultado.idFutbolista;
+        }
+
+        public bool Eliminar(ushort id)
+        {
+            return _repository.Eliminar(id.ToString());
+        }
     }
 }
+
+        

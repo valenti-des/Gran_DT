@@ -39,23 +39,12 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         return futbolista;
     }
 
-    public Futbolista? ObtenerPorNombre(string nombre)
+    public Futbolista? ObtenerPorId(string id)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
+        if (!ushort.TryParse(id, out var idFutbolista))
             return null;
 
-        var futbolista = Conexion.QuerySingleOrDefault<Futbolista>(
-            $"{SelectSql} WHERE nombre = @Nombre LIMIT 1",
-            new { Nombre = nombre.Trim() });
-
-        if (futbolista is not null)
-        {
-            futbolista.puntuaciones = Conexion.Query<Puntuacion>(
-                "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion WHERE idFutbolista = @IdFutbolista",
-                new { IdFutbolista = futbolista.idFutbolista }).AsList();
-        }
-
-        return futbolista;
+        return ObtenerPorId(idFutbolista);
     }
 
     private void CargarPuntuaciones(IList<Futbolista> futbolistas)
