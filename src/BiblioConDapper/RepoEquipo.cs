@@ -19,15 +19,6 @@ public class RepoEquipo : RepoDapper, IRepoEquipo
             "SELECT idEquipo, nombre FROM Equipo WHERE idEquipo = @Id LIMIT 1",
             new { Id = id });
 
-    public Equipo? ObtenerPorNombre(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
-            return null;
-
-        return Conexion.QuerySingleOrDefault<Equipo>(
-            "SELECT idEquipo, nombre FROM Equipo WHERE nombre = @Nombre LIMIT 1",
-            new { Nombre = nombre.Trim() });
-    }
 
     public Equipo Agregar(Equipo equipo)
     {

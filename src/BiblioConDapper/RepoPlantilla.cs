@@ -103,10 +103,6 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
     public Plantilla Agregar(Plantilla plantilla)
     {
         ArgumentNullException.ThrowIfNull(plantilla);
-
-        if (string.IsNullOrWhiteSpace(plantilla.nombreP))
-            throw new ArgumentException("El nombre de la plantilla es obligatorio.", nameof(plantilla));
-
         plantilla.nombreP = plantilla.nombreP.Trim();
         var parametros = new DynamicParameters();
         parametros.Add("unidPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);

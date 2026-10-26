@@ -66,13 +66,6 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
     public Futbolista Agregar(Futbolista jugador)
     {
         ArgumentNullException.ThrowIfNull(jugador);
-
-        if (string.IsNullOrWhiteSpace(jugador.nombre))
-            throw new ArgumentException("El nombre es obligatorio.", nameof(jugador));
-
-        if (string.IsNullOrWhiteSpace(jugador.apellido))
-            throw new ArgumentException("El apellido es obligatorio.", nameof(jugador));
-
         jugador.nombre = jugador.nombre.Trim();
         jugador.apellido = jugador.apellido.Trim();
         jugador.apodo = jugador.apodo?.Trim();
