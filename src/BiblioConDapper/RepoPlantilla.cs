@@ -35,20 +35,6 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         return plantilla;
     }
 
-    public Plantilla? ObtenerPorNombre(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
-            return null;
-
-        var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
-            $"{SelectSql} WHERE nombreP = @Nombre LIMIT 1",
-            new { Nombre = nombre.Trim() });
-
-        if (plantilla is not null)
-            CargarDetalles(new List<Plantilla> { plantilla });
-
-        return plantilla;
-    }
 
     private void CargarDetalles(IList<Plantilla> plantillas)
     {

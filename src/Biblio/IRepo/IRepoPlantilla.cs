@@ -3,7 +3,7 @@ namespace Biblio.IRepo;
 public interface IRepoPlantilla
 {
     List<Plantilla> ObtenerTodos();
-    Plantilla? ObtenerPorNombre(string nombre);
+    Plantilla? ObtenerPorId(ushort id);
     Plantilla Agregar(Plantilla plantilla);
-    bool Eliminar(string nombre);
+    bool Eliminar(ushort id);
 }

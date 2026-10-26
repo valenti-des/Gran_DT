@@ -47,7 +47,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         return ObtenerPorId(idFutbolista);
     }
 
-    private void CargarPuntuaciones(IList<Futbolista> futbolistas)
+    private void CargarPuntuaciones(IList<Futbolista> futbolista)
     {
         if (futbolistas.Count == 0)
             return;
@@ -55,7 +55,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         var puntuaciones = Conexion.Query<Puntuacion>(
             "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion").ToList();
 
-        foreach (var futbolista in futbolistas)
+        foreach (var futbolista in futbolista)
         {
             futbolista.puntuaciones = puntuaciones
                 .Where(p => p.idFutbolista == futbolista.idFutbolista)
@@ -63,12 +63,12 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         }
     }
 
-    public Futbolista Agregar(Futbolista jugador)
+    public Futbolista Agregar(Futbolista futbolista)
     {
-        ArgumentNullException.ThrowIfNull(jugador);
-        jugador.nombre = jugador.nombre.Trim();
-        jugador.apellido = jugador.apellido.Trim();
-        jugador.apodo = jugador.apodo?.Trim();
+        ArgumentNullException.ThrowIfNull(futbolista);
+        futbolista.nombre = futbolista.nombre.Trim();
+        futbolista.apellido = futbolista.apellido.Trim();
+        futbolista.apodo = futbolista.apodo?.Trim();
 
         var sql = @"
             INSERT INTO Futbolista (nombre, apellido, apodo, fechaNac, cotizacion, idEquipo, idTipoFutbolista)
@@ -77,17 +77,17 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
 
         var idGenerado = Conexion.ExecuteScalar<ulong>(sql, new
         {
-            Nombre = jugador.nombre,
-            Apellido = jugador.apellido,
-            Apodo = jugador.apodo,
-            FechaNac = jugador.fechaNac,
-            Cotizacion = jugador.cotizacion,
-            IdEquipo = jugador.idEquipo,
-            IdTipoFutbolista = jugador.idTipoFutbolista
+            Nombre = futbolista.nombre,
+            Apellido = futbolista.apellido,
+            Apodo = futbolista.apodo,
+            FechaNac = futbolista.fechaNac,
+            Cotizacion = futbolista.cotizacion,
+            IdEquipo = futbolista.idEquipo,
+            IdTipoFutbolista = futbolista.idTipoFutbolista
         });
 
-        jugador.idFutbolista = (ushort)idGenerado;
-        return jugador;
+        futbolista.idFutbolista = (ushort)idGenerado;
+        return futbolista;
     }
 
     public bool Eliminar(ushort id) =>

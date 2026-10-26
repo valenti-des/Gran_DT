@@ -22,7 +22,8 @@ public class ServiciosPlantilla
     {
         return repository.ObtenerPorNombre(nombre);
     }
-
+//cantidad maxima de futbolistas por plantilla es de 20
+//agregar un limite futbolistas por plantilla para que no se pueda agregar mas de lo permitido dentro del servicios
     public Plantilla Agregar(Plantilla Plantilla)
     {
         return repository.Agregar(Plantilla);

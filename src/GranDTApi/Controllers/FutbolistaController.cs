@@ -2,25 +2,25 @@ using Biblio; // Ajusta según el namespace de tu modelo Futbolista
 using Biblio.IRepo;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GranDT_ET12API.Controllers
+namespace GranDTApi.Controllers
 {
     [ApiController]
     [Route("futbolistas")]
     public class FutbolistasController : ControllerBase
     {
-        private readonly IRepoFutbolista _futbolistaService;
+        private readonly IRepoFutbolista _futbolistaController;
 
         public FutbolistasController(IRepoFutbolista futbolistaService)
         {
-            _futbolistaService = futbolistaService;
+            _futbolistaController = futbolistaService;
         }
 
         [HttpPost]
-        public ActionResult<Futbolista> Crear([FromBody] FutbolistaCreacion futbolista)
+        public ActionResult<Futbolista> agregar([FromBody] FutbolistaCreacion futbolista)
         {
             try
             {
-                var creado = _futbolistaService.Agregar(futbolista);
+                var creado = _futbolistaController.Agregar(futbolista);
                 return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idFutbolista.ToString() }, creado);
             }
             catch (ArgumentException ex)
@@ -37,7 +37,7 @@ namespace GranDT_ET12API.Controllers
         public ActionResult<IEnumerable<Futbolista>> ObtenerTodos()
         {
             try{
-                return Ok(_futbolistaService.ObtenerTodos());
+                return Ok(_futbolistaController.ObtenerTodos());
             }
             catch (Exception)
             {
@@ -48,7 +48,7 @@ namespace GranDT_ET12API.Controllers
         [HttpGet("{id}")]
         public ActionResult<Futbolista> ObtenerPorId(string id)
         {
-            Futbolista? futbolista = _futbolistaService.ObtenerPorId(id);
+            Futbolista? futbolista = _futbolistaController.ObtenerPorId(id);
             if (futbolista == null)
             {
                 return NotFound(new { error = "El futbolista no existe." });

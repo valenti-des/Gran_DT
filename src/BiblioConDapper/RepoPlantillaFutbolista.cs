@@ -24,22 +24,22 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
             $"{SelectSql} WHERE idPlantilla = @IdPlantilla AND idFutbolista = @IdFutbolista LIMIT 1",
             new { IdPlantilla = idPlantilla, IdFutbolista = idJugador });
 
-    public PlantillaFutbolista Agregar(PlantillaFutbolista plantillaJugador)
+    public PlantillaFutbolista Agregar(PlantillaFutbolista plantillaFutbolista)
     {
-        ArgumentNullException.ThrowIfNull(plantillaJugador);
+        ArgumentNullException.ThrowIfNull(plantillaFutbolista);
 
         var parametros = new DynamicParameters();
         parametros.Add("unidFutbolistaPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
-        parametros.Add("unfutbolistaTitular", plantillaJugador.futbolistaTitular);
-        parametros.Add("unvalidacionP", plantillaJugador.validacionP);
-        parametros.Add("unvalidacionR", plantillaJugador.validacionR);
-        parametros.Add("unidPlantilla", plantillaJugador.idPlantilla);
-        parametros.Add("unidFutbolista", plantillaJugador.idFutbolista);
+        parametros.Add("unfutbolistaTitular", plantillaFutbolista.futbolistaTitular);
+        parametros.Add("unvalidacionP", plantillaFutbolista.validacionP);
+        parametros.Add("unvalidacionR", plantillaFutbolista.validacionR);
+        parametros.Add("unidPlantilla", plantillaFutbolista.idPlantilla);
+        parametros.Add("unidFutbolista", plantillaFutbolista.idFutbolista);
 
         Conexion.Execute("AltaFutbolistaP", parametros, commandType: CommandType.StoredProcedure);
-        plantillaJugador.idFutbolistaPlantilla = parametros.Get<byte>("unidFutbolistaPlantilla");
+        plantillaFutbolista.idFutbolistaPlantilla = parametros.Get<byte>("unidFutbolistaPlantilla");
 
-        return plantillaJugador;
+        return plantillaFutbolista;
     }
 
     public bool Eliminar(byte idPlantilla, ushort idJugador) =>

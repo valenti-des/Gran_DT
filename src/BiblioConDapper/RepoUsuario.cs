@@ -21,22 +21,9 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     {
     }
 
-    public int AltaUsuario(Usuario usuario)
+    public int agregar(Usuario usuario)
     {
-        ArgumentNullException.ThrowIfNull(usuario);
-
-        if (string.IsNullOrWhiteSpace(usuario.nombre))
-            throw new ArgumentException("El nombre es obligatorio.", nameof(usuario));
-
-        if (string.IsNullOrWhiteSpace(usuario.apellido))
-            throw new ArgumentException("El apellido es obligatorio.", nameof(usuario));
-
-        if (string.IsNullOrWhiteSpace(usuario.email))
-            throw new ArgumentException("El email es obligatorio.", nameof(usuario));
-
-        if (string.IsNullOrWhiteSpace(usuario.contraseña))
-            throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
-
+        ArgumentNullException.ThrowIfNull(usuario);       
         var sql = @"
             INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
             VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
@@ -89,21 +76,10 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             LIMIT 1;", new { Email = email.Trim() });
     }
 
-    public Usuario? ObtenerPorNombre(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
-            return null;
-
-        return Conexion.QuerySingleOrDefault<Usuario>(@"
-            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
-            FROM Usuario
-            WHERE nombre = @Nombre
-            LIMIT 1;", new { Nombre = nombre.Trim() });
-    }
 
     public Usuario Agregar(Usuario usuario)
     {
-        var id = AltaUsuario(usuario);
+        var id = agregar(usuario);
         usuario.idUsuario = (short)id;
         return usuario;
     }

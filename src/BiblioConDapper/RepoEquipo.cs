@@ -23,10 +23,6 @@ public class RepoEquipo : RepoDapper, IRepoEquipo
     public Equipo Agregar(Equipo equipo)
     {
         ArgumentNullException.ThrowIfNull(equipo);
-
-        if (string.IsNullOrWhiteSpace(equipo.nombre))
-            throw new ArgumentException("El nombre es obligatorio.", nameof(equipo));
-
         equipo.nombre = equipo.nombre.Trim();
         var parametros = new DynamicParameters();
         parametros.Add("unidEquipo", dbType: DbType.Byte, direction: ParameterDirection.Output);
