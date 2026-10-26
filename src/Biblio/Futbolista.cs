@@ -36,6 +36,5 @@ public class FutbolistaCreacion
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
-    
     public List<Puntuacion>? puntuaciones { get; set; } = new List<Puntuacion>();
 }

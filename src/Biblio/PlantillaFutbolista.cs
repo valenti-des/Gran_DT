@@ -12,3 +12,10 @@ public class PlantillaFutbolista
     // Propiedad de navegación vital para calcular el puntaje
     public Futbolista? futbolista { get; set; }
 }
+
+public class PlantillaFutbolistaCreacion
+{
+    public bool futbolistaTitular { get; set; }
+    public byte idPlantilla { get; set; }
+    public ushort idFutbolista { get; set; }
+}

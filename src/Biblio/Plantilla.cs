@@ -23,3 +23,9 @@ public class Plantilla
             .Sum(d => d.futbolista!.ObtenerPuntuacionPorFecha(cantFech));
     }
 }
+
+public class PlantillaCreacion
+{
+    public string nombreP { get; set; } = string.Empty;
+    public short? idUsuario { get; set; }
+}
