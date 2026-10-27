@@ -11,7 +11,7 @@ public class Futbolista
     
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
-    public DateOnly? fechaNac { get; set; } 
+    public DateOnly fechaNac { get; set; } 
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
@@ -32,7 +32,7 @@ public class FutbolistaCreacion
     
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
-    public DateOnly? fechaNac { get; set; } 
+    public DateOnly fechaNac { get; set; } 
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
