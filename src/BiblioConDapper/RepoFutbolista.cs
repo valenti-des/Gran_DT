@@ -39,12 +39,12 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
         return futbolista;
     }
 
-    public Futbolista? ObtenerPorId(string id)
-    {
+   public Futbolista? ObtenerPorId(string id)
+   {
         if (!ushort.TryParse(id, out var idFutbolista))
             return null;
 
-        return ObtenerPorId(idFutbolista);
+            return ObtenerPorId(idFutbolista);
     }
 
     private void CargarPuntuaciones(IList<Futbolista> futbolista)

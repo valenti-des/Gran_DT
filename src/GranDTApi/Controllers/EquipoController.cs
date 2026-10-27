@@ -6,86 +6,59 @@ using Servicios;
 
 namespace GranDTApi.Controllers;
 
-/// <summary>Representación de un equipo en la API.</summary>
-public sealed record EquipoResponse(byte IdEquipo, string Nombre);
-
-/// <summary>Datos necesarios para crear un equipo.</summary>
-public sealed record CrearEquipoRequest
-{
-    [Required, StringLength(45)]
-    public required string Nombre { get; init; }
-}
 
 [ApiController]
 [Route("api/[controller]")]
 public class EquipoController : ControllerBase
 {
-    private readonly ServiceEquipo _equipoService;
-
-    public EquipoController(ServiceEquipo equipoService)
-    {
-        _equipoService = equipoService;
-    }
-
-    [HttpGet]
-    public IActionResult ObtenerTodos()
-    {
-        var equipos = _equipoService.ObtenerTodos().Select(Mapear);
-        return Ok(equipos);
-    }
-
-    [HttpGet("{nombre}")]
-    public IActionResult ObtenerPorNombre(string nombre)
-    {
-        var equipo = _equipoService.ObtenerPorNombre(nombre);
-
-        if (equipo == null)
+     private readonly IRepoEquipo _EquipoRepository;
+        public EquipoController(IRepoEquipo equipoRepository)
         {
-            return NotFound();
+            _EquipoRepository = equipoRepository;
         }
-
-        return Ok(Mapear(equipo));
-    }
-
-    [HttpDelete("{nombre}")]
-    public IActionResult Eliminar(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
+        [HttpPost]
+        public ActionResult<Equipo> agregar([FromBody] EquipoCreacion equipo)
         {
-            return BadRequest(new ProblemDetails
+            try
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "El nombre del equipo es obligatorio."
-            });
-        }
+                var nuevoEquipo = new Equipo
+                {
+                    nombre = equipo.nombre
+                };
 
-        var eliminado = _equipoService.Eliminar(nombre);
-
-        if (!eliminado)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
-
-    [HttpPost]
-    public IActionResult Crear([FromBody] CrearEquipoRequest request)
-    {
-        if (string.IsNullOrWhiteSpace(request.Nombre))
-        {
-            return BadRequest(new ProblemDetails
+                var creado = _EquipoRepository.Agregar(nuevoEquipo);
+                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idEquipo.ToString() }, creado);
+            }
+            catch (ArgumentException ex)
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "El nombre del equipo es obligatorio."
-            });
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al crear el Equipo." });
+            }
+        }
+        [HttpGet]
+        public ActionResult<IEnumerable<Equipo>> ObtenerTodos()
+        {
+            try{
+                return Ok(_EquipoRepository.ObtenerTodos());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al crear el Equipo." });
+            }
         }
 
-        var equipo = _equipoService.Agregar(new Equipo { nombre = request.Nombre });
-
-        var respuesta = Mapear(equipo);
-        return CreatedAtAction(nameof(ObtenerPorNombre), new { nombre = equipo.nombre }, respuesta);
-    }
-
-    private static EquipoResponse Mapear(Equipo equipo) => new(equipo.idEquipo, equipo.nombre);
+        [HttpGet("{id}")]
+        public ActionResult<Equipo> ObtenerPorId(byte idEquipo)
+        {
+            Equipo? equipo = _EquipoRepository.ObtenerPorId(idEquipo);
+            if (equipo == null)
+            {
+                return NotFound(new { error = "El equipo no existe." });
+            }
+            return Ok(equipo);
+        }
+        
 }
