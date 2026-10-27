@@ -31,7 +31,7 @@ CREATE TABLE Futbolista (
     apellido VARCHAR(45) NOT NULL,
     apodo VARCHAR(45) NULL,
     fechaNac DATE NOT NULL,
-    cotizacion DECIMAL(10,2) NULL DEFAULT 0.00, -- Soporta hasta $99.999.999,99
+    cotizacion DECIMAL(10,2) NOT NULL DEFAULT 0.00, -- Soporta hasta $99.999.999,99
     idEquipo TINYINT UNSIGNED NULL,
     idTipoFutbolista TINYINT UNSIGNED NOT NULL,
     CONSTRAINT pk_Futbolista PRIMARY KEY (idFutbolista),
@@ -64,14 +64,13 @@ CREATE TABLE Usuario (
 CREATE TABLE Puntuacion (
     idPuntuacion INT UNSIGNED AUTO_INCREMENT,
     idFutbolista SMALLINT UNSIGNED NOT NULL,
-    puntuacion DECIMAL(3,1) NULL, -- Notas del 1 al 10 (ej. 7.5)
-    nroFecha TINYINT UNSIGNED NULL, -- Número entero menor a 50
+    puntuacion DECIMAL(3,1) NULL CHECK (puntuacion >= 1.0 AND puntuacion <= 10.0),
+    nroFecha TINYINT UNSIGNED NULL CHECK (nroFecha < 50),
     CONSTRAINT pk_Puntuacion PRIMARY KEY (idPuntuacion),
     CONSTRAINT fk_Puntuacion_Futbolista FOREIGN KEY (idFutbolista) 
         REFERENCES Futbolista (idFutbolista) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT uq_Puntuacion_Futbolista_Fecha UNIQUE (idFutbolista, nroFecha)
 );
-
 -- -----------------------------------------------------
 -- Tabla: Plantilla
 -- -----------------------------------------------------
