@@ -16,7 +16,7 @@ namespace GranDTApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Futbolista> agregar([FromBody] FutbolistaCreacion futbolista)
+        public ActionResult<Futbolista> Agregar([FromBody] FutbolistaCreacion futbolista)
         {
             try
             {

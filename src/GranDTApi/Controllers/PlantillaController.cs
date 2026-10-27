@@ -17,7 +17,7 @@ public class PlantillaController : ControllerBase
             _PlantillaRepository = PlantillaRepository;
         }
         [HttpPost]
-        public ActionResult<Plantilla> agregar([FromBody] PlantillaCreacion plantilla)
+        public ActionResult<Plantilla> Agregar([FromBody] PlantillaCreacion plantilla)
         {
             try
             {

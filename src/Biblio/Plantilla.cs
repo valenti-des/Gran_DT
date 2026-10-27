@@ -13,14 +13,14 @@ public class Plantilla
 
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
-    public float PuntajeFecha(DateOnly cantFech)
+    public decimal PuntajeFecha(byte numFech)
     {
         if (!detalles.Any())
-            return 0f;
+            return 0m;
 
         return detalles
             .Where(d => d.futbolistaTitular && d.futbolista != null)
-            .Sum(d => d.futbolista!.ObtenerPuntuacionPorFecha(cantFech));
+            .Sum(d => d.futbolista!.ObtenerPuntuacionPorFecha(numFech));
     }
 }
 

@@ -17,7 +17,7 @@ public class UsuarioController : ControllerBase
             _UsuarioRepository = UsuarioRepository;
         }
         [HttpPost]
-        public ActionResult<Usuario> agregar([FromBody] UsuarioCreacion usuario)
+        public ActionResult<Usuario> Agregar([FromBody] UsuarioCreacion usuario)
         {
             try
             {

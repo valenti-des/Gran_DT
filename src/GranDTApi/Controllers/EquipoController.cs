@@ -17,7 +17,7 @@ public class EquipoController : ControllerBase
             _EquipoRepository = equipoRepository;
         }
         [HttpPost]
-        public ActionResult<Equipo> agregar([FromBody] EquipoCreacion equipo)
+        public ActionResult<Equipo> Agregar([FromBody] EquipoCreacion equipo)
         {
             try
             {

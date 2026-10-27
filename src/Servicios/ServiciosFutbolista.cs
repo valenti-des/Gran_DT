@@ -23,16 +23,15 @@ namespace Servicios
         {
             return _repository.ObtenerPorId(id.ToString());
         }
-
-        
-
         // El servicio valida la regla de negocio y lanza la excepción con el mensaje exacto
-        public int Crear(Futbolista futbolista)
+        public int Agregar(Futbolista futbolista)
         {
             if (string.IsNullOrWhiteSpace(futbolista.nombre) || string.IsNullOrWhiteSpace(futbolista.apellido))
             {
                 throw new ArgumentException("El nombre y apellido del futbolista son obligatorios.", nameof(futbolista));
             }
+            
+
 
             var resultado = _repository.Agregar(futbolista);
             return resultado.idFutbolista;
