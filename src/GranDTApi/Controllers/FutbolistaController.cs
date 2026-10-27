@@ -10,9 +10,9 @@ namespace GranDTApi.Controllers
     {
         private readonly IRepoFutbolista _futbolistaController;
 
-        public FutbolistasController(IRepoFutbolista futbolistaService)
+        public FutbolistasController(IRepoFutbolista futbolistaControllerr)
         {
-            _futbolistaController = futbolistaService;
+            _futbolistaController = futbolistaControllerr;
         }
 
         [HttpPost]
@@ -20,7 +20,19 @@ namespace GranDTApi.Controllers
         {
             try
             {
-                var creado = _futbolistaController.Agregar(futbolista);
+                var nuevoFutbolista = new Futbolista
+                {
+                    nombre = futbolista.nombre,
+                    apellido = futbolista.apellido,
+                    apodo = futbolista.apodo,
+                    fechaNac = futbolista.fechaNac,
+                    cotizacion = futbolista.cotizacion,
+                    idEquipo = futbolista.idEquipo,
+                    idTipoFutbolista = futbolista.idTipoFutbolista,
+                    puntuaciones = futbolista.puntuaciones ?? new List<Puntuacion>()
+                };
+
+                var creado = _futbolistaController.Agregar(nuevoFutbolista);
                 return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idFutbolista.ToString() }, creado);
             }
             catch (ArgumentException ex)

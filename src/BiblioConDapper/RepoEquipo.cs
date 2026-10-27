@@ -14,10 +14,10 @@ public class RepoEquipo : RepoDapper, IRepoEquipo
     public List<Equipo> ObtenerTodos() =>
         Conexion.Query<Equipo>("SELECT idEquipo, nombre FROM Equipo").AsList();
 
-    public Equipo? ObtenerPorId(byte id) =>
+    public Equipo? ObtenerPorId(byte idEquipo) =>
         Conexion.QuerySingleOrDefault<Equipo>(
             "SELECT idEquipo, nombre FROM Equipo WHERE idEquipo = @Id LIMIT 1",
-            new { Id = id });
+            new { Id = idEquipo });
 
 
     public Equipo Agregar(Equipo equipo)
@@ -34,11 +34,8 @@ public class RepoEquipo : RepoDapper, IRepoEquipo
         return equipo;
     }
 
-    public bool Eliminar(string nombre)
+    public bool Eliminar(byte idEquipo)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
-            return false;
-
-        return Conexion.Execute("DELETE FROM Equipo WHERE nombre = @Nombre", new { Nombre = nombre.Trim() }) > 0;
+        return Conexion.Execute("DELETE FROM Equipo WHERE idEquipo = @Id", new { Id = idEquipo }) > 0;
     }
 }

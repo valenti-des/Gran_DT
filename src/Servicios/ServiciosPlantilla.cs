@@ -18,9 +18,9 @@ public class ServiciosPlantilla
         return repository.ObtenerTodos();
     }
 
-    public Plantilla? ObtenerPorNombre(string nombre)
+    public Plantilla? ObtenerPorid(ushort id)
     {
-        return repository.ObtenerPorNombre(nombre);
+        return repository.ObtenerPorId(id);
     }
 //cantidad maxima de futbolistas por plantilla es de 20
 //agregar un limite futbolistas por plantilla para que no se pueda agregar mas de lo permitido dentro del servicios
@@ -29,8 +29,8 @@ public class ServiciosPlantilla
         return repository.Agregar(Plantilla);
     }
 
-    public bool Eliminar(string nombre)
+    public bool Eliminar(ushort id)
     {
-        return repository.Eliminar(nombre);
+        return repository.Eliminar(id);
     }
 }

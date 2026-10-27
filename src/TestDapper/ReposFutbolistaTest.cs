@@ -41,7 +41,7 @@ public class ReposFutbolistaTest : IDisposable
     public void AgregarYObtenerPorId_DeberiaGuardarJugador()
     {
         var nombre = GenerarNombreFutbolista("Jugador");
-        var jugador = new Futbolista
+        var futbolista = new Futbolista
         {
             nombre = nombre,
             apellido = "Test",
@@ -54,7 +54,7 @@ public class ReposFutbolistaTest : IDisposable
 
         try
         {
-            var agregado = _repo.Agregar(jugador);
+            var agregado = _repo.Agregar(futbolista);
 
             Assert.NotEqual((ushort)0, agregado.idFutbolista);
             Assert.Equal(nombre, agregado.nombre);
@@ -65,7 +65,7 @@ public class ReposFutbolistaTest : IDisposable
         }
         finally
         {
-            _repo.Eliminar(jugador.nombre);
+            _repo.Eliminar(futbolista.idFutbolista);
         }
     }
 }

@@ -18,9 +18,9 @@ public class ServiceEquipo
         return repository.ObtenerTodos();
     }
 
-    public Equipo? ObtenerPorNombre(string nombre)
+    public Equipo? ObtenerPorid(byte idEquipo)
     {
-        return repository.ObtenerPorNombre(nombre);
+        return repository.ObtenerPorId(idEquipo);
     }
 
     public Equipo Agregar(Equipo equipo)
@@ -28,8 +28,8 @@ public class ServiceEquipo
         return repository.Agregar(equipo);
     }
 
-    public bool Eliminar(string nombre)
+    public bool Eliminar(byte idEquipo)
     {
-        return repository.Eliminar(nombre);
+        return repository.Eliminar(idEquipo);
     }
 }

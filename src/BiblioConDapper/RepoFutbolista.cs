@@ -49,16 +49,16 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
 
     private void CargarPuntuaciones(IList<Futbolista> futbolista)
     {
-        if (futbolistas.Count == 0)
+        if (futbolista.Count == 0)
             return;
 
         var puntuaciones = Conexion.Query<Puntuacion>(
             "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion").ToList();
 
-        foreach (var futbolista in futbolista)
+        foreach (var futbolistaActual in futbolista)
         {
-            futbolista.puntuaciones = puntuaciones
-                .Where(p => p.idFutbolista == futbolista.idFutbolista)
+            futbolistaActual.puntuaciones = puntuaciones
+                .Where(p => p.idFutbolista == futbolistaActual.idFutbolista)
                 .ToList();
         }
     }
@@ -93,7 +93,6 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
     public bool Eliminar(ushort id) =>
         Conexion.Execute("DELETE FROM Futbolista WHERE idFutbolista = @IdFutbolista", new { IdFutbolista = id }) > 0;
 
-    public bool Eliminar(string nombre) =>
-        !string.IsNullOrWhiteSpace(nombre) &&
-        Conexion.Execute("DELETE FROM Futbolista WHERE nombre = @Nombre", new { Nombre = nombre.Trim() }) > 0;
+    public bool Eliminar(string id) =>
+        ushort.TryParse(id, out var idFutbolista) && Eliminar(idFutbolista);
 }
