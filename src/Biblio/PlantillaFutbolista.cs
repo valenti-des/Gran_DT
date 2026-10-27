@@ -18,4 +18,5 @@ public class PlantillaFutbolistaCreacion
     public bool futbolistaTitular { get; set; }
     public byte idPlantilla { get; set; }
     public ushort idFutbolista { get; set; }
+    public Futbolista? futbolista { get; set; }
 }

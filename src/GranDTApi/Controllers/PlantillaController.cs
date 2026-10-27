@@ -1,98 +1,65 @@
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Biblio;
-using Microsoft.AspNetCore.Mvc;
+using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
 
-/// <summary>Datos necesarios para crear una plantilla.</summary>
-public sealed record CrearPlantillaRequest
-{
-    [Required]
-    public required string Nombre { get; init; }
 
-    public decimal? CantidadMaximaMonto { get; init; }
-    public byte? CantidadMaximaFutbolistas { get; init; }
-    public short? IdUsuario { get; init; }
-}
-
-/// <summary>Endpoints para gestionar plantillas.</summary>
 [ApiController]
 [Route("api/[controller]")]
 public class PlantillaController : ControllerBase
 {
-    private readonly ServiciosPlantilla _plantillaService;
-
-    public PlantillaController(ServiciosPlantilla plantillaService)
-    {
-        _plantillaService = plantillaService;
-    }
-
-    [HttpGet]
-    public IActionResult ObtenerTodos()
-    {
-        var plantillas = _plantillaService.ObtenerTodos();
-        return Ok(plantillas);
-    }
-
-    [HttpGet("{nombre}")]
-    public IActionResult ObtenerPorNombre(string nombre)
-    {
-        var plantilla = _plantillaService.ObtenerPorNombre(nombre);
-
-        if (plantilla is null)
+     private readonly IRepoPlantilla _PlantillaRepository;
+        public PlantillaController(IRepoPlantilla PlantillaRepository)
         {
-            return NotFound();
+            _PlantillaRepository = PlantillaRepository;
         }
-
-        return Ok(plantilla);
-    }
-
-    [HttpDelete("{nombre}")]
-    public IActionResult Eliminar(string nombre)
-    {
-        if (string.IsNullOrWhiteSpace(nombre))
+        [HttpPost]
+        public ActionResult<Plantilla> agregar([FromBody] PlantillaCreacion plantilla)
         {
-            return BadRequest(new ProblemDetails
+            try
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "El nombre de la plantilla es obligatorio."
-            });
-        }
+                var nuevoPlantilla = new Plantilla
+                {
+                    nombreP = plantilla.nombreP,
+                    idUsuario = plantilla.idUsuario
+                };
 
-        var eliminada = _plantillaService.Eliminar(nombre);
-
-        if (!eliminada)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
-
-    [HttpPost]
-    public IActionResult Crear([FromBody] CrearPlantillaRequest request)
-    {
-        if (string.IsNullOrWhiteSpace(request.Nombre))
-        {
-            return BadRequest(new ProblemDetails
+                var creado = _PlantillaRepository.Agregar(nuevoPlantilla);
+                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idPlantilla.ToString() }, creado);
+            }
+            catch (ArgumentException ex)
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "El nombre de la plantilla es obligatorio."
-            });
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al crear el Equipo." });
+            }
+        }
+        [HttpGet]
+        public ActionResult<IEnumerable<Plantilla>> ObtenerTodos()
+        {
+            try{
+                return Ok(_PlantillaRepository.ObtenerTodos());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al crear el Equipo." });
+            }
         }
 
-        var plantilla = _plantillaService.Agregar(new Plantilla
+        [HttpGet("{id}")]
+        public ActionResult<Plantilla> ObtenerPorId(byte idPlantilla)
         {
-            nombreP = request.Nombre,
-            cantMaxMonto = request.CantidadMaximaMonto,
-            cantMaxFutbolista = request.CantidadMaximaFutbolistas,
-            idUsuario = request.IdUsuario
-        });
-
-        return CreatedAtAction(
-            nameof(ObtenerPorNombre),
-            new { nombre = plantilla.nombreP },
-            plantilla);
-    }
+            Plantilla? plantilla = _PlantillaRepository.ObtenerPorId(idPlantilla);
+            if (plantilla == null)
+            {
+                return NotFound(new { error = "La plantilla no existe." });
+            }
+            return Ok(plantilla);
+        }
+        
 }

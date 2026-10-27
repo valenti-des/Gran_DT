@@ -28,4 +28,5 @@ public class PlantillaCreacion
 {
     public string nombreP { get; set; } = string.Empty;
     public short? idUsuario { get; set; }
+    public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 }
