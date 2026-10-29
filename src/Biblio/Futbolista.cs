@@ -14,8 +14,8 @@ public class Futbolista
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
-    
-    // Lista inicializada para evitar NullReferenceExceptions
+    //Falta validar en moento presupuesto 
+    // y lo requerimientos de los equipo
     public List<Puntuacion> puntuaciones { get; set; } = new List<Puntuacion>();
 
     // Método que busca la puntuación del jugador para una fecha específica
@@ -28,7 +28,6 @@ public class Futbolista
 public class FutbolistaCreacion
 {
     public string nombre { get; set; } = string.Empty;//messi es piola
-    
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
     public DateOnly fechaNac { get; set; } 

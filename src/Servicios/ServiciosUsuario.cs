@@ -18,9 +18,9 @@ public class ServiciosUsuario
         return repository.ObtenerTodos();
     }
 
-    public Usuario? ObtenerPorNombre(string nombre)
+    public Usuario? obtenerPorid(ushort idUsuario)
     {
-        return repository.ObtenerPorNombre(nombre);
+        return repository.ObtenerPorId(idUsuario);
     }
 
     public Usuario Agregar(Usuario usuario)
@@ -34,8 +34,8 @@ public class ServiciosUsuario
         return repository.Agregar(usuario);
     }
 
-    public bool Eliminar(string nombre)
+    public bool Eliminar(ushort idUsuario)
     {
-        return repository.Eliminar(nombre);
+        return repository.Eliminar(idUsuario);
     }
 }
