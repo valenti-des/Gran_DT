@@ -4,7 +4,7 @@ namespace Biblio;
 
 public class Usuario
 {
-    public short idUsuario { get; set; }
+    public ushort idUsuario { get; set; }
     public string nombre { get; set; } = string.Empty;
     public string apellido { get; set; } = string.Empty;
     public string email { get; set; } = string.Empty;

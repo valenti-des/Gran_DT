@@ -20,3 +20,4 @@ public class PlantillaFutbolistaCreacion
     public ushort idFutbolista { get; set; }
     public Futbolista? futbolista { get; set; }
 }
+
