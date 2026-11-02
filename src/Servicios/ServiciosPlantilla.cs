@@ -23,10 +23,28 @@ public class ServiciosPlantilla
         return repository.ObtenerPorId(id);
     }
 //cantidad maxima de futbolistas por plantilla es de 20
+
 //agregar un limite futbolistas por plantilla para que no se pueda agregar mas de lo permitido dentro del servicios
     public Plantilla Agregar(Plantilla Plantilla)
     {
+        if (string.IsNullOrWhiteSpace(Plantilla.nombreP))
+        {
+            throw new ArgumentException("La plantilla debe tener un nombre.", nameof(Plantilla));
+        }
+        
+        if (Plantilla.cantMaxMonto < 0)
+        {
+            throw new ArgumentException("La cantidad máxima de monto no puede ser negativa debe ser valores positiva.", nameof(Plantilla));
+        }
+
+        if (Plantilla.cantMaxFutbolista < 1 || Plantilla.cantMaxFutbolista > 20)
+        {
+            throw new ArgumentException("La cantidad máxima de futbolistas por plantilla debe ser entre 1 y 20.", nameof(Plantilla));
+        }
+
         return repository.Agregar(Plantilla);
+         var resultado = repository.Agregar(Plantilla);
+        return resultado.nombre;
     }
 
     public bool Eliminar(ushort id)

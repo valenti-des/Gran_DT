@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Biblio;
 
 namespace TestUnitarios;
@@ -71,5 +72,21 @@ public class LogicaDominioTests
         var plantilla = new Plantilla();
 
         Assert.Equal(0f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
+    }
+
+    [Fact]
+    public void Puntuacion_NumFech_DeberiaSerMenorA50()
+    {
+        var puntuacion = new Puntuacion { numFech = 50, puntuacion = 7.5m };
+        var resultados = new List<ValidationResult>();
+
+        var esValida = Validator.TryValidateObject(
+            puntuacion,
+            new ValidationContext(puntuacion),
+            resultados,
+            validateAllProperties: true);
+
+        Assert.False(esValida);
+        Assert.Contains(resultados, r => r.MemberNames.Contains(nameof(Puntuacion.numFech)));
     }
 }

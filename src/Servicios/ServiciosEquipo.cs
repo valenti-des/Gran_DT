@@ -26,11 +26,6 @@ public class ServiceEquipo
 
     public Equipo Agregar(Equipo equipo)
     {
-        if (equipo.nombre == "")
-        {
-           throw new ArgumentException("El nombre del equipo es obligatorio.", nameof(equipo));
-        }
-
         if (string.IsNullOrWhiteSpace(equipo.nombre))
         {
             throw new ArgumentException("El nombre del equipo es obligatorio.", nameof(equipo));
