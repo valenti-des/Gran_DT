@@ -11,16 +11,9 @@ public class Futbolista
     public string apellido { get; set; } = string.Empty;
     public string? apodo { get; set; }
     public DateOnly fechaNac { get; set; } 
-<<<<<<< HEAD
     public decimal cotizacion { get; set; }
     public byte idEquipo { get; set; }
     public byte idTipoFutbolista { get; set; }
-    
-    // Lista inicializada para evitar NullReferenceExceptions
-=======
-    public decimal? cotizacion { get; set; }
-    public byte? idEquipo { get; set; }
-    public byte? idTipoFutbolista { get; set; }
     
     // Lista inicializada para evitar NullReferenceExceptions
     public List<Puntuacion> puntuaciones { get; set; } = new List<Puntuacion>();

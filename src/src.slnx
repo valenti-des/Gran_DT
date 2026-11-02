@@ -4,5 +4,6 @@
   <Project Path="GranDTApi/GranDTApi.csproj" />
   <Project Path="Servicios/Servicios.csproj" />
   <Project Path="TestDapper/TestDapper.csproj" />
+  <Project Path="TestService/TestService.csproj" />
   <Project Path="TestUnitarios/TestUnitarios.csproj" />
 </Solution>
