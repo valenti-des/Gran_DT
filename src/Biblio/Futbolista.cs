@@ -21,9 +21,8 @@ public class Futbolista
     public decimal? cotizacion { get; set; }
     public byte? idEquipo { get; set; }
     public byte? idTipoFutbolista { get; set; }
-    //Falta validar en moento presupuesto 
-    // y lo requerimientos de los equipo
->>>>>>> 1f36e87806cfb14fb7d80679ef997bf8629642d2
+    
+    // Lista inicializada para evitar NullReferenceExceptions
     public List<Puntuacion> puntuaciones { get; set; } = new List<Puntuacion>();
 
     // Método que busca la puntuación del jugador para una fecha específica
