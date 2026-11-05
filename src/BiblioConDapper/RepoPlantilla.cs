@@ -17,16 +17,16 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
     public List<Plantilla> ObtenerTodos()
     {
-        var plantillas = Conexion.Query<Plantilla>(SelectSql).AsList();
+        var plantillas = Conexion.Query<Plantilla>($"{SelectSql} ORDER BY idPlantilla").AsList();
         CargarDetalles(plantillas);
         return plantillas;
     }
 
-    public Plantilla? ObtenerPorId(byte idPlantilla)
+    public Plantilla? ObtenerPorId(ushort id)
     {
         var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
-            $"{SelectSql} WHERE idPlantilla = @IdPlantilla LIMIT 1",
-            new { IdPlantilla = idPlantilla });
+            $"{SelectSql} WHERE idPlantilla = @Id LIMIT 1",
+            new { Id = id });
 
         if (plantilla is null)
             return null;
@@ -41,55 +41,50 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         if (plantillas.Count == 0)
             return;
 
+        foreach (var plantilla in plantillas)
+            plantilla.detalles = new List<PlantillaFutbolista>();
+
+        var idsPlantillas = plantillas.Select(p => p.idPlantilla).Distinct().ToArray();
         var detalles = Conexion.Query<PlantillaFutbolista>(@"
             SELECT idFutbolistaPlantilla, futbolistaTitular, validacionP, validacionR,
                    idPlantilla, idFutbolista
-            FROM Futbolista_Plantilla").ToList();
-
-        foreach (var plantilla in plantillas)
-            plantilla.detalles = new List<PlantillaFutbolista>();
+            FROM Futbolista_Plantilla
+            WHERE idPlantilla IN @IdsPlantillas
+            ORDER BY idPlantilla, idFutbolista", new { IdsPlantillas = idsPlantillas }).AsList();
 
         if (detalles.Count == 0)
             return;
 
         var idsJugadores = detalles.Select(d => d.idFutbolista).Distinct().ToArray();
-        var jugadores = idsJugadores.Length == 0
-            ? new Dictionary<ushort, Futbolista>()
-            : Conexion.Query<Futbolista>(@"
+        var jugadores = Conexion.Query<Futbolista>(@"
                 SELECT idFutbolista, nombre, apellido, apodo, fechaNac, cotizacion,
                        idEquipo, idTipoFutbolista
-                FROM Futbolista").AsList()
-                .Where(j => idsJugadores.Contains(j.idFutbolista))
-                .ToDictionary(j => j.idFutbolista);
+                FROM Futbolista
+                WHERE idFutbolista IN @IdsJugadores", new { IdsJugadores = idsJugadores })
+            .ToDictionary(j => j.idFutbolista);
 
         var puntuaciones = Conexion.Query<Puntuacion>(@"
                 SELECT idPuntuacion, idFutbolista, puntuacion, cantFech
-                FROM Puntuacion").AsList();
+                FROM Puntuacion
+                WHERE idFutbolista IN @IdsJugadores", new { IdsJugadores = idsJugadores })
+            .ToLookup(p => p.idFutbolista);
 
         foreach (var jugador in jugadores.Values)
+            jugador.puntuaciones = puntuaciones[jugador.idFutbolista].ToList();
+
+        foreach (var detalle in detalles)
         {
-            jugador.puntuaciones = puntuaciones
-                .Where(p => p.idFutbolista == jugador.idFutbolista)
-                .ToList();
+            detalle.futbolista = jugadores.TryGetValue(detalle.idFutbolista, out var jugador) ? jugador : null;
         }
 
+        var detallesPorPlantilla = detalles.ToLookup(d => d.idPlantilla);
         foreach (var plantilla in plantillas)
-        {
-            plantilla.detalles = detalles
-                .Where(d => d.idPlantilla == plantilla.idPlantilla)
-                .Select(d =>
-                {
-                    d.futbolista = jugadores.TryGetValue(d.idFutbolista, out var jugador) ? jugador : null;
-                    return d;
-                })
-                .ToList();
-        }
+            plantilla.detalles = detallesPorPlantilla[plantilla.idPlantilla].ToList();
     }
 
     public Plantilla Agregar(Plantilla plantilla)
     {
         ArgumentNullException.ThrowIfNull(plantilla);
-        plantilla.nombreP = plantilla.nombreP.Trim();
         var parametros = new DynamicParameters();
         parametros.Add("unidPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
         parametros.Add("unnombreP", plantilla.nombreP);
@@ -103,10 +98,6 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         return plantilla;
     }
 
-    public bool Eliminar(byte idPlantilla) =>
-        Conexion.Execute("DELETE FROM Plantilla WHERE idPlantilla = @IdPlantilla", new { IdPlantilla = idPlantilla }) > 0;
-
-    public bool Eliminar(string nombre) =>
-        !string.IsNullOrWhiteSpace(nombre) &&
-        Conexion.Execute("DELETE FROM Plantilla WHERE nombreP = @Nombre", new { Nombre = nombre.Trim() }) > 0;
+    public bool Eliminar(ushort id) =>
+        Conexion.Execute("DELETE FROM Plantilla WHERE idPlantilla = @Id", new { Id = id }) > 0;
 }

@@ -23,7 +23,6 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
     public int agregar(Usuario usuario)
     {
-        ArgumentNullException.ThrowIfNull(usuario);       
         var sql = @"
             INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
             VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
@@ -42,8 +41,6 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
     public int ModificarUsuario(Usuario usuario)
     {
-        ArgumentNullException.ThrowIfNull(usuario);
-
         return Conexion.Execute(UpdateSql, new
         {
             IdUsuario = usuario.idUsuario,
@@ -64,11 +61,15 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
             FROM Usuario").AsList();
 
+    public Usuario? ObtenerPorId(ushort id) =>
+        Conexion.QuerySingleOrDefault<Usuario>(@"
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            FROM Usuario
+            WHERE idUsuario = @Id
+            LIMIT 1;", new { Id = id });
+
     public Usuario? ObtenerPorEmail(string email)
     {
-        if (string.IsNullOrWhiteSpace(email))
-            return null;
-
         return Conexion.QuerySingleOrDefault<Usuario>(@"
             SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
             FROM Usuario
@@ -80,9 +81,12 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     public Usuario Agregar(Usuario usuario)
     {
         var id = agregar(usuario);
-        usuario.idUsuario = (short)id;
+        usuario.idUsuario = (ushort)id;
         return usuario;
     }
+
+    public bool Eliminar(ushort id) =>
+        Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @Id", new { Id = id }) > 0;
 
     public bool Eliminar(string email) =>
         Conexion.Execute("DELETE FROM Usuario WHERE email = @Email", new { Email = email }) > 0;
