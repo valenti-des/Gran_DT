@@ -41,6 +41,7 @@ public class ReposUsuarioTest : IDisposable
     public void AgregarYObtenerPorEmail_DeberiaGuardarUsuario()
     {
         var email = GenerarEmailUsuario("usuario");
+        ushort? idAgregado = null;
         var usuario = new Usuario
         {
             nombre = "Usuario",
@@ -54,8 +55,9 @@ public class ReposUsuarioTest : IDisposable
         try
         {
             var agregado = _repo.Agregar(usuario);
+            idAgregado = agregado.idUsuario;
 
-            Assert.NotEqual((short)0, agregado.idUsuario);
+            Assert.NotEqual((ushort)0, agregado.idUsuario);
             Assert.Equal(email, agregado.email);
 
             var encontrado = _repo.ObtenerPorEmail(email);
@@ -64,7 +66,8 @@ public class ReposUsuarioTest : IDisposable
         }
         finally
         {
-            _repo.Eliminar(email);
+            if (idAgregado.HasValue)
+                _repo.Eliminar(idAgregado.Value);
         }
     }
 }

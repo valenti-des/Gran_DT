@@ -7,54 +7,9 @@ namespace BiblioConDapper;
 
 public class RepoUsuario : RepoDapper, IRepoUsuario
 {
-    private const string UpdateSql = @"
-        UPDATE Usuario
-        SET nombre = @Nombre,
-            apellido = @Apellido,
-            email = @Email,
-            fechaNac = @FechaNac,
-            contraseña = @Contrasena,
-            es_admin = @EsAdmin
-        WHERE idUsuario = @IdUsuario;";
-
     public RepoUsuario(IDbConnection conexion) : base(conexion)
     {
     }
-
-    public int agregar(Usuario usuario)
-    {
-        var sql = @"
-            INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
-            VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
-            SELECT LAST_INSERT_ID();";
-
-        return Conexion.ExecuteScalar<short>(sql, new
-        {
-            Nombre = usuario.nombre.Trim(),
-            Apellido = usuario.apellido.Trim(),
-            Email = usuario.email.Trim(),
-            FechaNac = usuario.fechaNac,
-            Contrasena = usuario.contraseña,
-            EsAdmin = usuario.es_admin
-        });
-    }
-
-    public int ModificarUsuario(Usuario usuario)
-    {
-        return Conexion.Execute(UpdateSql, new
-        {
-            IdUsuario = usuario.idUsuario,
-            Nombre = usuario.nombre.Trim(),
-            Apellido = usuario.apellido.Trim(),
-            Email = usuario.email.Trim(),
-            FechaNac = usuario.fechaNac,
-            Contrasena = usuario.contraseña,
-            EsAdmin = usuario.es_admin
-        });
-    }
-
-    public int EliminarUsuario(int idUsuario) =>
-        Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @IdUsuario", new { IdUsuario = idUsuario });
 
     public List<Usuario> ObtenerTodos() =>
         Conexion.Query<Usuario>(@"
@@ -74,21 +29,28 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
             FROM Usuario
             WHERE email = @Email
-            LIMIT 1;", new { Email = email.Trim() });
+            LIMIT 1;", new { Email = email });
     }
-
 
     public Usuario Agregar(Usuario usuario)
     {
-        var id = agregar(usuario);
-        usuario.idUsuario = (ushort)id;
+        var id = Conexion.ExecuteScalar<ushort>(@"
+            INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
+            VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
+            SELECT LAST_INSERT_ID();", new
+        {
+            Nombre = usuario.nombre,
+            Apellido = usuario.apellido,
+            Email = usuario.email,
+            FechaNac = usuario.fechaNac,
+            Contrasena = usuario.contraseña,
+            EsAdmin = usuario.es_admin
+        });
+
+        usuario.idUsuario = id;
         return usuario;
     }
 
     public bool Eliminar(ushort id) =>
         Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @Id", new { Id = id }) > 0;
-
-    public bool Eliminar(string email) =>
-        Conexion.Execute("DELETE FROM Usuario WHERE email = @Email", new { Email = email }) > 0;
-
 }
