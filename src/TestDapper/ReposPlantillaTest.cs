@@ -38,12 +38,12 @@ public class ReposPlantillaTest : IDisposable
     }
 
     [Fact]
-    public void ObtenerPorId_DeberiaCargarDetallesYCalcularPuntajeFecha()
+    public void ObtenerPorId_DeberiaCargarDetallesYCalcularPuntajeDeLaJornada()
     {
         var plantilla = _repo.ObtenerPorId(1);
 
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
-        Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
+        Assert.Equal(8.4m, plantilla.PuntajeFecha(1));
     }
 }

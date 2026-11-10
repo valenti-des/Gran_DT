@@ -38,7 +38,7 @@ public class ReposEquipoTest : IDisposable
     }
 
     [Fact]
-    public void AgregarYObtenerPorNombre_DeberiaGuardarEquipoConNombreNormalizado()
+    public void AgregarYObtenerPorId_DeberiaGuardarEquipoConNombreNormalizado()
     {
         var nombre = GenerarNombreEquipo("Equipo_Test");
         var equipo = new Equipo { nombre = $"  {nombre}  " };
@@ -50,55 +50,34 @@ public class ReposEquipoTest : IDisposable
             Assert.NotEqual((byte)0, agregado.idEquipo);
             Assert.Equal(nombre, agregado.nombre);
 
-            var encontrado = _repo.ObtenerPorNombre(nombre);
+            var encontrado = _repo.ObtenerPorId(agregado.idEquipo);
             Assert.NotNull(encontrado);
             Assert.Equal(agregado.idEquipo, encontrado!.idEquipo);
         }
         finally
         {
-            _repo.Eliminar(nombre);
+            if (equipo.idEquipo != 0)
+                _repo.Eliminar(equipo.idEquipo);
         }
     }
 
     [Fact]
-    public void Eliminar_DeberiaBorrarEquipoPorNombre()
+    public void Eliminar_DeberiaBorrarEquipoPorId()
     {
-        var nombre = GenerarNombreEquipo("Equipo_Eliminar");
+        var equipo = new Equipo { nombre = GenerarNombreEquipo("Equipo_Eliminar") };
 
         try
         {
-            _repo.Agregar(new Equipo { nombre = nombre });
+            _repo.Agregar(equipo);
 
-            Assert.True(_repo.Eliminar(nombre));
-            Assert.Null(_repo.ObtenerPorNombre(nombre));
+            Assert.True(_repo.Eliminar(equipo.idEquipo));
+            Assert.Null(_repo.ObtenerPorId(equipo.idEquipo));
         }
         finally
         {
-            _repo.Eliminar(nombre);
+            if (equipo.idEquipo != 0)
+                _repo.Eliminar(equipo.idEquipo);
         }
     }
 
-    [Fact]
-    public void RepoFutbolista_ObtenerPorId_DeberiaCargarPuntuacionesDelJugador()
-    {
-        var repo = new RepoFutbolista(_conexion);
-
-        var futbolista = repo.ObtenerPorId(1);
-
-        Assert.NotNull(futbolista);
-        Assert.NotEmpty(futbolista!.puntuaciones);
-        Assert.Equal(8.4f, futbolista.ObtenerPuntuacionPorFecha(new DateOnly(2026, 1, 1)));
-    }
-
-    [Fact]
-    public void RepoPlantilla_ObtenerPorId_DeberiaCargarDetallesYCalcularPuntajeFecha()
-    {
-        var repo = new RepoPlantilla(_conexion);
-
-        var plantilla = repo.ObtenerPorId(1);
-
-        Assert.NotNull(plantilla);
-        Assert.NotEmpty(plantilla!.detalles);
-        Assert.Equal(8.4f, plantilla.PuntajeFecha(new DateOnly(2026, 1, 1)));
-    }
 }
