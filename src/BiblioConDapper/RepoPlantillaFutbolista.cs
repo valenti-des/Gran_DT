@@ -8,8 +8,7 @@ namespace BiblioConDapper;
 public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
 {
     private const string SelectSql = @"
-        SELECT idFutbolistaPlantilla, futbolistaTitular, validacionP, validacionR,
-               idPlantilla, idFutbolista
+        SELECT futbolistaTitular, idPlantilla, idFutbolista
         FROM Futbolista_Plantilla";
 
     public RepoPlantillaFutbolista(IDbConnection conexion) : base(conexion)
@@ -28,16 +27,12 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
     {
         ArgumentNullException.ThrowIfNull(plantillaFutbolista);
 
-        var parametros = new DynamicParameters();
-        parametros.Add("unidFutbolistaPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
-        parametros.Add("unfutbolistaTitular", plantillaFutbolista.futbolistaTitular);
-        parametros.Add("unvalidacionP", plantillaFutbolista.validacionP);
-        parametros.Add("unvalidacionR", plantillaFutbolista.validacionR);
-        parametros.Add("unidPlantilla", plantillaFutbolista.idPlantilla);
-        parametros.Add("unidFutbolista", plantillaFutbolista.idFutbolista);
-
-        Conexion.Execute("AltaFutbolistaP", parametros, commandType: CommandType.StoredProcedure);
-        plantillaFutbolista.idFutbolistaPlantilla = parametros.Get<byte>("unidFutbolistaPlantilla");
+        Conexion.Execute("AgregarFutbolistaAPlantilla", new
+        {
+            unidPlantilla = plantillaFutbolista.idPlantilla,
+            unidFutbolista = plantillaFutbolista.idFutbolista,
+            unfutbolistaTitular = plantillaFutbolista.futbolistaTitular
+        }, commandType: CommandType.StoredProcedure);
 
         return plantillaFutbolista;
     }

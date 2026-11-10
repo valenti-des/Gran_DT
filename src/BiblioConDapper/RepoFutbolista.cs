@@ -33,18 +33,12 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
             return null;
 
         futbolista.puntuaciones = Conexion.Query<Puntuacion>(
-            "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion WHERE idFutbolista = @IdFutbolista",
+            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech 
+              FROM Puntuacion 
+              WHERE idFutbolista = @IdFutbolista",
             new { IdFutbolista = id }).AsList();
 
         return futbolista;
-    }
-
-   public Futbolista? ObtenerPorId(string id)
-   {
-        if (!ushort.TryParse(id, out var idFutbolista))
-            return null;
-
-            return ObtenerPorId(idFutbolista);
     }
 
     private void CargarPuntuaciones(IList<Futbolista> futbolista)
@@ -53,7 +47,8 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
             return;
 
         var puntuaciones = Conexion.Query<Puntuacion>(
-            "SELECT idPuntuacion, idFutbolista, puntuacion, cantFech FROM Puntuacion").ToList();
+            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech 
+              FROM Puntuacion").ToList();
 
         foreach (var futbolistaActual in futbolista)
         {
@@ -91,8 +86,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
     }
 
     public bool Eliminar(ushort id) =>
-        Conexion.Execute("DELETE FROM Futbolista WHERE idFutbolista = @IdFutbolista", new { IdFutbolista = id }) > 0;
+        Conexion.Execute(@"DELETE FROM Futbolista 
+                           WHERE idFutbolista = @IdFutbolista", new { IdFutbolista = id }) > 0;
 
-    public bool Eliminar(string id) =>
-        ushort.TryParse(id, out var idFutbolista) && Eliminar(idFutbolista);
 }

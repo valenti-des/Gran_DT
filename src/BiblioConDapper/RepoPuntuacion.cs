@@ -8,7 +8,7 @@ namespace BiblioConDapper;
 public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
 {
     private const string SelectSql = @"
-        SELECT idPuntuacion, idFutbolista, puntuacion, cantFech
+        SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech
         FROM Puntuacion";
 
     public RepoPuntuacion(IDbConnection conexion) : base(conexion)
@@ -30,7 +30,7 @@ public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
         parametros.Add("unidPuntuacion", dbType: DbType.UInt32, direction: ParameterDirection.Output);
         parametros.Add("unidFutbolista", puntuacion.idFutbolista);
         parametros.Add("unpuntuacion", puntuacion.puntuacion);
-        parametros.Add("uncantFech", puntuacion.cantFech);
+        parametros.Add("unnroFecha", puntuacion.numFech);
 
         Conexion.Execute("AltaPuntuacion", parametros, commandType: CommandType.StoredProcedure);
         puntuacion.idPuntuacion = parametros.Get<uint>("unidPuntuacion");
@@ -39,5 +39,6 @@ public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
     }
 
     public bool Eliminar(uint idPuntuacion) =>
-        Conexion.Execute("DELETE FROM Puntuacion WHERE idPuntuacion = @IdPuntuacion", new { IdPuntuacion = idPuntuacion }) > 0;
+        Conexion.Execute(@"DELETE FROM Puntuacion 
+                           WHERE idPuntuacion = @IdPuntuacion", new { IdPuntuacion = idPuntuacion }) > 0;
 }

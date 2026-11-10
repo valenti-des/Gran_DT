@@ -46,8 +46,7 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
         var idsPlantillas = plantillas.Select(p => p.idPlantilla).Distinct().ToArray();
         var detalles = Conexion.Query<PlantillaFutbolista>(@"
-            SELECT idFutbolistaPlantilla, futbolistaTitular, validacionP, validacionR,
-                   idPlantilla, idFutbolista
+            SELECT futbolistaTitular, idPlantilla, idFutbolista
             FROM Futbolista_Plantilla
             WHERE idPlantilla IN @IdsPlantillas
             ORDER BY idPlantilla, idFutbolista", new { IdsPlantillas = idsPlantillas }).AsList();
@@ -64,7 +63,7 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
             .ToDictionary(j => j.idFutbolista);
 
         var puntuaciones = Conexion.Query<Puntuacion>(@"
-                SELECT idPuntuacion, idFutbolista, puntuacion, cantFech
+                SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech
                 FROM Puntuacion
                 WHERE idFutbolista IN @IdsJugadores", new { IdsJugadores = idsJugadores })
             .ToLookup(p => p.idFutbolista);

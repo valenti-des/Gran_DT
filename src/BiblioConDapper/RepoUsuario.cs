@@ -52,5 +52,6 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     }
 
     public bool Eliminar(ushort id) =>
-        Conexion.Execute("DELETE FROM Usuario WHERE idUsuario = @Id", new { Id = id }) > 0;
+        Conexion.Execute(@"DELETE FROM Usuario 
+                           WHERE idUsuario = @Id", new { Id = id }) > 0;
 }

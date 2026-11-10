@@ -12,11 +12,14 @@ public class RepoTipoFutbolista : RepoDapper, IRepoTipoFutbolista
     }
 
     public List<TipoFutbolista> ObtenerTodos() =>
-        Conexion.Query<TipoFutbolista>("SELECT idTipoFutbolista, tipoFutbolista FROM Tipo_Futbolista").AsList();
+        Conexion.Query<TipoFutbolista>(@"SELECT idTipoFutbolista, tipoFutbolista 
+                                         FROM Tipo_Futbolista").AsList();
 
     public TipoFutbolista? ObtenerPorId(byte idTipoFutbolista) =>
         Conexion.QuerySingleOrDefault<TipoFutbolista>(
-            "SELECT idTipoFutbolista, tipoFutbolista FROM Tipo_Futbolista WHERE idTipoFutbolista = @Id LIMIT 1",
+            @"SELECT idTipoFutbolista, tipoFutbolista 
+            FROM Tipo_Futbolista 
+            WHERE idTipoFutbolista = @Id LIMIT 1",
             new { Id = idTipoFutbolista });
 
 
@@ -36,6 +39,7 @@ public class RepoTipoFutbolista : RepoDapper, IRepoTipoFutbolista
 
     public bool Eliminar(byte idTipoFutbolista)
     {
-        return Conexion.Execute("DELETE FROM Tipo_Futbolista WHERE idTipoFutbolista = @Id", new { Id = idTipoFutbolista }) > 0;
+        return Conexion.Execute(@"DELETE FROM Tipo_Futbolista 
+                                  WHERE idTipoFutbolista = @Id", new { Id = idTipoFutbolista }) > 0;
     }
 }
