@@ -2,6 +2,7 @@ using Biblio;
 
 namespace TestUnitarios
 {
+    [Trait("Category", "Unit")]
     public class TestUnidadPuraTipoFutbolista
     {
         [Fact]
@@ -26,8 +27,6 @@ namespace TestUnitarios
 
             Assert.Equal(string.Empty, tipoFutbolista.tipoFutbolista);
 
-            
-             tipoFutbolista.idTipoFutbolista = 1;
             tipoFutbolista.tipoFutbolista = "Arquero";
 
             Assert.Equal("Arquero", tipoFutbolista.tipoFutbolista);
