@@ -12,9 +12,9 @@ public class ServiciosPuntuacion
         _repository = repository;
     }
 
-    public Puntuacion? ObtenerPorId(int id)
+    public Puntuacion? ObtenerPorId(uint id)
     {
-        return _repository.ObtenerPorId(id.ToString());
+        return _repository.ObtenerPorId(id);
     }
 
     public List<Puntuacion> ObtenerTodos()
@@ -24,24 +24,23 @@ public class ServiciosPuntuacion
 
     public Puntuacion Agregar(Puntuacion puntuacion)
     {
+        ArgumentNullException.ThrowIfNull(puntuacion);
 
-        if (puntuacion.puntuacion < 1.0 || puntuacion.puntuacion > 10.0)
+        if (puntuacion.puntuacion is null or < 1m or > 10m)
         {
             throw new ArgumentException("La puntuación debe estar entre 1.0 y 10.0.", nameof(puntuacion));
         }
 
-        if (puntuacion.numFech < 1 || puntuacion.numFech > 50)
+        if (puntuacion.numFech is null or < 1 or > 50)
         {
             throw new ArgumentException("El número de fecha debe estar entre 1 y 50.", nameof(puntuacion));
         }
-        var Resultado = _repository.ObtenerTodos(puntuacion);
 
         return _repository.Agregar(puntuacion);
     }
 
-    public bool Eliminar(int id)
+    public bool Eliminar(uint id)
     {
-        return _repository.Eliminar(id.ToString());
+        return _repository.Eliminar(id);
     }
-
 }

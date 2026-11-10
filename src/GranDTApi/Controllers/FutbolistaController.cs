@@ -33,7 +33,7 @@ namespace GranDTApi.Controllers
                 };
 
                 var creado = _futbolistaController.Agregar(nuevoFutbolista);
-                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idFutbolista.ToString() }, creado);
+                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idFutbolista }, creado);
             }
             catch (ArgumentException ex)
             {
@@ -58,7 +58,7 @@ namespace GranDTApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Futbolista> ObtenerPorId(string id)
+        public ActionResult<Futbolista> ObtenerPorId(ushort id)
         {
             Futbolista? futbolista = _futbolistaController.ObtenerPorId(id);
             if (futbolista == null)

@@ -2,53 +2,52 @@ using System.Collections.Generic;
 using Biblio;
 using Biblio.IRepo;
 
-namespace Servicios ;
+namespace Servicios;
 
 public class ServiciosPlantilla
 {
-    private readonly IRepoPlantilla repository;
+    private readonly IRepoPlantilla _repository;
 
     public ServiciosPlantilla(IRepoPlantilla repository)
     {
-        this.repository = repository;
+        _repository = repository;
     }
 
     public List<Plantilla> ObtenerTodos()
     {
-        return repository.ObtenerTodos();
+        return _repository.ObtenerTodos();
     }
 
-    public Plantilla? ObtenerPorid(ushort id)
+    public Plantilla? ObtenerPorId(ushort id)
     {
-        return repository.ObtenerPorId(id);
+        return _repository.ObtenerPorId(id);
     }
-//cantidad maxima de futbolistas por plantilla es de 20
 
-//agregar un limite futbolistas por plantilla para que no se pueda agregar mas de lo permitido dentro del servicios
-    public Plantilla Agregar(Plantilla Plantilla)
+    public Plantilla Agregar(Plantilla plantilla)
     {
-        if (string.IsNullOrWhiteSpace(Plantilla.nombreP))
+        ArgumentNullException.ThrowIfNull(plantilla);
+
+        if (string.IsNullOrWhiteSpace(plantilla.nombreP))
         {
-            throw new ArgumentException("La plantilla debe tener un nombre.", nameof(Plantilla));
-        }
-        
-        if (Plantilla.cantMaxMonto < 0)
-        {
-            throw new ArgumentException("La cantidad máxima de monto no puede ser negativa debe ser valores positiva.", nameof(Plantilla));
+            throw new ArgumentException("La plantilla debe tener un nombre.", nameof(plantilla));
         }
 
-        if (Plantilla.cantMaxFutbolista < 1 || Plantilla.cantMaxFutbolista > 20)
+        if (plantilla.cantMaxMonto is < 0)
         {
-            throw new ArgumentException("La cantidad máxima de futbolistas por plantilla debe ser entre 1 y 20.", nameof(Plantilla));
+            throw new ArgumentException("La cantidad máxima de monto no puede ser negativa debe ser valores positiva.", nameof(plantilla));
         }
 
-        return repository.Agregar(Plantilla);
-         var resultado = repository.Agregar(Plantilla);
-        return resultado.nombre;
+        if (plantilla.cantMaxFutbolista is < 1 or > 20)
+        {
+            throw new ArgumentException("La cantidad máxima de futbolistas por plantilla debe ser entre 1 y 20.", nameof(plantilla));
+        }
+
+        plantilla.nombreP = plantilla.nombreP.Trim();
+        return _repository.Agregar(plantilla);
     }
 
     public bool Eliminar(ushort id)
     {
-        return repository.Eliminar(id);
+        return _repository.Eliminar(id);
     }
 }

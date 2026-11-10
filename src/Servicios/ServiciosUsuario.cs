@@ -2,25 +2,25 @@
 using Biblio;
 using Biblio.IRepo;
 
-namespace Servicios ;
+namespace Servicios;
 
 public class ServiciosUsuario
 {
-    private readonly IRepoUsuario repository;
+    private readonly IRepoUsuario _repository;
 
     public ServiciosUsuario(IRepoUsuario repository)
     {
-        this.repository = repository;
+        _repository = repository;
     }
 
     public List<Usuario> ObtenerTodos()
     {
-        return repository.ObtenerTodos();
+        return _repository.ObtenerTodos();
     }
 
-    public Usuario? obtenerPorid(ushort idUsuario)
+    public Usuario? ObtenerPorId(ushort idUsuario)
     {
-        return repository.ObtenerPorId(idUsuario);
+        return _repository.ObtenerPorId(idUsuario);
     }
 
     public Usuario Agregar(Usuario usuario)
@@ -28,14 +28,16 @@ public class ServiciosUsuario
         ArgumentNullException.ThrowIfNull(usuario);
 
         if (string.IsNullOrWhiteSpace(usuario.contraseña))
+        {
             throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
+        }
 
         usuario.contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.contraseña);
-        return repository.Agregar(usuario);
+        return _repository.Agregar(usuario);
     }
 
     public bool Eliminar(ushort idUsuario)
     {
-        return repository.Eliminar(idUsuario);
+        return _repository.Eliminar(idUsuario);
     }
 }

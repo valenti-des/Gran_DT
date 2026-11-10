@@ -1,141 +1,104 @@
-using System;
-using System.Collections.Generic;
 using Biblio;
 using Biblio.IRepo;
 using Moq;
 using Servicios;
-using Xunit;
 
-namespace GranDTApi.Tests.Services
+namespace GranDTApi.Tests.Services;
+
+public class ServiciosFutbolistaTests
 {
-    public class ServiciosFutbolistaTests
+    private readonly Mock<IRepoFutbolista> _repoFutbolistaMock = new();
+    private readonly ServiciosFutbolista _serviciosFutbolista;
+
+    public ServiciosFutbolistaTests()
     {
-        private readonly Mock<IRepoFutbolista> _repoFutbolistaMock;
-        private readonly ServiciosFutbolista _serviciosFutbolista;
+        _serviciosFutbolista = new ServiciosFutbolista(_repoFutbolistaMock.Object);
+    }
 
-        public ServiciosFutbolistaTests()
+    [Fact]
+    public void Agregar_FutbolistaValido_DevuelveFutbolistaCreado()
+    {
+        var futbolista = new Futbolista
         {
-            // Inicialización de mocks y clase bajo prueba antes de cada test
-            _repoFutbolistaMock = new Mock<IRepoFutbolista>();
+            nombre = "Lionel",
+            apellido = "Messi",
+            fechaNac = new DateOnly(1987, 6, 24),
+            cotizacion = 50_000_000m,
+            puntuaciones = [new Puntuacion { puntuacion = 10m,
+                                             numFech = 1 }]
+        };
+        _repoFutbolistaMock.Setup(repo => repo.Agregar(futbolista)).Returns(futbolista);
 
-            _serviciosFutbolista = new ServiciosFutbolista(_repoFutbolistaMock.Object);
-        }
+        var resultado = _serviciosFutbolista.Agregar(futbolista);
 
-        #region Casos de Creación
+        Assert.Same(futbolista, resultado);
+        _repoFutbolistaMock.Verify(repo => repo.Agregar(futbolista), Times.Once);
+    }
 
-        [Fact]
-        public void Crear_FutbolistaValido_DevuelveIdCreado()
+    [Fact]
+    public void Agregar_FechaInvalida_LanzaArgumentExceptionSinLlamarAlRepositorio()
+    {
+        var futbolista = new Futbolista
         {
-            // Arrange
-            var futbolista = new Futbolista
-            {
-                idFutbolista = 12,
-                nombre = "Lionel",
-                apellido = "Messi",
-                cotizacion = 50_000_000m
-            };
+            nombre = "Lionel",
+            apellido = "Messi",
+            fechaNac = default,
+            puntuaciones = [new Puntuacion { puntuacion = 10m, numFech = 1 }]
+        };
 
-            // Simular inserción exitosa en el repositorio
-            _repoFutbolistaMock.Setup(repo => repo.Agregar(futbolista))
-                               .Returns(futbolista);
+        var excepcion = Assert.Throws<ArgumentException>(() => _serviciosFutbolista.Agregar(futbolista));
 
-            // Act
-            var resultado = _serviciosFutbolista.Crear(futbolista);
+        Assert.StartsWith("La fecha de nacimiento del futbolista es inválida.", excepcion.Message);
+        _repoFutbolistaMock.Verify(repo => repo.Agregar(It.IsAny<Futbolista>()), Times.Never);
+    }
 
-            // Assert
-            Assert.Equal(12, resultado);
-            _repoFutbolistaMock.Verify(repo => repo.Agregar(futbolista), Times.Once);
-        }
-
-        [Fact]
-        public void Crear_NombreOApellidoVacios_LanzaArgumentException()
+    [Fact]
+    public void ObtenerTodos_ExistenFutbolistas_DevuelveColeccionCompleta()
+    {
+        var futbolistas = new List<Futbolista>
         {
-            // Arrange
-            var futbolista = new Futbolista
-            {
-                nombre = "",
-                apellido = "Messi"
-            };
+            new() { idFutbolista = 1,
+                    nombre = "Emiliano",
+                    apellido = "Martinez" },
+            new() { idFutbolista = 2,
+                    nombre = "Cristian",
+                    apellido = "Romero" }
+        };
+        _repoFutbolistaMock.Setup(repo => repo.ObtenerTodos()).Returns(futbolistas);
 
-            // Act & Assert
-            var excepcion = Assert.Throws<ArgumentException>(() => _serviciosFutbolista.Crear(futbolista));
+        var resultado = _serviciosFutbolista.ObtenerTodos();
 
-            Assert.StartsWith("El nombre y apellido del futbolista son obligatorios.", excepcion.Message);
-            _repoFutbolistaMock.Verify(repo => repo.Agregar(It.IsAny<Futbolista>()), Times.Never);
-        }
+        Assert.Equal(futbolistas, resultado);
+        _repoFutbolistaMock.Verify(repo => repo.ObtenerTodos(), Times.Once);
+    }
 
-        #endregion
-
-        #region Casos de Consulta y Filtrado
-
-        [Fact]
-        public void ObtenerTodos_ExistenFutbolistas_DevuelveColeccionCompleta()
+    [Fact]
+    public void ObtenerPorId_FutbolistaExiste_DevuelveFutbolista()
+    {
+        const ushort idBuscado = 7;
+        var futbolista = new Futbolista
         {
-            // Arrange
-            var futbolistasEsperados = new List<Futbolista>
-            {
-                new Futbolista { idFutbolista = 1, nombre = "Emiliano", apellido = "Martinez" },
-                new Futbolista { idFutbolista = 2, nombre = "Cristian", apellido = "Romero" }
-            };
+            idFutbolista = idBuscado,
+            nombre = "Rodrigo",
+            apellido = "De Paul"
+        };
+        _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(idBuscado)).Returns(futbolista);
 
-            _repoFutbolistaMock.Setup(repo => repo.ObtenerTodos())
-                               .Returns(futbolistasEsperados);
+        var resultado = _serviciosFutbolista.ObtenerPorId(idBuscado);
 
-            // Act
-            var resultado = _serviciosFutbolista.ObtenerTodos();
+        Assert.Same(futbolista, resultado);
+        _repoFutbolistaMock.Verify(repo => repo.ObtenerPorId(idBuscado), Times.Once);
+    }
 
-            // Assert
-            Assert.NotNull(resultado);
-            Assert.Equal(2, resultado.Count);
-            _repoFutbolistaMock.Verify(repo => repo.ObtenerTodos(), Times.Once);
-        }
+    [Fact]
+    public void Eliminar_IdValido_DevuelveResultadoDelRepositorio()
+    {
+        const ushort idAEliminar = 15;
+        _repoFutbolistaMock.Setup(repo => repo.Eliminar(idAEliminar)).Returns(true);
 
-        [Fact]
-        public void ObtenerPorId_FutbolistaExiste_DevuelveFutbolista()
-        {
-            // Arrange
-            const int idBuscado = 7;
-            var futbolistaEsperado = new Futbolista
-            {
-                idFutbolista = (ushort)idBuscado,
-                nombre = "Rodrigo",
-                apellido = "De Paul"
-            };
+        var resultado = _serviciosFutbolista.Eliminar(idAEliminar);
 
-            _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(idBuscado.ToString()))
-                               .Returns(futbolistaEsperado);
-
-            // Act
-            var resultado = _serviciosFutbolista.ObtenerPorId(idBuscado);
-
-            // Assert
-            Assert.NotNull(resultado);
-            Assert.Equal("Rodrigo", resultado.nombre);
-            Assert.Equal("De Paul", resultado.apellido);
-            _repoFutbolistaMock.Verify(repo => repo.ObtenerPorId(idBuscado.ToString()), Times.Once);
-        }
-
-        #endregion
-
-        #region Casos de Eliminación
-
-        [Fact]
-        public void Eliminar_IdValido_RetornaTrue()
-        {
-            // Arrange
-            const ushort idAEliminar = 15;
-
-            _repoFutbolistaMock.Setup(repo => repo.Eliminar(idAEliminar.ToString()))
-                               .Returns(true);
-
-            // Act
-            bool resultado = _serviciosFutbolista.Eliminar(idAEliminar);
-
-            // Assert
-            Assert.True(resultado);
-            _repoFutbolistaMock.Verify(repo => repo.Eliminar(idAEliminar.ToString()), Times.Once);
-        }
-
-        #endregion
+        Assert.True(resultado);
+        _repoFutbolistaMock.Verify(repo => repo.Eliminar(idAEliminar), Times.Once);
     }
 }
