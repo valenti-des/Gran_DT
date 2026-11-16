@@ -46,9 +46,9 @@ public class ServiciosUsuario
         return _repository.Agregar(usuario);
     }
 
-    public bool Eliminar(ushort idUsuario, String email)
+    public bool Eliminar(ushort idUsuario)
     {
-        return _repository.Eliminar(idUsuario, email);
+        return _repository.Eliminar(idUsuario);
     }
 
     

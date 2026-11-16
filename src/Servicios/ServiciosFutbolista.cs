@@ -10,7 +10,7 @@ public class ServiciosFutbolista
     public ServiciosFutbolista(IRepoFutbolista repository)
     {
         _repository = repository;
-
+    }
     public List<Futbolista> ObtenerTodos()
     {
         return _repository.ObtenerTodos();
