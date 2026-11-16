@@ -16,8 +16,7 @@ public class ReposPuntuacionTest : IDisposable
     public ReposPuntuacionTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion()
-            ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
+        _conexion = _db.EstablecerConexion();
         _repo = new RepoPuntuacion(_conexion);
     }
 
@@ -40,25 +39,17 @@ public class ReposPuntuacionTest : IDisposable
     {
         var puntuacion = CrearPuntuacionDePrueba();
 
-        try
-        {
-            _repo.Agregar(puntuacion);
+        _repo.Agregar(puntuacion);
 
-            Assert.NotEqual(0u, puntuacion.idPuntuacion);
+        Assert.NotEqual(0u, puntuacion.idPuntuacion);
 
-            var encontrada = _repo.ObtenerPorId(puntuacion.idPuntuacion);
+        var encontrada = _repo.ObtenerPorId(puntuacion.idPuntuacion);
 
-            Assert.NotNull(encontrada);
-            Assert.Equal(puntuacion.idPuntuacion, encontrada!.idPuntuacion);
-            Assert.Equal(puntuacion.idFutbolista, encontrada.idFutbolista);
-            Assert.Equal(puntuacion.numFech, encontrada.numFech);
-            Assert.Equal(puntuacion.puntuacion, encontrada.puntuacion);
-        }
-        finally
-        {
-            if (puntuacion.idPuntuacion != 0)
-                _repo.Eliminar(puntuacion.idPuntuacion);
-        }
+        Assert.NotNull(encontrada);
+        Assert.Equal(puntuacion.idPuntuacion, encontrada!.idPuntuacion);
+        Assert.Equal(puntuacion.idFutbolista, encontrada.idFutbolista);
+        Assert.Equal(puntuacion.numFech, encontrada.numFech);
+        Assert.Equal(puntuacion.puntuacion, encontrada.puntuacion);
     }
 
     [Fact]
@@ -66,18 +57,10 @@ public class ReposPuntuacionTest : IDisposable
     {
         var puntuacion = CrearPuntuacionDePrueba();
 
-        try
-        {
-            _repo.Agregar(puntuacion);
+        _repo.Agregar(puntuacion);
 
-            Assert.True(_repo.Eliminar(puntuacion.idPuntuacion));
-            Assert.Null(_repo.ObtenerPorId(puntuacion.idPuntuacion));
-        }
-        finally
-        {
-            if (puntuacion.idPuntuacion != 0)
-                _repo.Eliminar(puntuacion.idPuntuacion);
-        }
+        Assert.True(_repo.Eliminar(puntuacion.idPuntuacion));
+        Assert.Null(_repo.ObtenerPorId(puntuacion.idPuntuacion));
     }
 
     private Puntuacion CrearPuntuacionDePrueba()

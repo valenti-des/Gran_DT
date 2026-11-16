@@ -16,15 +16,10 @@ public class ReposFutbolistaTest : IDisposable
     public ReposFutbolistaTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
+        _conexion = _db.EstablecerConexion();
         _repo = new RepoFutbolista(_conexion);
     }
 
-    private static string GenerarNombreFutbolista(string prefijo)
-    {
-        var nombre = $"{prefijo}_{Guid.NewGuid():N}";
-        return nombre.Length > 45 ? nombre[..45] : nombre;
-    }
 
     public void Dispose() => _db.CerrarConexion();
 
@@ -52,20 +47,33 @@ public class ReposFutbolistaTest : IDisposable
             idTipoFutbolista = 1
         };
 
-        try
-        {
-            var agregado = _repo.Agregar(futbolista);
+        var agregado = _repo.Agregar(futbolista);
 
-            Assert.NotEqual((ushort)0, agregado.idFutbolista);
-            Assert.Equal(nombre, agregado.nombre);
+        Assert.NotEqual((ushort)0, agregado.idFutbolista);
+        Assert.Equal(nombre, agregado.nombre);
 
-            var encontrado = _repo.ObtenerPorId(agregado.idFutbolista);
-            Assert.NotNull(encontrado);
-            Assert.Equal(agregado.idFutbolista, encontrado!.idFutbolista);
-        }
-        finally
+        var encontrado = _repo.ObtenerPorId(agregado.idFutbolista);
+        Assert.NotNull(encontrado);
+        Assert.Equal(agregado.idFutbolista, encontrado!.idFutbolista);
+    }
+
+    [Fact]
+    public void Eliminar_DeberiaBorrarJugadorPorId()
+    {
+        var futbolista = new Futbolista
         {
-            _repo.Eliminar(futbolista.idFutbolista);
-        }
+            nombre = GenerarNombreFutbolista("Jugador_Eliminar"),
+            apellido = "Delete",
+            apodo = "Borrar",
+            fechaNac = new DateOnly(1999, 06, 10),
+            cotizacion = 5000000m,
+            idEquipo = 1,
+            idTipoFutbolista = 1
+        };
+
+        _repo.Agregar(futbolista);
+
+        Assert.True(_repo.Eliminar(futbolista.idFutbolista));
+        Assert.Null(_repo.ObtenerPorId(futbolista.idFutbolista));
     }
 }

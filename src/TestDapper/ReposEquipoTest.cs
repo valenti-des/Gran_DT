@@ -16,14 +16,8 @@ public class ReposEquipoTest : IDisposable
     public ReposEquipoTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
+        _conexion = _db.EstablecerConexion();
         _repo = new RepoEquipo(_conexion);
-    }
-
-    private static string GenerarNombreEquipo(string prefijo)
-    {
-        var nombre = $"{prefijo}_{Guid.NewGuid():N}";
-        return nombre.Length > 45 ? nombre[..45] : nombre;
     }
 
     public void Dispose() => _db.CerrarConexion();
@@ -43,22 +37,14 @@ public class ReposEquipoTest : IDisposable
         var nombre = GenerarNombreEquipo("Equipo_Test");
         var equipo = new Equipo { nombre = $"  {nombre}  " };
 
-        try
-        {
-            var agregado = _repo.Agregar(equipo);
+        var agregado = _repo.Agregar(equipo);
 
-            Assert.NotEqual((byte)0, agregado.idEquipo);
-            Assert.Equal(nombre, agregado.nombre);
+        Assert.NotEqual((byte)0, agregado.idEquipo);
+        Assert.Equal(nombre, agregado.nombre);
 
-            var encontrado = _repo.ObtenerPorId(agregado.idEquipo);
-            Assert.NotNull(encontrado);
-            Assert.Equal(agregado.idEquipo, encontrado!.idEquipo);
-        }
-        finally
-        {
-            if (equipo.idEquipo != 0)
-                _repo.Eliminar(equipo.idEquipo);
-        }
+        var encontrado = _repo.ObtenerPorId(agregado.idEquipo);
+        Assert.NotNull(encontrado);
+        Assert.Equal(agregado.idEquipo, encontrado!.idEquipo);
     }
 
     [Fact]
@@ -66,18 +52,11 @@ public class ReposEquipoTest : IDisposable
     {
         var equipo = new Equipo { nombre = GenerarNombreEquipo("Equipo_Eliminar") };
 
-        try
-        {
-            _repo.Agregar(equipo);
+        _repo.Agregar(equipo);
 
-            Assert.True(_repo.Eliminar(equipo.idEquipo));
-            Assert.Null(_repo.ObtenerPorId(equipo.idEquipo));
-        }
-        finally
-        {
-            if (equipo.idEquipo != 0)
-                _repo.Eliminar(equipo.idEquipo);
-        }
+        Assert.True(_repo.Eliminar(equipo.idEquipo));
+        Assert.Null(_repo.ObtenerPorId(equipo.idEquipo));
     }
 
+    
 }

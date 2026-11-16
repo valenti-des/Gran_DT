@@ -60,5 +60,26 @@ public class EquipoController : ControllerBase
             }
             return Ok(equipo);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult Eliminar(byte idEquipo)
+        {
+            try
+            {
+                var equipo = _EquipoRepository.ObtenerPorId(idEquipo);
+                if (equipo is null)
+                    return NotFound(new { error = "El equipo no existe." });
+
+                var eliminado = _EquipoRepository.Eliminar(idEquipo);
+                if (!eliminado)
+                    return StatusCode(500, new { error = "No se pudo eliminar el equipo." });
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al eliminar el equipo." });
+            }
+        }
         
 }

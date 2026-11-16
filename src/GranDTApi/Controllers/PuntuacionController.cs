@@ -63,5 +63,26 @@ public class PuntuacionController : ControllerBase
             }
             return Ok(puntuacion);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult Eliminar(uint idPuntuacion)
+        {
+            try
+            {
+                var puntuacion = _PuntuacionRepository.ObtenerPorId(idPuntuacion);
+                if (puntuacion is null)
+                    return NotFound(new { error = "La puntuación no existe." });
+
+                var eliminado = _PuntuacionRepository.Eliminar(idPuntuacion);
+                if (!eliminado)
+                    return StatusCode(500, new { error = "No se pudo eliminar la puntuación." });
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al eliminar la puntuación." });
+            }
+        }
         
 }

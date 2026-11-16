@@ -18,6 +18,16 @@ public class ServiciosUsuario
         return _repository.ObtenerTodos();
     }
 
+    public Usuario? obtenerPorEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentException("El email es obligatorio.", nameof(email));
+        }
+
+        return _repository.ObtenerPorEmail(email);
+    }
+
     public Usuario? ObtenerPorId(ushort idUsuario)
     {
         return _repository.ObtenerPorId(idUsuario);
@@ -36,8 +46,11 @@ public class ServiciosUsuario
         return _repository.Agregar(usuario);
     }
 
-    public bool Eliminar(ushort idUsuario)
+    public bool Eliminar(ushort idUsuario, String email)
     {
-        return _repository.Eliminar(idUsuario);
+        return _repository.Eliminar(idUsuario, email);
     }
+
+    
+
 }

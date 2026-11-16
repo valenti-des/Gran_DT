@@ -67,5 +67,26 @@ namespace GranDTApi.Controllers
             }
             return Ok(futbolista);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult Eliminar(ushort id)
+        {
+            try
+            {
+                var futbolista = _futbolistaController.ObtenerPorId(id);
+                if (futbolista is null)
+                    return NotFound(new { error = "El futbolista no existe." });
+
+                var eliminado = _futbolistaController.Eliminar(id);
+                if (!eliminado)
+                    return StatusCode(500, new { error = "No se pudo eliminar el futbolista." });
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al eliminar el futbolista." });
+            }
+        }
     }
 }

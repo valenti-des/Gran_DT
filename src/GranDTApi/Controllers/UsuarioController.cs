@@ -65,5 +65,26 @@ public class UsuarioController : ControllerBase
             }
             return Ok(usuario);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult Eliminar(ushort idUsuario)
+        {
+            try
+            {
+                var usuario = _UsuarioRepository.ObtenerPorId(idUsuario);
+                if (usuario is null)
+                    return NotFound(new { error = "El usuario no existe." });
+
+                var eliminado = _UsuarioRepository.Eliminar(idUsuario);
+                if (!eliminado)
+                    return StatusCode(500, new { error = "No se pudo eliminar el usuario." });
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al eliminar el usuario." });
+            }
+        }
         
 }

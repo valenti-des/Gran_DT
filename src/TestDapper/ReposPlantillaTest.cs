@@ -16,17 +16,11 @@ public class ReposPlantillaTest : IDisposable
     public ReposPlantillaTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
+        _conexion = _db.EstablecerConexion();
         _repo = new RepoPlantilla(_conexion);
     }
 
     public void Dispose() => _db.CerrarConexion();
-
-    private static string GenerarNombrePlantilla(string prefijo)
-    {
-        var nombre = $"{prefijo}_{Guid.NewGuid():N}";
-        return nombre.Length > 45 ? nombre[..45] : nombre;
-    }
 
     [Fact]
     public void ObtenerTodos_DeberiaRetornarPlantillasExistentes()
@@ -45,5 +39,22 @@ public class ReposPlantillaTest : IDisposable
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
         Assert.Equal(8.4m, plantilla.PuntajeFecha(1));
+    }
+
+    [Fact]
+    public void Eliminar_DeberiaBorrarPlantillaPorId()
+    {
+        var plantilla = new Plantilla
+        {
+            nombreP = GenerarNombrePlantilla("Plantilla_Eliminar"),
+            cantMaxMonto = 1000000m,
+            cantMaxFutbolista = 11,
+            idUsuario = 1
+        };
+
+        _repo.Agregar(plantilla);
+
+        Assert.True(_repo.Eliminar(plantilla.idPlantilla));
+        Assert.Null(_repo.ObtenerPorId(plantilla.idPlantilla));
     }
 }

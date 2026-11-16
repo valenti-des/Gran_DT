@@ -16,14 +16,8 @@ public class ReposUsuarioTest : IDisposable
     public ReposUsuarioTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion() ?? throw new InvalidOperationException("No se pudo abrir la conexión a la base de datos.");
+        _conexion = _db.EstablecerConexion();
         _repo = new RepoUsuario(_conexion);
-    }
-
-    private static string GenerarEmailUsuario(string prefijo)
-    {
-        var email = $"{prefijo}_{Guid.NewGuid():N}@test.com";
-        return email.Length > 255 ? email[..255] : email;
     }
 
     public void Dispose() => _db.CerrarConexion();
@@ -41,7 +35,6 @@ public class ReposUsuarioTest : IDisposable
     public void AgregarYObtenerPorEmail_DeberiaGuardarUsuario()
     {
         var email = GenerarEmailUsuario("usuario");
-        ushort? idAgregado = null;
         var usuario = new Usuario
         {
             nombre = "Usuario",
@@ -52,22 +45,33 @@ public class ReposUsuarioTest : IDisposable
             es_admin = false
         };
 
-        try
-        {
-            var agregado = _repo.Agregar(usuario);
-            idAgregado = agregado.idUsuario;
+        var agregado = _repo.Agregar(usuario);
 
-            Assert.NotEqual((ushort)0, agregado.idUsuario);
-            Assert.Equal(email, agregado.email);
+        Assert.NotEqual((ushort)0, agregado.idUsuario);
+        Assert.Equal(email, agregado.email);
 
-            var encontrado = _repo.ObtenerPorEmail(email);
-            Assert.NotNull(encontrado);
-            Assert.Equal(agregado.idUsuario, encontrado!.idUsuario);
-        }
-        finally
+        var encontrado = _repo.ObtenerPorEmail(email);
+        Assert.NotNull(encontrado);
+        Assert.Equal(agregado.idUsuario, encontrado!.idUsuario);
+    }
+
+    [Fact]
+    public void Eliminar_DeberiaBorrarUsuarioPorId()
+    {
+        var email = GenerarEmailUsuario("usuario_eliminar");
+        var usuario = new Usuario
         {
-            if (idAgregado.HasValue)
-                _repo.Eliminar(idAgregado.Value);
-        }
+            nombre = "Usuario",
+            apellido = "Delete",
+            email = email,
+            fechaNac = new DateOnly(1995, 08, 22),
+            contraseña = "secret123",
+            es_admin = false
+        };
+
+        _repo.Agregar(usuario);
+
+        Assert.True(_repo.Eliminar(usuario.idUsuario));
+        Assert.Null(_repo.ObtenerPorEmail(email));
     }
 }

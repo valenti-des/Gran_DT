@@ -61,5 +61,26 @@ public class PlantillaController : ControllerBase
             }
             return Ok(plantilla);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult Eliminar(ushort idPlantilla)
+        {
+            try
+            {
+                var plantilla = _PlantillaRepository.ObtenerPorId(idPlantilla);
+                if (plantilla is null)
+                    return NotFound(new { error = "La plantilla no existe." });
+
+                var eliminado = _PlantillaRepository.Eliminar(idPlantilla);
+                if (!eliminado)
+                    return StatusCode(500, new { error = "No se pudo eliminar la plantilla." });
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Ocurrió un error al eliminar la plantilla." });
+            }
+        }
     
 }
