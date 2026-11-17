@@ -32,11 +32,11 @@ CREATE TABLE Futbolista (
     apodo VARCHAR(45) NULL,
     fechaNac DATE NOT NULL,
     cotizacion DECIMAL(10,2) NOT NULL DEFAULT 0.00, -- Soporta hasta $99.999.999,99
-    idEquipo TINYINT UNSIGNED NULL,
+    idEquipo TINYINT UNSIGNED NOT NULL,
     idTipoFutbolista TINYINT UNSIGNED NOT NULL,
     CONSTRAINT pk_Futbolista PRIMARY KEY (idFutbolista),
     CONSTRAINT fk_Futbolista_Equipo FOREIGN KEY (idEquipo) 
-        REFERENCES Equipo (idEquipo) ON DELETE SET NULL ON UPDATE CASCADE,
+        REFERENCES Equipo (idEquipo) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT fk_Futbolista_Tipo FOREIGN KEY (idTipoFutbolista) 
         REFERENCES Tipo_Futbolista (idTipoFutbolista) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -98,6 +98,5 @@ CREATE TABLE Futbolista_Plantilla (
     CONSTRAINT fk_FP_Futbolista FOREIGN KEY (idFutbolista) 
         REFERENCES Futbolista (idFutbolista) ON DELETE RESTRICT ON UPDATE CASCADE
 );
-
 
 
