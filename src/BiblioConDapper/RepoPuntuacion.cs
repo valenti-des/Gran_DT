@@ -24,7 +24,6 @@ public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
 
     public Puntuacion Agregar(Puntuacion puntuacion)
     {
-        ArgumentNullException.ThrowIfNull(puntuacion);
 
         var parametros = new DynamicParameters();
         parametros.Add("unidPuntuacion", dbType: DbType.UInt32, direction: ParameterDirection.Output);

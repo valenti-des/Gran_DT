@@ -25,7 +25,6 @@ public class RepoTipoFutbolista : RepoDapper, IRepoTipoFutbolista
 
     public TipoFutbolista Agregar(TipoFutbolista tipoFutbolista)
     {
-        ArgumentNullException.ThrowIfNull(tipoFutbolista);
         tipoFutbolista.tipoFutbolista = tipoFutbolista.tipoFutbolista.Trim();
         var parametros = new DynamicParameters();
         parametros.Add("unidTipoFutbolista", dbType: DbType.Byte, direction: ParameterDirection.Output);

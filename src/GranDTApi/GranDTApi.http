@@ -21,3 +21,18 @@ Content-Type: application/json
 {
 	"nombre": "River Plate"
 }
+
+###
+
+POST {{GranDTApi_HostAddress}}/api/plantilla/1/futbolistas
+Content-Type: application/json
+
+{
+	"idFutbolista": 1,
+	"futbolistaTitular": true
+}
+
+###
+
+GET {{GranDTApi_HostAddress}}/api/plantilla/1/futbolistas/1
+Accept: application/json

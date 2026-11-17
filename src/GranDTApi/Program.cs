@@ -30,6 +30,7 @@ builder.Services.AddScoped<IRepoEquipo, RepoEquipo>();
 builder.Services.AddScoped<IRepoPuntuacion, RepoPuntuacion>();
 builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
 builder.Services.AddScoped<IRepoPlantilla, RepoPlantilla>();
+builder.Services.AddScoped<IRepoPlantillaFutbolista, RepoPlantillaFutbolista>();
 builder.Services.AddScoped<IRepoFutbolista, RepoFutbolista>();
 builder.Services.AddScoped<IEstrategiaCodificacion, EstrategiaCodificacion>();
 builder.Services.AddScoped<ServiciosEquipo>();

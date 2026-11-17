@@ -83,7 +83,7 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
     public Plantilla Agregar(Plantilla plantilla)
     {
-        ArgumentNullException.ThrowIfNull(plantilla);
+        
         var parametros = new DynamicParameters();
         parametros.Add("unidPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
         parametros.Add("unnombreP", plantilla.nombreP);

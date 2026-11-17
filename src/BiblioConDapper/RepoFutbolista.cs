@@ -60,7 +60,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
 
     public Futbolista Agregar(Futbolista futbolista)
     {
-        ArgumentNullException.ThrowIfNull(futbolista);
+        
         futbolista.nombre = futbolista.nombre.Trim();
         futbolista.apellido = futbolista.apellido.Trim();
         futbolista.apodo = futbolista.apodo?.Trim();
