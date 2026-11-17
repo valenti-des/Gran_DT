@@ -25,7 +25,7 @@ public class UsuarioController : ControllerBase
                 nombre = usuario.nombre,
                 apellido = usuario.apellido,
                 fechaNac = usuario.fechaNac,
-                contrasena = usuario.contraseña,
+                contrasena = usuario.contrasena,
                 es_admin = usuario.es_admin,
                 email = usuario.email
             };
