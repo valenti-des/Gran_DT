@@ -12,8 +12,8 @@ public class TestUnidadPuraFutbolista
         {
             puntuaciones =
             [
-                new Puntuacion { numFech = 1, puntuacion = 8.4m },
-                new Puntuacion { numFech = 2, puntuacion = 6.5m }
+                new Puntuacion { nroFecha = 1, puntuacion = 8.4m },
+                new Puntuacion { nroFecha = 2, puntuacion = 6.5m }
             ]
         };
 
@@ -25,7 +25,7 @@ public class TestUnidadPuraFutbolista
     {
         var futbolista = new Futbolista
         {
-            puntuaciones = [new Puntuacion { numFech = 1, puntuacion = 8.4m }]
+            puntuaciones = [new Puntuacion { nroFecha = 1, puntuacion = 8.4m }]
         };
 
         Assert.Equal(0m, futbolista.ObtenerPuntuacionPorFecha(2));

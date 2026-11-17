@@ -31,7 +31,7 @@ public class ServiciosPuntuacion
             throw new ArgumentException("La puntuación debe estar entre 1.0 y 10.0.", nameof(puntuacion));
         }
 
-        if (puntuacion.numFech is null or < 1 or > 50)
+        if (puntuacion.nroFecha is null or < 1 or > 50)
         {
             throw new ArgumentException("El número de fecha debe estar entre 1 y 50.", nameof(puntuacion));
         }

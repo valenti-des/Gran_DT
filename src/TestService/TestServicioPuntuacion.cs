@@ -18,7 +18,7 @@ public class ServiciosPuntuacionTests
     [Fact]
     public void Agregar_PuntuacionValida_DevuelvePuntuacionCreada()
     {
-        var puntuacion = new Puntuacion { idFutbolista = 1, puntuacion = 10m, numFech = 1 };
+        var puntuacion = new Puntuacion { idFutbolista = 1, puntuacion = 10m, nroFecha = 1 };
         _repoPuntuacionMock.Setup(repo => repo.Agregar(puntuacion)).Returns(puntuacion);
 
         var resultado = _serviciosPuntuacion.Agregar(puntuacion);
@@ -30,7 +30,7 @@ public class ServiciosPuntuacionTests
     [Fact]
     public void Agregar_PuntuacionFueraDeRango_LanzaArgumentExceptionSinLlamarAlRepositorio()
     {
-        var puntuacion = new Puntuacion { puntuacion = 10.1m, numFech = 1 };
+        var puntuacion = new Puntuacion { puntuacion = 10.1m, nroFecha = 1 };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosPuntuacion.Agregar(puntuacion));
 
@@ -41,7 +41,7 @@ public class ServiciosPuntuacionTests
     [Fact]
     public void Agregar_NumeroDeFechaFueraDeRango_LanzaArgumentExceptionSinLlamarAlRepositorio()
     {
-        var puntuacion = new Puntuacion { puntuacion = 8m, numFech = 51 };
+        var puntuacion = new Puntuacion { puntuacion = 8m, nroFecha = 51 };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosPuntuacion.Agregar(puntuacion));
 
@@ -54,8 +54,8 @@ public class ServiciosPuntuacionTests
     {
         var puntuaciones = new List<Puntuacion>
         {
-            new() { idPuntuacion = 1, puntuacion = 8m, numFech = 1 },
-            new() { idPuntuacion = 2, puntuacion = 9m, numFech = 2 }
+            new() { idPuntuacion = 1, puntuacion = 8m, nroFecha = 1 },
+            new() { idPuntuacion = 2, puntuacion = 9m, nroFecha = 2 }
         };
         _repoPuntuacionMock.Setup(repo => repo.ObtenerTodos()).Returns(puntuaciones);
 
@@ -69,7 +69,7 @@ public class ServiciosPuntuacionTests
     public void ObtenerPorId_PuntuacionExiste_DevuelvePuntuacion()
     {
         const uint idBuscado = 7;
-        var puntuacion = new Puntuacion { idPuntuacion = idBuscado, puntuacion = 9m, numFech = 2 };
+        var puntuacion = new Puntuacion { idPuntuacion = idBuscado, puntuacion = 9m, nroFecha = 2 };
         _repoPuntuacionMock.Setup(repo => repo.ObtenerPorId(idBuscado)).Returns(puntuacion);
 
         var resultado = _serviciosPuntuacion.ObtenerPorId(idBuscado);

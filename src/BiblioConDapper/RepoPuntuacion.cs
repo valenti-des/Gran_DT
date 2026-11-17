@@ -29,7 +29,7 @@ public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
         parametros.Add("unidPuntuacion", dbType: DbType.UInt32, direction: ParameterDirection.Output);
         parametros.Add("unidFutbolista", puntuacion.idFutbolista);
         parametros.Add("unpuntuacion", puntuacion.puntuacion);
-        parametros.Add("unnroFecha", puntuacion.numFech);
+        parametros.Add("unnroFecha", puntuacion.nroFecha);
 
         Conexion.Execute("AltaPuntuacion", parametros, commandType: CommandType.StoredProcedure);
         puntuacion.idPuntuacion = parametros.Get<uint>("unidPuntuacion");

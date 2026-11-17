@@ -17,7 +17,7 @@ public class TestUnidadPuraPlantilla
                     futbolistaTitular = true,
                     futbolista = new Futbolista
                     {
-                        puntuaciones = [new Puntuacion { numFech = 1, puntuacion = 8.4m }]
+                        puntuaciones = [new Puntuacion { nroFecha = 1, puntuacion = 8.4m }]
                     }
                 },
                 new PlantillaFutbolista
@@ -25,7 +25,7 @@ public class TestUnidadPuraPlantilla
                     futbolistaTitular = false,
                     futbolista = new Futbolista
                     {
-                        puntuaciones = [new Puntuacion { numFech = 1, puntuacion = 9m }]
+                        puntuaciones = [new Puntuacion { nroFecha = 1, puntuacion = 9m }]
                     }
                 },
                 new PlantillaFutbolista { futbolistaTitular = true }
@@ -49,8 +49,8 @@ public class TestUnidadPuraPlantilla
                     {
                         puntuaciones =
                         [
-                            new Puntuacion { numFech = 1, puntuacion = 8.4m },
-                            new Puntuacion { numFech = 2, puntuacion = 7m }
+                            new Puntuacion { nroFecha = 1, puntuacion = 8.4m },
+                            new Puntuacion { nroFecha = 2, puntuacion = 7m }
                         ]
                     }
                 },
@@ -59,7 +59,7 @@ public class TestUnidadPuraPlantilla
                     futbolistaTitular = true,
                     futbolista = new Futbolista
                     {
-                        puntuaciones = [new Puntuacion { numFech = 1, puntuacion = 6.5m }]
+                        puntuaciones = [new Puntuacion { nroFecha = 1, puntuacion = 6.5m }]
                     }
                 }
             ]

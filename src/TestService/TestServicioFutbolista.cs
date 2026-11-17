@@ -25,7 +25,7 @@ public class ServiciosFutbolistaTests
             fechaNac = new DateOnly(1987, 6, 24),
             cotizacion = 50_000_000m,
             puntuaciones = [new Puntuacion { puntuacion = 10m,
-                                             numFech = 1 }]
+                                             nroFecha = 1 }]
         };
         _repoFutbolistaMock.Setup(repo => repo.Agregar(futbolista)).Returns(futbolista);
 
@@ -43,7 +43,7 @@ public class ServiciosFutbolistaTests
             nombre = "Lionel",
             apellido = "Messi",
             fechaNac = default,
-            puntuaciones = [new Puntuacion { puntuacion = 10m, numFech = 1 }]
+            puntuaciones = [new Puntuacion { puntuacion = 10m, nroFecha = 1 }]
         };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosFutbolista.Agregar(futbolista));

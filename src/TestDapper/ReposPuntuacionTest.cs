@@ -37,7 +37,7 @@ public class ReposPuntuacionTest : IDisposable
         Assert.NotEmpty(puntuaciones);
         Assert.Contains(puntuaciones, puntuacion =>
             puntuacion.idFutbolista == 1 &&
-            puntuacion.numFech == 1 &&
+            puntuacion.nroFecha == 1 &&
             puntuacion.puntuacion == 8.4m);
     }
 
@@ -56,7 +56,7 @@ public class ReposPuntuacionTest : IDisposable
         Assert.NotNull(encontrada);
         Assert.Equal(agregada.idPuntuacion, encontrada!.idPuntuacion);
         Assert.Equal(agregada.idFutbolista, encontrada.idFutbolista);
-        Assert.Equal(agregada.numFech, encontrada.numFech);
+        Assert.Equal(agregada.nroFecha, encontrada.nroFecha);
         Assert.Equal(agregada.puntuacion, encontrada.puntuacion);
     }
 
@@ -79,7 +79,7 @@ public class ReposPuntuacionTest : IDisposable
         return new Puntuacion
         {
             idFutbolista = idFutbolistaExistente,
-            numFech = 2,
+            nroFecha = 2,
             puntuacion = 8.4m
         };
     }

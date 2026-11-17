@@ -21,7 +21,7 @@ public class Futbolista
     // Método que busca la puntuación del jugador para una fecha específica
     public decimal ObtenerPuntuacionPorFecha(byte numFech)
     {
-        return puntuaciones.FirstOrDefault(p => p.numFech == numFech)?.puntuacion ?? 0m;
+        return puntuaciones.FirstOrDefault(p => p.nroFecha == numFech)?.puntuacion ?? 0m;
     }
 }
 
