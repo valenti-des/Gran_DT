@@ -27,32 +27,32 @@ public class ServiciosUsuarioTests
             nombre = "Ana",
             apellido = "Pérez",
             email = "ana@example.com",
-            contraseña = contraseñaOriginal
+            contrasena = contraseñaOriginal
         };
         _estrategiaCodificacionMock
             .Setup(estrategia => estrategia.codificar(contraseñaOriginal))
             .Returns(BCrypt.Net.BCrypt.HashPassword(contraseñaOriginal));
         _repoUsuarioMock
-            .Setup(repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contraseña))))
+            .Setup(repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contrasena))))
             .Returns((Usuario u) => u);
 
         var resultado = _serviciosUsuario.Agregar(usuario);
 
         Assert.Same(usuario, resultado);
-        Assert.NotEqual(contraseñaOriginal, resultado.contraseña);
-        Assert.True(BCrypt.Net.BCrypt.Verify(contraseñaOriginal, resultado.contraseña));
+        Assert.NotEqual(contraseñaOriginal, resultado.contrasena);
+        Assert.True(BCrypt.Net.BCrypt.Verify(contraseñaOriginal, resultado.contrasena));
         _estrategiaCodificacionMock.Verify(
             estrategia => estrategia.codificar(contraseñaOriginal),
             Times.Once);
         _repoUsuarioMock.Verify(
-            repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contraseña))),
+            repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contrasena))),
             Times.Once);
     }
 
     [Fact]
     public void Agregar_ContraseñaVacia_LanzaArgumentExceptionSinLlamarAlRepositorio()
     {
-        var usuario = new Usuario { contraseña = " " };
+        var usuario = new Usuario { contrasena = " " };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosUsuario.Agregar(usuario));
 

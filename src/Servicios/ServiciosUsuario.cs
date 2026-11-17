@@ -41,12 +41,12 @@ public class ServiciosUsuario
     {
         ArgumentNullException.ThrowIfNull(usuario);
 
-        if (string.IsNullOrWhiteSpace(usuario.contraseña))
+        if (string.IsNullOrWhiteSpace(usuario.contrasena))
         {
             throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
         }
 
-        usuario.contraseña = _estrategiaCodificacion.codificar(usuario.contraseña);
+        usuario.contrasena = _estrategiaCodificacion.codificar(usuario.contrasena);
         return _repository.Agregar(usuario);
     }
 

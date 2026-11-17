@@ -4,9 +4,9 @@ namespace Biblio
 {
     public class EstrategiaCodificacion : IEstrategiaCodificacion
     {
-        public string codificar(string contraseña)
+        public string codificar(string contrasena)
         {
-            return BCrypt.Net.BCrypt.HashPassword(contraseña);
+            return BCrypt.Net.BCrypt.HashPassword(contrasena);
         }
     }
 }

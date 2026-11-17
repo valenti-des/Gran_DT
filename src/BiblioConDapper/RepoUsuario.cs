@@ -43,7 +43,7 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
             Apellido = usuario.apellido,
             Email = usuario.email,
             FechaNac = usuario.fechaNac,
-            Contrasena = usuario.contraseña,
+            Contrasena = usuario.contrasena,
             EsAdmin = usuario.es_admin
         });
 

@@ -48,7 +48,7 @@ public class ReposUsuarioTest : IDisposable
             apellido = "Test",
             email = email,
             fechaNac = new DateOnly(1998, 04, 12),
-            contraseña = "abc123",
+            contrasena = "abc123",
             es_admin = false
         };
 
@@ -73,7 +73,7 @@ public class ReposUsuarioTest : IDisposable
             apellido = "Delete",
             email = email,
             fechaNac = new DateOnly(1995, 08, 22),
-            contraseña = "secret123",
+            contrasena = "secret123",
             es_admin = false
         };
 

@@ -9,7 +9,7 @@ public class Usuario
     public string apellido { get; set; } = string.Empty;
     public string email { get; set; } = string.Empty;
     public DateOnly? fechaNac { get; set; } // Cambiado a DateOnly
-    public string contraseña { get; set; } = string.Empty;
+    public string contrasena { get; set; } = string.Empty;
     public bool es_admin { get; set; }
 
 }
