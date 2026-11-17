@@ -7,10 +7,14 @@ namespace Servicios;
 public class ServiciosUsuario
 {
     private readonly IRepoUsuario _repository;
+    private readonly IEstrategiaCodificacion _estrategiaCodificacion;
 
-    public ServiciosUsuario(IRepoUsuario repository)
+    public ServiciosUsuario(
+        IRepoUsuario repository,
+        IEstrategiaCodificacion estrategiaCodificacion)
     {
         _repository = repository;
+        _estrategiaCodificacion = estrategiaCodificacion;
     }
 
     public List<Usuario> ObtenerTodos()
@@ -42,7 +46,7 @@ public class ServiciosUsuario
             throw new ArgumentException("La contraseña es obligatoria.", nameof(usuario));
         }
 
-        usuario.contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.contraseña);
+        usuario.contraseña = _estrategiaCodificacion.codificar(usuario.contraseña);
         return _repository.Agregar(usuario);
     }
 

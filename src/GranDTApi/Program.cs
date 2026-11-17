@@ -1,5 +1,6 @@
 using Scalar.AspNetCore;
 using System.Data;
+using Biblio;
 using BiblioConDapper;
 using Biblio.IRepo;
 using MySqlConnector;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IRepoPuntuacion, RepoPuntuacion>();
 builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
 builder.Services.AddScoped<IRepoPlantilla, RepoPlantilla>();
 builder.Services.AddScoped<IRepoFutbolista, RepoFutbolista>();
+builder.Services.AddScoped<IEstrategiaCodificacion, EstrategiaCodificacion>();
 builder.Services.AddScoped<ServiciosEquipo>();
 builder.Services.AddScoped<ServiciosPuntuacion>();
 builder.Services.AddScoped<ServiciosUsuario>();

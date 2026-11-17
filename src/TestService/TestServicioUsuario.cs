@@ -8,11 +8,14 @@ namespace GranDTApi.Tests.Services;
 public class ServiciosUsuarioTests
 {
     private readonly Mock<IRepoUsuario> _repoUsuarioMock = new();
+    private readonly Mock<IEstrategiaCodificacion> _estrategiaCodificacionMock = new();
     private readonly ServiciosUsuario _serviciosUsuario;
 
     public ServiciosUsuarioTests()
     {
-        _serviciosUsuario = new ServiciosUsuario(_repoUsuarioMock.Object);
+        _serviciosUsuario = new ServiciosUsuario(
+            _repoUsuarioMock.Object,
+            _estrategiaCodificacionMock.Object);
     }
 
     [Fact]
@@ -26,6 +29,9 @@ public class ServiciosUsuarioTests
             email = "ana@example.com",
             contraseña = contraseñaOriginal
         };
+        _estrategiaCodificacionMock
+            .Setup(estrategia => estrategia.codificar(contraseñaOriginal))
+            .Returns(BCrypt.Net.BCrypt.HashPassword(contraseñaOriginal));
         _repoUsuarioMock
             .Setup(repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contraseña))))
             .Returns((Usuario u) => u);
@@ -35,6 +41,9 @@ public class ServiciosUsuarioTests
         Assert.Same(usuario, resultado);
         Assert.NotEqual(contraseñaOriginal, resultado.contraseña);
         Assert.True(BCrypt.Net.BCrypt.Verify(contraseñaOriginal, resultado.contraseña));
+        _estrategiaCodificacionMock.Verify(
+            estrategia => estrategia.codificar(contraseñaOriginal),
+            Times.Once);
         _repoUsuarioMock.Verify(
             repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contraseña))),
             Times.Once);
