@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Biblio;
-using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
@@ -10,14 +9,10 @@ namespace GranDTApi.Controllers;
 public class PlantillaController : ControllerBase
 {
     private readonly ServiciosPlantilla _serviciosPlantilla;
-    private readonly IRepoPlantillaFutbolista _plantillaFutbolistaRepository;
 
-    public PlantillaController(
-        ServiciosPlantilla serviciosPlantilla,
-        IRepoPlantillaFutbolista plantillaFutbolistaRepository)
+    public PlantillaController(ServiciosPlantilla serviciosPlantilla)
     {
         _serviciosPlantilla = serviciosPlantilla;
-        _plantillaFutbolistaRepository = plantillaFutbolistaRepository;
     }
 
     [HttpPost]
@@ -85,29 +80,22 @@ public class PlantillaController : ControllerBase
     {
         try
         {
-            var plantilla = _serviciosPlantilla.ObtenerPorId(idPlantilla);
-            if (plantilla is null)
-                return NotFound(new { error = "La plantilla no existe." });
-
-            if (_plantillaFutbolistaRepository.ObtenerPorId(idPlantilla, solicitud.idFutbolista) is not null)
-                return Conflict(new { error = "El futbolista ya está asociado a esta plantilla." });
-
-            const byte cantidadMaxima = 20;
-            if (plantilla.detalles.Count >= cantidadMaxima)
-                return Conflict(new { error = "La plantilla alcanzó su cantidad máxima de futbolistas." });
-
-            var asociacion = new PlantillaFutbolista
-            {
-                idPlantilla = idPlantilla,
-                idFutbolista = solicitud.idFutbolista,
-                futbolistaTitular = solicitud.futbolistaTitular
-            };
-
-            _plantillaFutbolistaRepository.Agregar(asociacion);
+            var asociacion = _serviciosPlantilla.AgregarFutbolista(
+                idPlantilla,
+                solicitud.idFutbolista,
+                solicitud.futbolistaTitular);
             return CreatedAtAction(
                 nameof(ObtenerFutbolista),
                 new { idPlantilla, idFutbolista = solicitud.idFutbolista },
                 asociacion);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
         }
         catch (Exception ex)
         {
@@ -120,7 +108,7 @@ public class PlantillaController : ControllerBase
     {
         try
         {
-            var asociacion = _plantillaFutbolistaRepository.ObtenerPorId(idPlantilla, idFutbolista);
+            var asociacion = _serviciosPlantilla.ObtenerFutbolista(idPlantilla, idFutbolista);
             if (asociacion is null)
                 return NotFound(new { error = "El futbolista no está asociado a esta plantilla." });
 

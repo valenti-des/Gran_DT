@@ -8,11 +8,14 @@ namespace GranDTApi.Tests.Services;
 public class ServiciosPlantillaTests
 {
     private readonly Mock<IRepoPlantilla> _repoPlantillaMock = new();
+    private readonly Mock<IRepoPlantillaFutbolista> _repoPlantillaFutbolistaMock = new();
     private readonly ServiciosPlantilla _serviciosPlantilla;
 
     public ServiciosPlantillaTests()
     {
-        _serviciosPlantilla = new ServiciosPlantilla(_repoPlantillaMock.Object);
+        _serviciosPlantilla = new ServiciosPlantilla(
+            _repoPlantillaMock.Object,
+            _repoPlantillaFutbolistaMock.Object);
     }
 
     [Fact]
@@ -115,5 +118,53 @@ public class ServiciosPlantillaTests
 
         Assert.True(resultado);
         _repoPlantillaMock.Verify(repo => repo.Eliminar(idAEliminar), Times.Once);
+    }
+
+    [Fact]
+    public void AgregarFutbolista_PlantillaInexistente_LanzaKeyNotFoundException()
+    {
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns((Plantilla?)null);
+
+        var excepcion = Assert.Throws<KeyNotFoundException>(
+            () => _serviciosPlantilla.AgregarFutbolista(1, 10, true));
+
+        Assert.Equal("La plantilla no existe.", excepcion.Message);
+        _repoPlantillaFutbolistaMock.Verify(
+            repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
+    }
+
+    [Fact]
+    public void AgregarFutbolista_FutbolistaYaAsociado_LanzaInvalidOperationException()
+    {
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(new Plantilla());
+        _repoPlantillaFutbolistaMock
+            .Setup(repo => repo.ObtenerPorId(1, 10))
+            .Returns(new PlantillaFutbolista());
+
+        var excepcion = Assert.Throws<InvalidOperationException>(
+            () => _serviciosPlantilla.AgregarFutbolista(1, 10, true));
+
+        Assert.Equal("El futbolista ya está asociado a esta plantilla.", excepcion.Message);
+        _repoPlantillaFutbolistaMock.Verify(
+            repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
+    }
+
+    [Fact]
+    public void AgregarFutbolista_PlantillaCompleta_LanzaInvalidOperationException()
+    {
+        var plantillaCompleta = new Plantilla
+        {
+            detalles = Enumerable.Range(1, 20)
+                .Select(_ => new PlantillaFutbolista())
+                .ToList()
+        };
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(plantillaCompleta);
+
+        var excepcion = Assert.Throws<InvalidOperationException>(
+            () => _serviciosPlantilla.AgregarFutbolista(1, 10, true));
+
+        Assert.Equal("La plantilla alcanzó su cantidad máxima de futbolistas.", excepcion.Message);
+        _repoPlantillaFutbolistaMock.Verify(
+            repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
     }
 }
