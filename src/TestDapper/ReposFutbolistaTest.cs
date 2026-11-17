@@ -12,16 +12,22 @@ public class ReposFutbolistaTest : IDisposable
     private readonly MySqlConnection _conexion;
     private readonly RepoFutbolista _repo;
     private readonly Idbconection _db;
+    private ushort _idFutbolistaCreado;
 
     public ReposFutbolistaTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion();
+        _conexion = _db.EstablecerConexion()!;
         _repo = new RepoFutbolista(_conexion);
     }
 
+    public void Dispose()
+    {
+        if (_idFutbolistaCreado != 0)
+            _repo.Eliminar(_idFutbolistaCreado);
 
-    public void Dispose() => _db.CerrarConexion();
+        _db.CerrarConexion();
+    }
 
     [Fact]
     public void ObtenerTodos_DeberiaRetornarJugadoresExistentes()
@@ -35,7 +41,7 @@ public class ReposFutbolistaTest : IDisposable
     [Fact]
     public void AgregarYObtenerPorId_DeberiaGuardarJugador()
     {
-        var nombre = GenerarNombreFutbolista("Jugador");
+        var nombre = "Jugador_Test";
         var futbolista = new Futbolista
         {
             nombre = nombre,
@@ -48,6 +54,7 @@ public class ReposFutbolistaTest : IDisposable
         };
 
         var agregado = _repo.Agregar(futbolista);
+        _idFutbolistaCreado = agregado.idFutbolista;
 
         Assert.NotEqual((ushort)0, agregado.idFutbolista);
         Assert.Equal(nombre, agregado.nombre);
@@ -62,7 +69,7 @@ public class ReposFutbolistaTest : IDisposable
     {
         var futbolista = new Futbolista
         {
-            nombre = GenerarNombreFutbolista("Jugador_Eliminar"),
+            nombre = "Jugador_Eliminar",
             apellido = "Delete",
             apodo = "Borrar",
             fechaNac = new DateOnly(1999, 06, 10),
@@ -71,9 +78,10 @@ public class ReposFutbolistaTest : IDisposable
             idTipoFutbolista = 1
         };
 
-        _repo.Agregar(futbolista);
+        var agregado = _repo.Agregar(futbolista);
+        _idFutbolistaCreado = agregado.idFutbolista;
 
-        Assert.True(_repo.Eliminar(futbolista.idFutbolista));
-        Assert.Null(_repo.ObtenerPorId(futbolista.idFutbolista));
+        Assert.True(_repo.Eliminar(agregado.idFutbolista));
+        Assert.Null(_repo.ObtenerPorId(agregado.idFutbolista));
     }
 }

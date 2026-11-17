@@ -12,15 +12,22 @@ public class ReposPlantillaTest : IDisposable
     private readonly MySqlConnection _conexion;
     private readonly RepoPlantilla _repo;
     private readonly Idbconection _db;
+    private byte _idPlantillaCreada;
 
     public ReposPlantillaTest()
     {
         _db = new Idbconection();
-        _conexion = _db.EstablecerConexion();
+        _conexion = _db.EstablecerConexion()!;
         _repo = new RepoPlantilla(_conexion);
     }
 
-    public void Dispose() => _db.CerrarConexion();
+    public void Dispose()
+    {
+        if (_idPlantillaCreada != 0)
+            _repo.Eliminar(_idPlantillaCreada);
+
+        _db.CerrarConexion();
+    }
 
     [Fact]
     public void ObtenerTodos_DeberiaRetornarPlantillasExistentes()
@@ -46,15 +53,16 @@ public class ReposPlantillaTest : IDisposable
     {
         var plantilla = new Plantilla
         {
-            nombreP = GenerarNombrePlantilla("Plantilla_Eliminar"),
+            nombreP = "Plantilla_Eliminar",
             cantMaxMonto = 1000000m,
             cantMaxFutbolista = 11,
             idUsuario = 1
         };
 
-        _repo.Agregar(plantilla);
+        var agregada = _repo.Agregar(plantilla);
+        _idPlantillaCreada = agregada.idPlantilla;
 
-        Assert.True(_repo.Eliminar(plantilla.idPlantilla));
-        Assert.Null(_repo.ObtenerPorId(plantilla.idPlantilla));
+        Assert.True(_repo.Eliminar(agregada.idPlantilla));
+        Assert.Null(_repo.ObtenerPorId(agregada.idPlantilla));
     }
 }
