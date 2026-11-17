@@ -1,6 +1,6 @@
-using Biblio; // Ajusta según el namespace de tu modelo Futbolista
-using Biblio.IRepo;
+using Biblio;
 using Microsoft.AspNetCore.Mvc;
+using Servicios;
 
 namespace GranDTApi.Controllers
 {
@@ -8,11 +8,11 @@ namespace GranDTApi.Controllers
     [Route("futbolistas")]
     public class FutbolistasController : ControllerBase
     {
-        private readonly IRepoFutbolista _futbolistaController;
+        private readonly ServiciosFutbolista _serviciosFutbolista;
 
-        public FutbolistasController(IRepoFutbolista futbolistaControllerr)
+        public FutbolistasController(ServiciosFutbolista serviciosFutbolista)
         {
-            _futbolistaController = futbolistaControllerr;
+            _serviciosFutbolista = serviciosFutbolista;
         }
 
         [HttpPost]
@@ -32,40 +32,49 @@ namespace GranDTApi.Controllers
                     puntuaciones = futbolista.puntuaciones ?? new List<Puntuacion>()
                 };
 
-                var creado = _futbolistaController.Agregar(nuevoFutbolista);
+                var creado = _serviciosFutbolista.Agregar(nuevoFutbolista);
                 return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idFutbolista }, creado);
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Ocurrió un error al crear el futbolista." });
+                return StatusCode(500, new { error = ex.Message });
             }
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Futbolista>> ObtenerTodos()
         {
-            try{
-                return Ok(_futbolistaController.ObtenerTodos());
-            }
-            catch (Exception)
+            try
             {
-                return StatusCode(500, new { error = "Ocurrió un error al crear el futbolista." });
+                return Ok(_serviciosFutbolista.ObtenerTodos());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
             }
         }
 
         [HttpGet("{id}")]
         public ActionResult<Futbolista> ObtenerPorId(ushort id)
         {
-            Futbolista? futbolista = _futbolistaController.ObtenerPorId(id);
-            if (futbolista == null)
+            try
             {
-                return NotFound(new { error = "El futbolista no existe." });
+                var futbolista = _serviciosFutbolista.ObtenerPorId(id);
+                if (futbolista == null)
+                {
+                    return NotFound(new { error = "El futbolista no existe." });
+                }
+
+                return Ok(futbolista);
             }
-            return Ok(futbolista);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
@@ -73,19 +82,19 @@ namespace GranDTApi.Controllers
         {
             try
             {
-                var futbolista = _futbolistaController.ObtenerPorId(id);
+                var futbolista = _serviciosFutbolista.ObtenerPorId(id);
                 if (futbolista is null)
                     return NotFound(new { error = "El futbolista no existe." });
 
-                var eliminado = _futbolistaController.Eliminar(id);
+                var eliminado = _serviciosFutbolista.Eliminar(id);
                 if (!eliminado)
                     return StatusCode(500, new { error = "No se pudo eliminar el futbolista." });
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Ocurrió un error al eliminar el futbolista." });
+                return StatusCode(500, new { error = ex.Message });
             }
         }
     }

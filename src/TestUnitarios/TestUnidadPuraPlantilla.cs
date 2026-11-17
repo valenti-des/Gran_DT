@@ -80,7 +80,7 @@ public class TestUnidadPuraPlantilla
         var plantilla = new PlantillaCreacion();
 
         Assert.Equal(string.Empty, plantilla.nombreP);
-        Assert.Null(plantilla.idUsuario);
+        Assert.Equal((ushort)0, plantilla.idUsuario);
         Assert.Empty(plantilla.detalles);
 
         plantilla.nombreP = "Plantilla de prueba";
@@ -88,7 +88,7 @@ public class TestUnidadPuraPlantilla
         plantilla.detalles.Add(new PlantillaFutbolista { idFutbolista = 3 });
 
         Assert.Equal("Plantilla de prueba", plantilla.nombreP);
-        Assert.Equal((short)2, plantilla.idUsuario);
+        Assert.Equal((ushort)2, plantilla.idUsuario);
         Assert.Single(plantilla.detalles);
     }
 }

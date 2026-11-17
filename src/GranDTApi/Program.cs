@@ -17,13 +17,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddScoped<IDbConnection>(_ =>
 {
     var connectionString = builder.Configuration.GetConnectionString("GranDT");
-
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new InvalidOperationException(
-            "Configura ConnectionStrings:GranDT antes de usar los endpoints que consultan la base de datos.");
-    }
-
     return new MySqlConnection(connectionString);
 });
 builder.Services.AddScoped<IRepoEquipo, RepoEquipo>();

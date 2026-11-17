@@ -11,7 +11,7 @@ public class TestUnidadPuraPlantillaFutbolista
         var detalle = new PlantillaFutbolistaCreacion();
 
         Assert.False(detalle.futbolistaTitular);
-        Assert.Equal((byte)0, detalle.idPlantilla);
+        Assert.Equal((uint)0, detalle.idPlantilla);
         Assert.Equal((ushort)0, detalle.idFutbolista);
         Assert.Null(detalle.futbolista);
 
@@ -22,7 +22,7 @@ public class TestUnidadPuraPlantillaFutbolista
         detalle.futbolista = futbolista;
 
         Assert.True(detalle.futbolistaTitular);
-        Assert.Equal((byte)2, detalle.idPlantilla);
+        Assert.Equal((uint)2, detalle.idPlantilla);
         Assert.Equal((ushort)3, detalle.idFutbolista);
         Assert.Same(futbolista, detalle.futbolista);
     }

@@ -1,90 +1,98 @@
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using Biblio;
-using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class UsuarioController : ControllerBase
 {
-     private readonly IRepoUsuario _UsuarioRepository;
-        public UsuarioController(IRepoUsuario UsuarioRepository)
-        {
-            _UsuarioRepository = UsuarioRepository;
-        }
-        [HttpPost]
-        public ActionResult<Usuario> Agregar([FromBody] UsuarioCreacion usuario)
-        {
-            try
-            {
-                var nuevoUsuario = new Usuario
-                {
-                    nombre = usuario.nombre,
-                    apellido = usuario.apellido,
-                    fechaNac = usuario.fechaNac,
-                    contraseña = usuario.contraseña,
-                    es_admin = usuario.es_admin,
-                    email = usuario.email
-                };
+    private readonly ServiciosUsuario _serviciosUsuario;
 
-                var creado = _UsuarioRepository.Agregar(nuevoUsuario);
-                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idUsuario.ToString() }, creado);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al crear el Usuario." });
-            }
-        }
-        [HttpGet]
-        public ActionResult<IEnumerable<Usuario>> ObtenerTodos()
-        {
-            try{
-                return Ok(_UsuarioRepository.ObtenerTodos());
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al crear el Usuario." });
-            }
-        }
+    public UsuarioController(ServiciosUsuario serviciosUsuario)
+    {
+        _serviciosUsuario = serviciosUsuario;
+    }
 
-        [HttpGet("{id}")]
-        public ActionResult<Usuario> ObtenerPorId(byte idUsuario)
+    [HttpPost]
+    public ActionResult<Usuario> Agregar([FromBody] UsuarioCreacion usuario)
+    {
+        try
         {
-            Usuario? usuario = _UsuarioRepository.ObtenerPorId(idUsuario);
+            var nuevoUsuario = new Usuario
+            {
+                nombre = usuario.nombre,
+                apellido = usuario.apellido,
+                fechaNac = usuario.fechaNac,
+                contraseña = usuario.contraseña,
+                es_admin = usuario.es_admin,
+                email = usuario.email
+            };
+
+            var creado = _serviciosUsuario.Agregar(nuevoUsuario);
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idUsuario }, creado);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<Usuario>> ObtenerTodos()
+    {
+        try
+        {
+            return Ok(_serviciosUsuario.ObtenerTodos());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Usuario> ObtenerPorId(byte idUsuario)
+    {
+        try
+        {
+            var usuario = _serviciosUsuario.ObtenerPorId(idUsuario);
             if (usuario == null)
             {
                 return NotFound(new { error = "El usuario no existe." });
             }
+
             return Ok(usuario);
         }
-
-        [HttpDelete("{id}")]
-        public ActionResult Eliminar(ushort idUsuario)
+        catch (Exception ex)
         {
-            try
-            {
-                var usuario = _UsuarioRepository.ObtenerPorId(idUsuario);
-                if (usuario is null)
-                    return NotFound(new { error = "El usuario no existe." });
-
-                var eliminado = _UsuarioRepository.Eliminar(idUsuario);
-                if (!eliminado)
-                    return StatusCode(500, new { error = "No se pudo eliminar el usuario." });
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al eliminar el usuario." });
-            }
+            return StatusCode(500, new { error = ex.Message });
         }
-        
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult Eliminar(ushort idUsuario)
+    {
+        try
+        {
+            var usuario = _serviciosUsuario.ObtenerPorId(idUsuario);
+            if (usuario is null)
+                return NotFound(new { error = "El usuario no existe." });
+
+            var eliminado = _serviciosUsuario.Eliminar(idUsuario);
+            if (!eliminado)
+                return StatusCode(500, new { error = "No se pudo eliminar el usuario." });
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
 }

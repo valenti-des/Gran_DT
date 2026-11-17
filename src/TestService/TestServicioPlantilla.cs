@@ -21,8 +21,8 @@ public class ServiciosPlantillaTests
         var plantilla = new Plantilla
         {
             nombreP = "  Mi plantilla  ",
-            cantMaxMonto = 100m,
-            cantMaxFutbolista = 20
+            presupuesto = 100m,
+            cantFutbolista = 20
         };
         _repoPlantillaMock.Setup(repo => repo.Agregar(plantilla)).Returns(plantilla);
 
@@ -50,13 +50,13 @@ public class ServiciosPlantillaTests
         var plantilla = new Plantilla
         {
             nombreP = "Mi plantilla",
-            cantMaxMonto = -1m,
-            cantMaxFutbolista = 20
+            presupuesto = -1m,
+            cantFutbolista = 20
         };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosPlantilla.Agregar(plantilla));
 
-        Assert.StartsWith("La cantidad máxima de monto no puede ser negativa", excepcion.Message);
+        Assert.StartsWith("El presupuesto no puede ser negativo.", excepcion.Message);
         _repoPlantillaMock.Verify(repo => repo.Agregar(It.IsAny<Plantilla>()), Times.Never);
     }
 
@@ -66,8 +66,8 @@ public class ServiciosPlantillaTests
         var plantilla = new Plantilla
         {
             nombreP = "Mi plantilla",
-            cantMaxMonto = 100m,
-            cantMaxFutbolista = 21
+            presupuesto = 100m,
+            cantFutbolista = 21
         };
 
         var excepcion = Assert.Throws<ArgumentException>(() => _serviciosPlantilla.Agregar(plantilla));

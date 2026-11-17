@@ -8,7 +8,7 @@ namespace BiblioConDapper;
 public class RepoPlantilla : RepoDapper, IRepoPlantilla
 {
     private const string SelectSql = @"
-        SELECT idPlantilla, nombreP, cantMaxMonto, cantMaxFutbolista, idUsuario
+        SELECT idPlantilla, nombreP, presupuesto, cantFutbolista, idUsuario
         FROM Plantilla";
 
     public RepoPlantilla(IDbConnection conexion) : base(conexion)
@@ -22,7 +22,7 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
         return plantillas;
     }
 
-    public Plantilla? ObtenerPorId(ushort id)
+    public Plantilla? ObtenerPorId(uint id)
     {
         var plantilla = Conexion.QuerySingleOrDefault<Plantilla>(
             $"{SelectSql} WHERE idPlantilla = @Id LIMIT 1",
@@ -83,20 +83,18 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
     public Plantilla Agregar(Plantilla plantilla)
     {
-        
         var parametros = new DynamicParameters();
-        parametros.Add("unidPlantilla", dbType: DbType.Byte, direction: ParameterDirection.Output);
+        parametros.Add("unidPlantilla", dbType: DbType.UInt32, direction: ParameterDirection.Output);
         parametros.Add("unnombreP", plantilla.nombreP);
-        parametros.Add("uncantMaxMonto", plantilla.cantMaxMonto);
-        parametros.Add("uncantMaxFutbolista", plantilla.cantMaxFutbolista);
+        parametros.Add("unpresupuesto", plantilla.presupuesto);
         parametros.Add("unidUsuario", plantilla.idUsuario);
 
         Conexion.Execute("AltaPlantilla", parametros, commandType: CommandType.StoredProcedure);
-        plantilla.idPlantilla = parametros.Get<byte>("unidPlantilla");
+        plantilla.idPlantilla = parametros.Get<uint>("unidPlantilla");
 
         return plantilla;
     }
 
-    public bool Eliminar(ushort id) =>
+    public bool Eliminar(uint id) =>
         Conexion.Execute("DELETE FROM Plantilla WHERE idPlantilla = @Id", new { Id = id }) > 0;
 }

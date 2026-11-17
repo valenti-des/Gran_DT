@@ -18,7 +18,7 @@ public class ServiciosPlantilla
         return _repository.ObtenerTodos();
     }
 
-    public Plantilla? ObtenerPorId(ushort id)
+    public Plantilla? ObtenerPorId(uint id)
     {
         return _repository.ObtenerPorId(id);
     }
@@ -32,12 +32,12 @@ public class ServiciosPlantilla
             throw new ArgumentException("La plantilla debe tener un nombre.", nameof(plantilla));
         }
 
-        if (plantilla.cantMaxMonto is < 0)
+        if (plantilla.presupuesto < 0m)
         {
-            throw new ArgumentException("La cantidad máxima de monto no puede ser negativa debe ser valores positiva.", nameof(plantilla));
+            throw new ArgumentException("El presupuesto no puede ser negativo.", nameof(plantilla));
         }
 
-        if (plantilla.cantMaxFutbolista is < 1 or > 20)
+        if (plantilla.cantFutbolista > 20)
         {
             throw new ArgumentException("La cantidad máxima de futbolistas por plantilla debe ser entre 1 y 20.", nameof(plantilla));
         }
@@ -46,7 +46,7 @@ public class ServiciosPlantilla
         return _repository.Agregar(plantilla);
     }
 
-    public bool Eliminar(ushort id)
+    public bool Eliminar(uint id)
     {
         return _repository.Eliminar(id);
     }

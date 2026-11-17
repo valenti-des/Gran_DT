@@ -1,88 +1,95 @@
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using Biblio;
-using Biblio.IRepo;
 using Servicios;
 
 namespace GranDTApi.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class PuntuacionController : ControllerBase
 {
-     private readonly IRepoPuntuacion _PuntuacionRepository;
-        public PuntuacionController(IRepoPuntuacion PuntuacionRepository)
-        {
-            _PuntuacionRepository = PuntuacionRepository;
-        }
-        [HttpPost]
-        public ActionResult<Puntuacion> Agregar([FromBody] PuntuacionCreacion puntuacion)
-        {
-            try
-            {
-                var nuevaPuntuacion = new Puntuacion
-                {
-                    idFutbolista = puntuacion.idFutbolista,
-                    puntuacion = puntuacion.puntuacion,
-                    numFech = puntuacion.numFech
-                };
+    private readonly ServiciosPuntuacion _serviciosPuntuacion;
 
-                var creado = _PuntuacionRepository.Agregar(nuevaPuntuacion);
-                return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idPuntuacion.ToString() }, creado);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al crear la Puntuación." });
-            }
-        }
-        
-        [HttpGet]
-        public ActionResult<IEnumerable<Puntuacion>> ObtenerTodos()
-        {
-            try{
-                return Ok(_PuntuacionRepository.ObtenerTodos());
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al crear la Puntuación." });
-            }
-        }
+    public PuntuacionController(ServiciosPuntuacion serviciosPuntuacion)
+    {
+        _serviciosPuntuacion = serviciosPuntuacion;
+    }
 
-        [HttpGet("{id}")]
-        public ActionResult<Puntuacion> ObtenerPorId(byte idPuntuacion)
+    [HttpPost]
+    public ActionResult<Puntuacion> Agregar([FromBody] PuntuacionCreacion puntuacion)
+    {
+        try
         {
-            Puntuacion? puntuacion = _PuntuacionRepository.ObtenerPorId(idPuntuacion);
+            var nuevaPuntuacion = new Puntuacion
+            {
+                idFutbolista = puntuacion.idFutbolista,
+                puntuacion = puntuacion.puntuacion,
+                numFech = puntuacion.numFech
+            };
+
+            var creado = _serviciosPuntuacion.Agregar(nuevaPuntuacion);
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idPuntuacion }, creado);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<Puntuacion>> ObtenerTodos()
+    {
+        try
+        {
+            return Ok(_serviciosPuntuacion.ObtenerTodos());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Puntuacion> ObtenerPorId(byte idPuntuacion)
+    {
+        try
+        {
+            var puntuacion = _serviciosPuntuacion.ObtenerPorId(idPuntuacion);
             if (puntuacion == null)
             {
                 return NotFound(new { error = "La puntuación no existe." });
             }
+
             return Ok(puntuacion);
         }
-
-        [HttpDelete("{id}")]
-        public ActionResult Eliminar(uint idPuntuacion)
+        catch (Exception ex)
         {
-            try
-            {
-                var puntuacion = _PuntuacionRepository.ObtenerPorId(idPuntuacion);
-                if (puntuacion is null)
-                    return NotFound(new { error = "La puntuación no existe." });
-
-                var eliminado = _PuntuacionRepository.Eliminar(idPuntuacion);
-                if (!eliminado)
-                    return StatusCode(500, new { error = "No se pudo eliminar la puntuación." });
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { error = "Ocurrió un error al eliminar la puntuación." });
-            }
+            return StatusCode(500, new { error = ex.Message });
         }
-        
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult Eliminar(uint idPuntuacion)
+    {
+        try
+        {
+            var puntuacion = _serviciosPuntuacion.ObtenerPorId(idPuntuacion);
+            if (puntuacion is null)
+                return NotFound(new { error = "La puntuación no existe." });
+
+            var eliminado = _serviciosPuntuacion.Eliminar(idPuntuacion);
+            if (!eliminado)
+                return StatusCode(500, new { error = "No se pudo eliminar la puntuación." });
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
 }

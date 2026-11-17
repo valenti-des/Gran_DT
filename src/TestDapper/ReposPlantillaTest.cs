@@ -12,7 +12,7 @@ public class ReposPlantillaTest : IDisposable
     private readonly MySqlConnection _conexion;
     private readonly RepoPlantilla _repo;
     private readonly Idbconection _db;
-    private byte _idPlantillaCreada;
+    private uint _idPlantillaCreada;
 
     public ReposPlantillaTest()
     {
@@ -54,8 +54,8 @@ public class ReposPlantillaTest : IDisposable
         var plantilla = new Plantilla
         {
             nombreP = "Plantilla_Eliminar",
-            cantMaxMonto = 1000000m,
-            cantMaxFutbolista = 11,
+            presupuesto = 1000000m,
+            cantFutbolista = 11,
             idUsuario = 1
         };
 
