@@ -77,8 +77,8 @@ CREATE TABLE Puntuacion (
 CREATE TABLE Plantilla (
     idPlantilla INT UNSIGNED AUTO_INCREMENT,
     nombreP VARCHAR(45) NOT NULL,
-    cantMaxMonto DECIMAL(10,2) NOT NULL DEFAULT 99999999.99,
-    cantMaxFutbolista TINYINT UNSIGNED NOT NULL DEFAULT 20,
+    presupuesto DECIMAL(10,2) NOT NULL,
+    cantFutbolista TINYINT UNSIGNED NOT NULL,
     idUsuario SMALLINT UNSIGNED NOT NULL,
     CONSTRAINT pk_Plantilla PRIMARY KEY (idPlantilla),
     CONSTRAINT fk_Plantilla_Usuario FOREIGN KEY (idUsuario) 
@@ -98,3 +98,6 @@ CREATE TABLE Futbolista_Plantilla (
     CONSTRAINT fk_FP_Futbolista FOREIGN KEY (idFutbolista) 
         REFERENCES Futbolista (idFutbolista) ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+
+
