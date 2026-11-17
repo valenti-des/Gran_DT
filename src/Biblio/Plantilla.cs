@@ -5,11 +5,11 @@ namespace Biblio;
 
 public class Plantilla
 {
-    public byte idPlantilla { get; set; }
+    public uint idPlantilla { get; set; }
     public string nombreP { get; set; } = string.Empty;
-    public decimal? cantMaxMonto { get; set; }
-    public byte? cantMaxFutbolista { get; set; }
-    public short? idUsuario { get; set; }
+    public decimal presupuesto { get; set; }
+    public byte cantFutbolista { get; set; }
+    public ushort idUsuario { get; set; }
 
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
@@ -22,6 +22,6 @@ public class Plantilla
 public class PlantillaCreacion
 {
     public string nombreP { get; set; } = string.Empty;
-    public short? idUsuario { get; set; }
+    public ushort idUsuario { get; set; }
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 }
