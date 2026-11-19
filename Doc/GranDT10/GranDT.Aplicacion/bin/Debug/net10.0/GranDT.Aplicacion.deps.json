@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "GranDT.Aplicacion/1.0.0": {
+        "dependencies": {
+          "GranDT.Dominio": "1.0.0"
+        },
+        "runtime": {
+          "GranDT.Aplicacion.dll": {}
+        }
+      },
+      "GranDT.Dominio/1.0.0": {
+        "runtime": {
+          "GranDT.Dominio.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GranDT.Aplicacion/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GranDT.Dominio/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

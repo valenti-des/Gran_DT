@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="GranDT.Dominio/GranDT.Dominio.csproj" />
+  <Project Path="GranDT.Aplicacion/GranDT.Aplicacion.csproj" />
+  <Project Path="GranDT.Infraestructura/GranDT.Infraestructura.csproj" />
+  <Project Path="GranDT.Api/GranDT.Api.csproj" />
+  <Project Path="GranDT.Pruebas/GranDT.Pruebas.csproj" />
+</Solution>

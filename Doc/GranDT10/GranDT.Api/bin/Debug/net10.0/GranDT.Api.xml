@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GranDT.Api</name>
+    </assembly>
+    <members>
+        <member name="M:GranDT.Api.Controllers.EquipoController.Listar(System.Threading.CancellationToken)">
+            <summary>Lista todos los equipos.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.FutbolistaController.Listar(System.Threading.CancellationToken)">
+            <summary>Lista futbolistas.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.FutbolistaController.Obtener(System.Int64,System.Threading.CancellationToken)">
+            <summary>Consulta un futbolista por identificador.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.FutbolistaController.Crear(GranDT.Api.CrearFutbolistaHttp,System.Threading.CancellationToken)">
+            <summary>Crea un futbolista y, opcionalmente, registra puntuaciones iniciales.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.FutbolistaController.Actualizar(System.Int64,GranDT.Api.ActualizarFutbolistaHttp,System.Threading.CancellationToken)">
+            <summary>Actualiza los datos y la cotización de un futbolista.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PlantillaController.Obtener(System.Int64,System.Threading.CancellationToken)">
+            <summary>Consulta una plantilla con sus futbolistas.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PlantillaController.Agregar(System.Int64,GranDT.Api.AgregarJugadorHttp,System.Threading.CancellationToken)">
+            <summary>Incorpora un futbolista si no está duplicado y respeta presupuesto y cantidad máxima.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PlantillaController.CambiarCondicion(System.Int64,System.Int64,GranDT.Api.CambiarCondicionHttp,System.Threading.CancellationToken)">
+            <summary>Cambia la condición de un integrante entre titular y suplente.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PlantillaController.Validar(System.Int64,System.Threading.CancellationToken)">
+            <summary>Devuelve errores de validación de presupuesto, cantidad y formación titular.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PlantillaController.Puntaje(System.Int64,System.Int32,System.Threading.CancellationToken)">
+            <summary>Calcula el puntaje de los titulares; una jornada sin puntuación aporta cero.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.PuntuacionController.Registrar(System.Int64,GranDT.Api.RegistrarPuntuacionHttp,System.Threading.CancellationToken)">
+            <summary>Registra la puntuación de un futbolista en una jornada.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.UsuarioController.Crear(GranDT.Api.CrearUsuarioHttp,System.Threading.CancellationToken)">
+            <summary>Crea un usuario; la respuesta nunca incluye su contraseña.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.UsuarioController.ListarPlantillas(System.Int64,System.Threading.CancellationToken)">
+            <summary>Lista las plantillas de un usuario.</summary>
+        </member>
+        <member name="M:GranDT.Api.Controllers.UsuarioController.CrearPlantilla(System.Int64,GranDT.Api.CrearPlantillaHttp,System.Threading.CancellationToken)">
+            <summary>Crea una plantilla para un usuario.</summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>

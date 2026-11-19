@@ -1,0 +1,226 @@
+@host = http://localhost:5080
+@email = grantd.{{$guid}}@example.test
+
+### Crear usuario
+# @name crearUsuario
+POST {{host}}/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "apellido": "Ejemplo",
+  "email": "{{email}}",
+  "fechaNac": "2000-03-15",
+  "contrasena": "ClaveLocalTemporal123",
+  "es_admin": false
+}
+
+### Crear plantilla
+# @name crearPlantilla
+POST {{host}}/api/usuarios/{{crearUsuario.response.body.$.idUsuario}}/plantillas
+Content-Type: application/json
+
+{
+  "nombreP": "Plantilla reproducible",
+  "presupuesto": 100000000,
+  "cantFutbolista": 20
+}
+
+### Crear arquero
+# @name crearArquero
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{
+  "nombre": "Arquero",
+  "apellido": "Prueba",
+  "apodo": "Uno",
+  "fechaNac": "1998-04-12",
+  "cotizacion": 5000000,
+  "idEquipo": 1,
+  "idTipoFutbolista": 1
+}
+
+### Incorporar arquero
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{
+  "idFutbolista": {{crearArquero.response.body.$.idFutbolista}},
+  "futbolistaTitular": true
+}
+
+### Actualizar cotización del arquero
+PUT {{host}}/api/futbolistas/{{crearArquero.response.body.$.idFutbolista}}
+Content-Type: application/json
+
+{
+  "nombre": "Arquero",
+  "apellido": "Prueba",
+  "apodo": "Uno",
+  "fechaNac": "1998-04-12",
+  "cotizacion": 4500000,
+  "idEquipo": 1,
+  "idTipoFutbolista": 1
+}
+
+### Pasar arquero a suplente
+PUT {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores/{{crearArquero.response.body.$.idFutbolista}}
+Content-Type: application/json
+
+{
+  "futbolistaTitular": false
+}
+
+### Volver a titular
+PUT {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores/{{crearArquero.response.body.$.idFutbolista}}
+Content-Type: application/json
+
+{
+  "futbolistaTitular": true
+}
+
+### Registrar puntuación
+POST {{host}}/api/futbolistas/{{crearArquero.response.body.$.idFutbolista}}/puntuaciones
+Content-Type: application/json
+
+{
+  "puntuacion": 8.5,
+  "nroFecha": 1
+}
+
+### Crear e incorporar defensor 1
+# @name crearDefensor1
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Defensor","apellido":"Uno","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":2}
+
+### Incorporar defensor 1
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDefensor1.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar defensor 2
+# @name crearDefensor2
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Defensor","apellido":"Dos","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":2}
+
+### Incorporar defensor 2
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDefensor2.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar defensor 3
+# @name crearDefensor3
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Defensor","apellido":"Tres","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":2}
+
+### Incorporar defensor 3
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDefensor3.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar defensor 4
+# @name crearDefensor4
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Defensor","apellido":"Cuatro","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":2}
+
+### Incorporar defensor 4
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDefensor4.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar mediocampista 1
+# @name crearMedio1
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Medio","apellido":"Uno","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":3}
+
+### Incorporar mediocampista 1
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearMedio1.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar mediocampista 2
+# @name crearMedio2
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Medio","apellido":"Dos","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":3}
+
+### Incorporar mediocampista 2
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearMedio2.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar mediocampista 3
+# @name crearMedio3
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Medio","apellido":"Tres","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":3}
+
+### Incorporar mediocampista 3
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearMedio3.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar mediocampista 4
+# @name crearMedio4
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Medio","apellido":"Cuatro","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":3}
+
+### Incorporar mediocampista 4
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearMedio4.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar delantero 1
+# @name crearDelantero1
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Delantero","apellido":"Uno","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":4}
+
+### Incorporar delantero 1
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDelantero1.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Crear e incorporar delantero 2
+# @name crearDelantero2
+POST {{host}}/api/futbolistas
+Content-Type: application/json
+
+{"nombre":"Delantero","apellido":"Dos","fechaNac":"1998-01-01","cotizacion":5000000,"idEquipo":1,"idTipoFutbolista":4}
+
+### Incorporar delantero 2
+POST {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/jugadores
+Content-Type: application/json
+
+{"idFutbolista":{{crearDelantero2.response.body.$.idFutbolista}},"futbolistaTitular":true}
+
+### Consultar puntaje de fecha 1 (esperado: 8.5)
+GET {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/puntaje?nroFecha=1
+
+### Consultar validez de la plantilla (esperado: valida true)
+GET {{host}}/api/plantillas/{{crearPlantilla.response.body.$.idPlantilla}}/validacion

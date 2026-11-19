@@ -1,0 +1,12 @@
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/bin/Debug/net10.0/GranDT.Dominio.deps.json
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/bin/Debug/net10.0/GranDT.Dominio.dll
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/bin/Debug/net10.0/GranDT.Dominio.pdb
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.GeneratedMSBuildEditorConfig.editorconfig
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.AssemblyInfoInputs.cache
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.AssemblyInfo.cs
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.csproj.CoreCompileInputs.cache
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.sourcelink.json
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.dll
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/refint/GranDT.Dominio.dll
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/GranDT.Dominio.pdb
+/home/et12alumno/Gran_DT/Doc/GranDT10/GranDT.Dominio/obj/Debug/net10.0/ref/GranDT.Dominio.dll
