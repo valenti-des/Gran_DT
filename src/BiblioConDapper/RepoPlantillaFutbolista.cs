@@ -18,10 +18,10 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
     public List<PlantillaFutbolista> ObtenerTodos() =>
         Conexion.Query<PlantillaFutbolista>(SelectSql).AsList();
 
-    public PlantillaFutbolista? ObtenerPorId(uint idPlantilla, ushort idJugador) =>
+    public PlantillaFutbolista? ObtenerPorId(uint idPlantilla, ushort idFutbolista) =>
         Conexion.QuerySingleOrDefault<PlantillaFutbolista>(
             $"{SelectSql} WHERE idPlantilla = @IdPlantilla AND idFutbolista = @IdFutbolista LIMIT 1",
-            new { IdPlantilla = idPlantilla, IdFutbolista = idJugador });
+            new { IdPlantilla = idPlantilla, IdFutbolista = idFutbolista });
 
     public PlantillaFutbolista Agregar(PlantillaFutbolista plantillaFutbolista)
     {
@@ -37,8 +37,8 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
         return plantillaFutbolista;
     }
 
-    public bool Eliminar(uint idPlantilla, ushort idJugador) =>
+    public bool Eliminar(uint idPlantilla, ushort idFutbolista) =>
         Conexion.Execute(
             "DELETE FROM Futbolista_Plantilla WHERE idPlantilla = @IdPlantilla AND idFutbolista = @IdFutbolista",
-            new { IdPlantilla = idPlantilla, IdFutbolista = idJugador }) > 0;
+            new { IdPlantilla = idPlantilla, IdFutbolista = idFutbolista }) > 0;
 }

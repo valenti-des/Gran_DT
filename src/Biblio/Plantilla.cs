@@ -11,19 +11,6 @@ public class Plantilla
     public byte cantFutbolista { get; set; }
     public ushort idUsuario { get; set; }
 
-    [Obsolete("Use presupuesto en lugar de cantMaxMonto.")]
-    public decimal cantMaxMonto
-    {
-        get => presupuesto;
-        set => presupuesto = value;
-    }
-
-    [Obsolete("Use cantFutbolista en lugar de cantMaxFutbolista.")]
-    public byte cantMaxFutbolista
-    {
-        get => cantFutbolista;
-        set => cantFutbolista = value;
-    }
 
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
@@ -41,17 +28,4 @@ public class PlantillaCreacion
     public ushort idUsuario { get; set; }
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
-    [Obsolete("Use presupuesto en lugar de cantMaxMonto.")]
-    public decimal cantMaxMonto
-    {
-        get => presupuesto;
-        set => presupuesto = value;
-    }
-
-    [Obsolete("Use cantFutbolista en lugar de cantMaxFutbolista.")]
-    public byte cantMaxFutbolista
-    {
-        get => cantFutbolista;
-        set => cantFutbolista = value;
-    }
 }
