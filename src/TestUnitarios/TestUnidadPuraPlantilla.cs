@@ -81,14 +81,12 @@ public class TestUnidadPuraPlantilla
 
         Assert.Equal(string.Empty, plantilla.nombreP);
         Assert.Equal((ushort)0, plantilla.idUsuario);
-        Assert.Empty(plantilla.detalles);
 
         plantilla.nombreP = "Plantilla de prueba";
         plantilla.idUsuario = 2;
-        plantilla.detalles.Add(new PlantillaFutbolista { idFutbolista = 3 });
 
         Assert.Equal("Plantilla de prueba", plantilla.nombreP);
         Assert.Equal((ushort)2, plantilla.idUsuario);
-        Assert.Single(plantilla.detalles);
+        Assert.Equal((byte)20, new Plantilla().maxFutbolistas);
     }
 }

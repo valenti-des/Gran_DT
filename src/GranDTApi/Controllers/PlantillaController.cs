@@ -23,8 +23,8 @@ public class PlantillaController : ControllerBase
             var nuevoPlantilla = new Plantilla
             {
                 nombreP = plantilla.nombreP,
-                presupuesto = plantilla.presupuesto,
-                cantFutbolista = plantilla.cantFutbolista,
+                presupuesto = 90000000m,
+                cantFutbolista = 0,
                 idUsuario = plantilla.idUsuario
             };
 
