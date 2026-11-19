@@ -24,7 +24,7 @@ public class PuntuacionController : ControllerBase
             {
                 idFutbolista = puntuacion.idFutbolista,
                 puntuacion = puntuacion.puntuacion,
-                nroFecha = puntuacion.numFech
+                nroFecha = puntuacion.nroFecha
             };
 
             var creado = _serviciosPuntuacion.Agregar(nuevaPuntuacion);
