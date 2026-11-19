@@ -6,7 +6,7 @@ namespace Biblio.BiblioConDapper
     public class Idbconection
     {
         private static readonly string servidor = "Localhost";
-        private static readonly string bd = "bd_gran_dt";
+        private static readonly string bd = "bd5_gran_dt";
         private static readonly string usuario = "root";
         private static readonly string password = "Trigg3rs!"; //Trigg3rs! //12345
         private static readonly string puerto = "3306";
