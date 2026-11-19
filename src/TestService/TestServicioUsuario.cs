@@ -21,31 +21,31 @@ public class ServiciosUsuarioTests
     [Fact]
     public void Agregar_UsuarioValido_HasheaLaContraseñaYDevuelveUsuarioCreado()
     {
-        const string contraseñaOriginal = "ClaveSegura123!";
+        const string contrasenaOriginal = "ClaveSegura123!";
         var usuario = new Usuario
         {
             nombre = "Ana",
             apellido = "Pérez",
             email = "ana@example.com",
-            contrasena = contraseñaOriginal
+            contrasena = contrasenaOriginal
         };
         _estrategiaCodificacionMock
-            .Setup(estrategia => estrategia.codificar(contraseñaOriginal))
-            .Returns(BCrypt.Net.BCrypt.HashPassword(contraseñaOriginal));
+            .Setup(estrategia => estrategia.codificar(contrasenaOriginal))
+            .Returns(BCrypt.Net.BCrypt.HashPassword(contrasenaOriginal));
         _repoUsuarioMock
-            .Setup(repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contrasena))))
+            .Setup(repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contrasenaOriginal, u.contrasena))))
             .Returns((Usuario u) => u);
 
         var resultado = _serviciosUsuario.Agregar(usuario);
 
         Assert.Same(usuario, resultado);
-        Assert.NotEqual(contraseñaOriginal, resultado.contrasena);
-        Assert.True(BCrypt.Net.BCrypt.Verify(contraseñaOriginal, resultado.contrasena));
+        Assert.NotEqual(contrasenaOriginal, resultado.contrasena);
+        Assert.True(BCrypt.Net.BCrypt.Verify(contrasenaOriginal, resultado.contrasena));
         _estrategiaCodificacionMock.Verify(
-            estrategia => estrategia.codificar(contraseñaOriginal),
+            estrategia => estrategia.codificar(contrasenaOriginal),
             Times.Once);
         _repoUsuarioMock.Verify(
-            repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contraseñaOriginal, u.contrasena))),
+            repo => repo.Agregar(It.Is<Usuario>(u => BCrypt.Net.BCrypt.Verify(contrasenaOriginal, u.contrasena))),
             Times.Once);
     }
 

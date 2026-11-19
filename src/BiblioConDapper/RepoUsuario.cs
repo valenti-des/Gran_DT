@@ -13,12 +13,12 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
 
     public List<Usuario> ObtenerTodos() =>
         Conexion.Query<Usuario>(@"
-            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contrasena, es_admin
             FROM Usuario").AsList();
 
     public Usuario? ObtenerPorId(ushort id) =>
         Conexion.QuerySingleOrDefault<Usuario>(@"
-            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contrasena, es_admin
             FROM Usuario
             WHERE idUsuario = @Id
             LIMIT 1;", new { Id = id });
@@ -26,7 +26,7 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     public Usuario? ObtenerPorEmail(string email)
     {
         return Conexion.QuerySingleOrDefault<Usuario>(@"
-            SELECT idUsuario, nombre, apellido, email, fechaNac, contraseña, es_admin
+            SELECT idUsuario, nombre, apellido, email, fechaNac, contrasena, es_admin
             FROM Usuario
             WHERE email = @Email
             LIMIT 1;", new { Email = email });
@@ -35,7 +35,7 @@ public class RepoUsuario : RepoDapper, IRepoUsuario
     public Usuario Agregar(Usuario usuario)
     {
         var id = Conexion.ExecuteScalar<ushort>(@"
-            INSERT INTO Usuario (nombre, apellido, email, fechaNac, contraseña, es_admin)
+            INSERT INTO Usuario (nombre, apellido, email, fechaNac, contrasena, es_admin)
             VALUES (@Nombre, @Apellido, @Email, @FechaNac, @Contrasena, @EsAdmin);
             SELECT LAST_INSERT_ID();", new
         {
