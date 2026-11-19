@@ -98,7 +98,6 @@ DROP PROCEDURE IF EXISTS AltaUsuario $$
 
 CREATE PROCEDURE AltaUsuario (
     OUT unidUsuario SMALLINT UNSIGNED,
-    IN unnombreUsuario VARCHAR(45),
     IN unnombre VARCHAR(45),
     IN unapellido VARCHAR(45),
     IN unemail VARCHAR(100),
@@ -108,7 +107,6 @@ CREATE PROCEDURE AltaUsuario (
 )
 BEGIN
     INSERT INTO Usuario (
-        nombreUsuario,
         nombre,
         apellido,
         email,
@@ -117,7 +115,6 @@ BEGIN
         es_admin
     )
     VALUES (
-        unnombreUsuario,
         unnombre,
         unapellido,
         unemail,
@@ -229,7 +226,7 @@ DELIMITER ;
 
 -- =====================================================
 -- PROCEDURE 8: LoginUsuario
--- Permite iniciar sesión con email o nombreUsuario
+-- Permite iniciar sesión con email
 -- =====================================================
 
 DELIMITER $$
@@ -243,13 +240,12 @@ CREATE PROCEDURE LoginUsuario (
 BEGIN
     SELECT
         idUsuario,
-        nombreUsuario,
         nombre,
         apellido,
         email,
         es_admin
     FROM Usuario
-    WHERE (email = unIdentificador OR nombreUsuario = unIdentificador)
+    WHERE email = unIdentificador
       AND contrasena = uncontrasena;
 END $$
 
@@ -299,22 +295,22 @@ DELIMITER ;
 
 
 -- =====================================================
--- PROCEDURE 10: BuscarPlantillaPorNombreUsuario
+-- PROCEDURE 10: BuscarPlantillaPorNombre
 -- Busca las plantillas de un usuario y sus futbolistas
 -- =====================================================
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS BuscarPlantillaPorNombreUsuario $$
+DROP PROCEDURE IF EXISTS BuscarPlantillaPorNombre $$
 
-CREATE PROCEDURE BuscarPlantillaPorNombreUsuario (
-    IN unnombreUsuario VARCHAR(45)
+CREATE PROCEDURE BuscarPlantillaPorNombre (
+    IN unnombre VARCHAR(45)
 )
 BEGIN
     SELECT
         p.idPlantilla,
         p.nombreP,
-        u.nombreUsuario,
+        u.nombre,
         f.idFutbolista,
         f.nombre AS nombreFutbolista,
         f.apellido AS apellidoFutbolista,
@@ -336,7 +332,7 @@ BEGIN
     LEFT JOIN Tipo_Futbolista tf
         ON f.idTipoFutbolista = tf.idTipoFutbolista
 
-    WHERE u.nombreUsuario = unnombreUsuario;
+    WHERE u.nombre = unnombre;
 
 END $$
 

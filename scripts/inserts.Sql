@@ -130,15 +130,15 @@ VALUES
 -- =====================================================
 
 INSERT INTO Usuario (
-    nombreUsuario, nombre, apellido, email,
+    nombre, apellido, email,
     fechaNac, contrasena, es_admin
 )
 VALUES
-('valengiu', 'Valengiu', 'Sigma', 'valengiu0708@gmail.com',
+('Valengiu', 'Sigma', 'valengiu0708@gmail.com',
  '2008-08-07',
  '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 0),
 
-('admin', 'Admin', 'Sistema', 'admin@gran_dt.com',
+('Admin', 'Sistema', 'admin@gran_dt.com',
  '1990-01-01',
  '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 1);
 
@@ -189,7 +189,7 @@ SELECT * FROM Futbolista_Plantilla;
 -- CONSULTA COMPLETA DE PLANTILLAS
 
 SELECT
-    u.nombreUsuario,
+    u.nombre,
     p.idPlantilla,
     p.nombreP,
     f.nombre,
@@ -214,5 +214,4 @@ SELECT
     presupuesto,
     cantFutbolista
 FROM Plantilla;
-
 

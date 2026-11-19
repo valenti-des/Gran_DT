@@ -46,7 +46,6 @@ CREATE TABLE Futbolista (
 -- -----------------------------------------------------
 CREATE TABLE Usuario (
     idUsuario SMALLINT UNSIGNED AUTO_INCREMENT,
-    nombreUsuario VARCHAR(45) NOT NULL,
     nombre VARCHAR(45) NOT NULL,
     apellido VARCHAR(45) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -54,7 +53,6 @@ CREATE TABLE Usuario (
     contrasena CHAR(64) NOT NULL, -- Longitud fija de 64 caracteres (SHA-256)
     es_admin TINYINT(1) NOT NULL DEFAULT 0,
     CONSTRAINT pk_Usuario PRIMARY KEY (idUsuario),
-    CONSTRAINT uq_Usuario_NombreUsuario UNIQUE (nombreUsuario),
     CONSTRAINT uq_Usuario_Email UNIQUE (email)
 );
 
@@ -98,5 +96,4 @@ CREATE TABLE Futbolista_Plantilla (
     CONSTRAINT fk_FP_Futbolista FOREIGN KEY (idFutbolista) 
         REFERENCES Futbolista (idFutbolista) ON DELETE RESTRICT ON UPDATE CASCADE
 );
-
 
