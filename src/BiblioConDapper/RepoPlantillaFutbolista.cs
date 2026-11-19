@@ -18,6 +18,11 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
     public List<PlantillaFutbolista> ObtenerTodos() =>
         Conexion.Query<PlantillaFutbolista>(SelectSql).AsList();
 
+    public List<PlantillaFutbolista> ObtenerPorPlantilla(uint idPlantilla) =>
+        Conexion.Query<PlantillaFutbolista>(
+            $"{SelectSql} WHERE idPlantilla = @IdPlantilla ORDER BY idFutbolista",
+            new { IdPlantilla = idPlantilla }).AsList();
+
     public PlantillaFutbolista? ObtenerPorId(uint idPlantilla, ushort idFutbolista) =>
         Conexion.QuerySingleOrDefault<PlantillaFutbolista>(
             $"{SelectSql} WHERE idPlantilla = @IdPlantilla AND idFutbolista = @IdFutbolista LIMIT 1",
@@ -25,8 +30,6 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
 
     public PlantillaFutbolista Agregar(PlantillaFutbolista plantillaFutbolista)
     {
-        ArgumentNullException.ThrowIfNull(plantillaFutbolista);
-
         Conexion.Execute("AgregarFutbolistaAPlantilla", new
         {
             unidPlantilla = plantillaFutbolista.idPlantilla,

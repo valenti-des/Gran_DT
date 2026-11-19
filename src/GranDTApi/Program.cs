@@ -30,6 +30,7 @@ builder.Services.AddScoped<ServiciosEquipo>();
 builder.Services.AddScoped<ServiciosPuntuacion>();
 builder.Services.AddScoped<ServiciosUsuario>();
 builder.Services.AddScoped<ServiciosPlantilla>();
+builder.Services.AddScoped<ServiciosPlantillaFutbolista>();
 builder.Services.AddScoped<ServiciosFutbolista>();
 
 var app = builder.Build();

@@ -73,53 +73,6 @@ public class PlantillaController : ControllerBase
         }
     }
 
-    [HttpPost("{idPlantilla}/idfutbolistas")]
-    public ActionResult<PlantillaFutbolista> AgregarFutbolista(
-        uint idPlantilla,
-        [FromBody] PlantillaFutbolistaCreacion solicitud)
-    {
-        try
-        {
-            var asociacion = _serviciosPlantilla.AgregarFutbolista(
-                idPlantilla,
-                solicitud.idFutbolista,
-                solicitud.futbolistaTitular);
-            return CreatedAtAction(
-                nameof(ObtenerFutbolista),
-                new { idPlantilla, idFutbolista = solicitud.idFutbolista },
-                asociacion);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { error = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
-    }
-
-    [HttpGet("{idPlantilla}/futbolistas/{idFutbolista}")]
-    public ActionResult<PlantillaFutbolista> ObtenerFutbolista(uint idPlantilla, ushort idFutbolista)
-    {
-        try
-        {
-            var asociacion = _serviciosPlantilla.ObtenerFutbolista(idPlantilla, idFutbolista);
-            if (asociacion is null)
-                return NotFound(new { error = "El futbolista no está asociado a esta plantilla." });
-
-            return Ok(asociacion);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
-    }
-
     [HttpDelete("{idPlantilla}")]
     public ActionResult Eliminar(uint idPlantilla)
     {
