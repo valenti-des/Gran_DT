@@ -19,10 +19,10 @@ public class Plantilla
 
     public List<PlantillaFutbolista> detalles { get; set; } = new List<PlantillaFutbolista>();
 
-    public decimal PuntajeFecha(byte numFech) =>
+    public decimal PuntajeFecha(byte nroFecha) =>
         detalles
             .Where(detalle => detalle.futbolistaTitular && detalle.futbolista is not null)
-            .Sum(detalle => detalle.futbolista!.ObtenerPuntuacionPorFecha(numFech));
+            .Sum(detalle => detalle.futbolista!.ObtenerPuntuacionPorFecha(nroFecha));
 }
 
 public class PlantillaCreacion

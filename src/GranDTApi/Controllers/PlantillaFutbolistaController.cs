@@ -57,21 +57,18 @@ public class PlantillaFutbolistaController : ControllerBase
         }
     }
 
-    [HttpPost("futbolistas")]
-    [HttpPost("idfutbolistas")]
-    public ActionResult<PlantillaFutbolista> Agregar(
-        uint idPlantilla,
-        [FromBody] PlantillaFutbolistaCreacion solicitud)
+    [HttpPost("~/api/Plantilla/futbolistas")]
+    public ActionResult<PlantillaFutbolista> Agregar([FromBody] PlantillaFutbolistaCreacion solicitud)
     {
         try
         {
             var asociacion = _serviciosPlantillaFutbolista.Agregar(
-                idPlantilla,
+                solicitud.idPlantilla,
                 solicitud.idFutbolista,
                 solicitud.futbolistaTitular);
             return CreatedAtAction(
                 nameof(ObtenerPorId),
-                new { idPlantilla, idFutbolista = asociacion.idFutbolista },
+                new { idPlantilla = asociacion.idPlantilla, idFutbolista = asociacion.idFutbolista },
                 asociacion);
         }
         catch (KeyNotFoundException ex)

@@ -29,7 +29,7 @@ public class PlantillaController : ControllerBase
             };
 
             var creado = _serviciosPlantilla.Agregar(nuevoPlantilla);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idPlantilla }, creado);
+            return CreatedAtAction(nameof(ObtenerPorId), new { idPlantilla = creado.idPlantilla }, creado);
         }
         catch (ArgumentException ex)
         {

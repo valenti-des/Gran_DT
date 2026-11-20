@@ -63,7 +63,7 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
             .ToDictionary(j => j.idFutbolista);
 
         var puntuaciones = Conexion.Query<Puntuacion>(@"
-                SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech
+                SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha
                 FROM Puntuacion
                 WHERE idFutbolista IN @IdsJugadores", new { IdsJugadores = idsJugadores })
             .ToLookup(p => p.idFutbolista);

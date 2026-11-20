@@ -33,14 +33,14 @@ public class TestUnidadPuraPuntuacion
 
         Assert.Equal((ushort)0, puntuacion.idFutbolista);
         Assert.Null(puntuacion.puntuacion);
-        Assert.Null(puntuacion.numFech);
+        Assert.Null(puntuacion.nroFecha);
 
         puntuacion.idFutbolista = 2;
         puntuacion.puntuacion = 8.4m;
-        puntuacion.numFech = 3;
+        puntuacion.nroFecha = 3;
 
         Assert.Equal((ushort)2, puntuacion.idFutbolista);
         Assert.Equal(8.4m, puntuacion.puntuacion);
-        Assert.Equal((byte)3, puntuacion.numFech);
+        Assert.Equal((byte)3, puntuacion.nroFecha);
     }
 }

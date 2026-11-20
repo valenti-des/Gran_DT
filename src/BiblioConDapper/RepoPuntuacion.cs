@@ -8,7 +8,7 @@ namespace BiblioConDapper;
 public class RepoPuntuacion : RepoDapper, IRepoPuntuacion
 {
     private const string SelectSql = @"
-        SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech
+        SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha
         FROM Puntuacion";
 
     public RepoPuntuacion(IDbConnection conexion) : base(conexion)

@@ -1,4 +1,5 @@
 using Biblio;
+using System.Text.Json;
 
 namespace TestUnitarios;
 
@@ -13,17 +14,22 @@ public class TestUnidadPuraPlantillaFutbolista
         Assert.False(detalle.futbolistaTitular);
         Assert.Equal((uint)0, detalle.idPlantilla);
         Assert.Equal((ushort)0, detalle.idFutbolista);
-        Assert.Null(detalle.futbolista);
 
-        var futbolista = new Futbolista { nombre = "Jugador" };
         detalle.futbolistaTitular = true;
         detalle.idPlantilla = 2;
         detalle.idFutbolista = 3;
-        detalle.futbolista = futbolista;
 
         Assert.True(detalle.futbolistaTitular);
         Assert.Equal((uint)2, detalle.idPlantilla);
         Assert.Equal((ushort)3, detalle.idFutbolista);
-        Assert.Same(futbolista, detalle.futbolista);
+
+        var json = JsonSerializer.Serialize(detalle, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        using var documento = JsonDocument.Parse(json);
+        var propiedades = documento.RootElement.EnumerateObject()
+            .Select(propiedad => propiedad.Name)
+            .OrderBy(nombre => nombre)
+            .ToArray();
+
+        Assert.Equal(new[] { "futbolistaTitular", "idFutbolista", "idPlantilla" }, propiedades);
     }
 }

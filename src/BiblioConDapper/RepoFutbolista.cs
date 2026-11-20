@@ -33,7 +33,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
             return null;
 
         futbolista.puntuaciones = Conexion.Query<Puntuacion>(
-            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech 
+            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha
               FROM Puntuacion 
               WHERE idFutbolista = @IdFutbolista",
             new { IdFutbolista = id }).AsList();
@@ -47,7 +47,7 @@ public class RepoFutbolista : RepoDapper, IRepoFutbolista
             return;
 
         var puntuaciones = Conexion.Query<Puntuacion>(
-            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha AS numFech 
+            @"SELECT idPuntuacion, idFutbolista, puntuacion, nroFecha
               FROM Puntuacion").ToList();
 
         foreach (var futbolistaActual in futbolista)

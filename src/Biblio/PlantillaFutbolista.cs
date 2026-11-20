@@ -21,6 +21,4 @@ public class PlantillaFutbolistaCreacion
     public uint idPlantilla { get; set; }
     public ushort idFutbolista { get; set; }
     public bool futbolistaTitular { get; set; }
-    public Futbolista? futbolista { get; set; }
 }
-
