@@ -5,7 +5,9 @@ using System.Text.Json.Serialization;
 
 public class PlantillaFutbolista
 {
+    [JsonIgnore]
     public uint idPlantilla { get; set; }
+    [JsonIgnore]
     public ushort idFutbolista { get; set; }
     public bool futbolistaTitular { get; set; }
     [ReadOnly(true)]
