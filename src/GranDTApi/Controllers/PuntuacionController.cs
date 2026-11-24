@@ -53,7 +53,8 @@ public class PuntuacionController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{idPuntuacion}")]
+    //[HttpGet]
     public ActionResult<Puntuacion> ObtenerPorId(byte idPuntuacion)
     {
         try
