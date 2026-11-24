@@ -24,7 +24,12 @@ public class ServiciosPlantillaFutbolistaTests
     public void Agregar_AsociacionValida_GuardaElTitular()
     {
         var plantilla = new Plantilla { idPlantilla = 1 };
-        var futbolista = new Futbolista { idFutbolista = 10 };
+        var futbolista = new Futbolista
+        {
+            idFutbolista = 10,
+            nombre = "Lionel",
+            apellido = "Messi"
+        };
         _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(plantilla);
         _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(10)).Returns(futbolista);
         _repoAsociacionMock.Setup(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()))
@@ -35,6 +40,7 @@ public class ServiciosPlantillaFutbolistaTests
         Assert.Equal((uint)1, resultado.idPlantilla);
         Assert.Equal((ushort)10, resultado.idFutbolista);
         Assert.True(resultado.futbolistaTitular);
+        Assert.Equal("Lionel Messi", resultado.nombreFutbolista);
         _repoAsociacionMock.Verify(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Once);
     }
 

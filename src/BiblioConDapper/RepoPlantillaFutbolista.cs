@@ -8,8 +8,10 @@ namespace BiblioConDapper;
 public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
 {
     private const string SelectSql = @"
-        SELECT futbolistaTitular, idPlantilla, idFutbolista
-        FROM Futbolista_Plantilla";
+        SELECT fp.futbolistaTitular, fp.idPlantilla, fp.idFutbolista,
+               CONCAT(f.nombre, ' ', f.apellido) AS nombreFutbolista
+        FROM Futbolista_Plantilla fp
+        INNER JOIN Futbolista f ON f.idFutbolista = fp.idFutbolista";
 
     public RepoPlantillaFutbolista(IDbConnection conexion) : base(conexion)
     {
@@ -20,12 +22,12 @@ public class RepoPlantillaFutbolista : RepoDapper, IRepoPlantillaFutbolista
 
     public List<PlantillaFutbolista> ObtenerPorPlantilla(uint idPlantilla) =>
         Conexion.Query<PlantillaFutbolista>(
-            $"{SelectSql} WHERE idPlantilla = @IdPlantilla ORDER BY idFutbolista",
+            $"{SelectSql} WHERE fp.idPlantilla = @IdPlantilla ORDER BY fp.idFutbolista",
             new { IdPlantilla = idPlantilla }).AsList();
 
     public PlantillaFutbolista? ObtenerPorId(uint idPlantilla, ushort idFutbolista) =>
         Conexion.QuerySingleOrDefault<PlantillaFutbolista>(
-            $"{SelectSql} WHERE idPlantilla = @IdPlantilla AND idFutbolista = @IdFutbolista LIMIT 1",
+            $"{SelectSql} WHERE fp.idPlantilla = @IdPlantilla AND fp.idFutbolista = @IdFutbolista LIMIT 1",
             new { IdPlantilla = idPlantilla, IdFutbolista = idFutbolista });
 
     public PlantillaFutbolista Agregar(PlantillaFutbolista plantillaFutbolista)

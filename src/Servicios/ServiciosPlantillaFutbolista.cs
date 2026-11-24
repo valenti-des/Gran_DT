@@ -47,7 +47,8 @@ public class ServiciosPlantillaFutbolista
         var plantilla = _plantillaRepository.ObtenerPorId(idPlantilla)
             ?? throw new KeyNotFoundException("La plantilla no existe.");
 
-        if (_futbolistaRepository.ObtenerPorId(idFutbolista) is null)
+        var futbolista = _futbolistaRepository.ObtenerPorId(idFutbolista);
+        if (futbolista is null)
             throw new KeyNotFoundException("El futbolista no existe.");
 
         if (_repository.ObtenerPorId(idPlantilla, idFutbolista) is not null)
@@ -60,7 +61,8 @@ public class ServiciosPlantillaFutbolista
         {
             idPlantilla = idPlantilla,
             idFutbolista = idFutbolista,
-            futbolistaTitular = futbolistaTitular
+            futbolistaTitular = futbolistaTitular,
+            nombreFutbolista = $"{futbolista.nombre} {futbolista.apellido}".Trim()
         };
 
         return _repository.Agregar(asociacion);
