@@ -39,6 +39,7 @@ public class ServiciosPlantillaFutbolista
 
     public PlantillaFutbolista Agregar(
         uint idPlantilla,
+        ushort idUsuario,
         ushort idFutbolista,
         bool futbolistaTitular)
     {
@@ -46,6 +47,7 @@ public class ServiciosPlantillaFutbolista
 
         var plantilla = _plantillaRepository.ObtenerPorId(idPlantilla)
             ?? throw new KeyNotFoundException("La plantilla no existe.");
+        ValidarPropietario(plantilla, idUsuario);
 
         var futbolista = _futbolistaRepository.ObtenerPorId(idFutbolista);
         if (futbolista is null)
@@ -68,10 +70,22 @@ public class ServiciosPlantillaFutbolista
         return _repository.Agregar(asociacion);
     }
 
-    public bool Eliminar(uint idPlantilla, ushort idFutbolista)
+    public bool Eliminar(uint idPlantilla, ushort idUsuario, ushort idFutbolista)
     {
         ValidarIds(idPlantilla, idFutbolista);
+
+        var plantilla = _plantillaRepository.ObtenerPorId(idPlantilla);
+        if (plantilla is null)
+            return false;
+
+        ValidarPropietario(plantilla, idUsuario);
         return _repository.Eliminar(idPlantilla, idFutbolista);
+    }
+
+    private static void ValidarPropietario(Plantilla plantilla, ushort idUsuario)
+    {
+        if (plantilla.idUsuario != idUsuario)
+            throw new UnauthorizedAccessException("No tienes permiso para modificar esta plantilla.");
     }
 
     private static void ValidarIds(uint idPlantilla, ushort idFutbolista)

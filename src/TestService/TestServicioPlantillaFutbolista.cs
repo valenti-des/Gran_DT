@@ -23,7 +23,7 @@ public class ServiciosPlantillaFutbolistaTests
     [Fact]
     public void Agregar_AsociacionValida_GuardaElTitular()
     {
-        var plantilla = new Plantilla { idPlantilla = 1 };
+        var plantilla = new Plantilla { idPlantilla = 1, idUsuario = 7 };
         var futbolista = new Futbolista
         {
             idFutbolista = 10,
@@ -35,7 +35,7 @@ public class ServiciosPlantillaFutbolistaTests
         _repoAsociacionMock.Setup(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()))
             .Returns((PlantillaFutbolista asociacion) => asociacion);
 
-        var resultado = _servicios.Agregar(1, 10, true);
+        var resultado = _servicios.Agregar(1, 7, 10, true);
 
         Assert.Equal((uint)1, resultado.idPlantilla);
         Assert.Equal((ushort)10, resultado.idFutbolista);
@@ -49,7 +49,7 @@ public class ServiciosPlantillaFutbolistaTests
     {
         _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns((Plantilla?)null);
 
-        var excepcion = Assert.Throws<KeyNotFoundException>(() => _servicios.Agregar(1, 10, true));
+        var excepcion = Assert.Throws<KeyNotFoundException>(() => _servicios.Agregar(1, 7, 10, true));
 
         Assert.Equal("La plantilla no existe.", excepcion.Message);
         _repoAsociacionMock.Verify(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
@@ -58,10 +58,10 @@ public class ServiciosPlantillaFutbolistaTests
     [Fact]
     public void Agregar_FutbolistaInexistente_LanzaKeyNotFoundException()
     {
-        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(new Plantilla());
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(new Plantilla { idUsuario = 7 });
         _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(10)).Returns((Futbolista?)null);
 
-        var excepcion = Assert.Throws<KeyNotFoundException>(() => _servicios.Agregar(1, 10, true));
+        var excepcion = Assert.Throws<KeyNotFoundException>(() => _servicios.Agregar(1, 7, 10, true));
 
         Assert.Equal("El futbolista no existe.", excepcion.Message);
         _repoAsociacionMock.Verify(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
@@ -70,11 +70,11 @@ public class ServiciosPlantillaFutbolistaTests
     [Fact]
     public void Agregar_FutbolistaYaAsociado_LanzaInvalidOperationException()
     {
-        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(new Plantilla());
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(new Plantilla { idUsuario = 7 });
         _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(10)).Returns(new Futbolista());
         _repoAsociacionMock.Setup(repo => repo.ObtenerPorId(1, 10)).Returns(new PlantillaFutbolista());
 
-        var excepcion = Assert.Throws<InvalidOperationException>(() => _servicios.Agregar(1, 10, true));
+        var excepcion = Assert.Throws<InvalidOperationException>(() => _servicios.Agregar(1, 7, 10, true));
 
         Assert.Equal("El futbolista ya está asociado a esta plantilla.", excepcion.Message);
         _repoAsociacionMock.Verify(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
@@ -85,14 +85,41 @@ public class ServiciosPlantillaFutbolistaTests
     {
         var plantillaCompleta = new Plantilla
         {
+            idUsuario = 7,
             detalles = Enumerable.Range(1, 20).Select(_ => new PlantillaFutbolista()).ToList()
         };
         _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1)).Returns(plantillaCompleta);
         _repoFutbolistaMock.Setup(repo => repo.ObtenerPorId(10)).Returns(new Futbolista());
 
-        var excepcion = Assert.Throws<InvalidOperationException>(() => _servicios.Agregar(1, 10, true));
+        var excepcion = Assert.Throws<InvalidOperationException>(() => _servicios.Agregar(1, 7, 10, true));
 
         Assert.Equal("La plantilla alcanzó su cantidad máxima de futbolistas.", excepcion.Message);
         _repoAsociacionMock.Verify(repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()), Times.Never);
+    }
+
+    [Fact]
+    public void Agregar_PlantillaDeOtroUsuario_RechazaLaOperacion()
+    {
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1))
+            .Returns(new Plantilla { idPlantilla = 1, idUsuario = 8 });
+
+        Assert.Throws<UnauthorizedAccessException>(() => _servicios.Agregar(1, 7, 10, true));
+
+        _repoAsociacionMock.Verify(
+            repo => repo.Agregar(It.IsAny<PlantillaFutbolista>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public void Eliminar_PlantillaDeOtroUsuario_RechazaLaOperacion()
+    {
+        _repoPlantillaMock.Setup(repo => repo.ObtenerPorId(1))
+            .Returns(new Plantilla { idPlantilla = 1, idUsuario = 8 });
+
+        Assert.Throws<UnauthorizedAccessException>(() => _servicios.Eliminar(1, 7, 10));
+
+        _repoAsociacionMock.Verify(
+            repo => repo.Eliminar(It.IsAny<uint>(), It.IsAny<ushort>()),
+            Times.Never);
     }
 }

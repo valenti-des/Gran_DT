@@ -109,12 +109,29 @@ public class ServiciosPlantillaTests
     public void Eliminar_IdValido_DevuelveResultadoDelRepositorio()
     {
         const ushort idAEliminar = 15;
+        _repoPlantillaMock
+            .Setup(repo => repo.ObtenerPorId(idAEliminar))
+            .Returns(new Plantilla { idPlantilla = idAEliminar, idUsuario = 7 });
         _repoPlantillaMock.Setup(repo => repo.Eliminar(idAEliminar)).Returns(true);
 
-        var resultado = _serviciosPlantilla.Eliminar(idAEliminar);
+        var resultado = _serviciosPlantilla.Eliminar(idAEliminar, 7);
 
         Assert.True(resultado);
         _repoPlantillaMock.Verify(repo => repo.Eliminar(idAEliminar), Times.Once);
+    }
+
+    [Fact]
+    public void Eliminar_PlantillaDeOtroUsuario_NoLlamaAlRepositorio()
+    {
+        const uint idPlantilla = 15;
+        _repoPlantillaMock
+            .Setup(repo => repo.ObtenerPorId(idPlantilla))
+            .Returns(new Plantilla { idPlantilla = idPlantilla, idUsuario = 8 });
+
+        var resultado = _serviciosPlantilla.Eliminar(idPlantilla, 7);
+
+        Assert.False(resultado);
+        _repoPlantillaMock.Verify(repo => repo.Eliminar(It.IsAny<uint>()), Times.Never);
     }
 
 }

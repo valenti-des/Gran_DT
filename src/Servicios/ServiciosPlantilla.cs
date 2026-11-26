@@ -40,8 +40,12 @@ public class ServiciosPlantilla
         return _repository.Agregar(plantilla);
     }
 
-    public bool Eliminar(uint id)
+    public bool Eliminar(uint id, ushort idUsuario)
     {
+        var plantilla = _repository.ObtenerPorId(id);
+        if (plantilla is null || plantilla.idUsuario != idUsuario)
+            return false;
+
         return _repository.Eliminar(id);
     }
 

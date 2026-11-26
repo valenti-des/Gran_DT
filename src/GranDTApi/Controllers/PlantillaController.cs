@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Biblio;
 using Servicios;
+using System.Security.Claims;
 
 namespace GranDTApi.Controllers;
 
@@ -20,12 +21,15 @@ public class PlantillaController : ControllerBase
     {
         try
         {
+            if (!TryObtenerIdUsuario(out var idUsuario))
+                return Unauthorized();
+
             var nuevoPlantilla = new Plantilla
             {
                 nombreP = plantilla.nombreP,
                 presupuesto = 90000000m,
                 cantFutbolista = 0,
-                idUsuario = plantilla.idUsuario
+                idUsuario = idUsuario
             };
 
             var creado = _serviciosPlantilla.Agregar(nuevoPlantilla);
@@ -78,13 +82,11 @@ public class PlantillaController : ControllerBase
     {
         try
         {
-            var plantilla = _serviciosPlantilla.ObtenerPorId(idPlantilla);
-            if (plantilla is null)
-                return NotFound(new { error = "La plantilla no existe." });
+            if (!TryObtenerIdUsuario(out var idUsuario))
+                return Unauthorized();
 
-            var eliminado = _serviciosPlantilla.Eliminar(idPlantilla);
-            if (!eliminado)
-                return StatusCode(500, new { error = "No se pudo eliminar la plantilla." });
+            if (!_serviciosPlantilla.Eliminar(idPlantilla, idUsuario))
+                return NotFound(new { error = "La plantilla no existe." });
 
             return NoContent();
         }
@@ -93,4 +95,7 @@ public class PlantillaController : ControllerBase
             return StatusCode(500, new { error = ex.Message });
         }
     }
+
+    private bool TryObtenerIdUsuario(out ushort idUsuario) =>
+        ushort.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out idUsuario);
 }
