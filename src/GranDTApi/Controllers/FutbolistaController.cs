@@ -29,7 +29,7 @@ namespace GranDTApi.Controllers
                     cotizacion = futbolista.cotizacion,
                     idEquipo = futbolista.idEquipo,
                     idTipoFutbolista = futbolista.idTipoFutbolista,
-                    puntuaciones = futbolista.puntuaciones ?? new List<Puntuacion>()
+                   
                 };
 
                 var creado = _serviciosFutbolista.Agregar(nuevoFutbolista);

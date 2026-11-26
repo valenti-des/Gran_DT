@@ -35,10 +35,7 @@ public class ServiciosFutbolista
             throw new ArgumentException("La cotización del futbolista no puede ser negativa.", nameof(futbolista));
         }
 
-        if (futbolista.puntuaciones is null || futbolista.puntuaciones.Count == 0)
-        {
-            throw new ArgumentException("El futbolista debe tener al menos una puntuación.", nameof(futbolista));
-        }
+
 
         futbolista.nombre = futbolista.nombre.Trim();
         futbolista.apellido = futbolista.apellido.Trim();
