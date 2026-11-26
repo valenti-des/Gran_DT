@@ -45,6 +45,7 @@ public class ReposPlantillaTest : IDisposable
 
         Assert.NotNull(plantilla);
         Assert.NotEmpty(plantilla!.detalles);
+        Assert.All(plantilla.detalles, detalle => Assert.False(string.IsNullOrWhiteSpace(detalle.nombreFutbolista)));
         Assert.Equal(8.4m, plantilla.PuntajeFecha(1));
     }
 

@@ -46,10 +46,12 @@ public class RepoPlantilla : RepoDapper, IRepoPlantilla
 
         var idsPlantillas = plantillas.Select(p => p.idPlantilla).Distinct().ToArray();
         var detalles = Conexion.Query<PlantillaFutbolista>(@"
-            SELECT futbolistaTitular, idPlantilla, idFutbolista
-            FROM Futbolista_Plantilla
-            WHERE idPlantilla IN @IdsPlantillas
-            ORDER BY idPlantilla, idFutbolista", new { IdsPlantillas = idsPlantillas }).AsList();
+            SELECT fp.futbolistaTitular, fp.idPlantilla, fp.idFutbolista,
+                   CONCAT(f.nombre, ' ', f.apellido) AS nombreFutbolista
+            FROM Futbolista_Plantilla fp
+            INNER JOIN Futbolista f ON f.idFutbolista = fp.idFutbolista
+            WHERE fp.idPlantilla IN @IdsPlantillas
+            ORDER BY fp.idPlantilla, fp.idFutbolista", new { IdsPlantillas = idsPlantillas }).AsList();
 
         if (detalles.Count == 0)
             return;
