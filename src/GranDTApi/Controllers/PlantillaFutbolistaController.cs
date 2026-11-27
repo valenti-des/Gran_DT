@@ -1,6 +1,7 @@
 using Biblio;
 using Microsoft.AspNetCore.Mvc;
 using Servicios;
+using System.Security.Claims;
 
 namespace GranDTApi.Controllers;
 
@@ -62,8 +63,12 @@ public class PlantillaFutbolistaController : ControllerBase
     {
         try
         {
+            if (!TryObtenerIdUsuario(out var idUsuario))
+                return Unauthorized();
+
             var asociacion = _serviciosPlantillaFutbolista.Agregar(
                 solicitud.idPlantilla,
+                idUsuario,
                 solicitud.idFutbolista,
                 solicitud.futbolistaTitular);
             return CreatedAtAction(
@@ -78,6 +83,10 @@ public class PlantillaFutbolistaController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return Conflict(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return NotFound(new { error = "La plantilla no existe." });
         }
         catch (ArgumentException ex)
         {
@@ -94,7 +103,10 @@ public class PlantillaFutbolistaController : ControllerBase
     {
         try
         {
-            if (!_serviciosPlantillaFutbolista.Eliminar(idPlantilla, idFutbolista))
+            if (!TryObtenerIdUsuario(out var idUsuario))
+                return Unauthorized();
+
+            if (!_serviciosPlantillaFutbolista.Eliminar(idPlantilla, idUsuario, idFutbolista))
                 return NotFound(new { error = "El futbolista no está asociado a esta plantilla." });
 
             return NoContent();
@@ -103,9 +115,20 @@ public class PlantillaFutbolistaController : ControllerBase
         {
             return BadRequest(new { error = ex.Message });
         }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return NotFound(new { error = "La plantilla no existe." });
+        }
         catch (Exception ex)
         {
             return StatusCode(500, new { error = ex.Message });
         }
     }
+
+    private bool TryObtenerIdUsuario(out ushort idUsuario) =>
+        ushort.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out idUsuario);
 }
