@@ -28,7 +28,10 @@ public class PuntuacionController : ControllerBase
             };
 
             var creado = _serviciosPuntuacion.Agregar(nuevaPuntuacion);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id = creado.idPuntuacion }, creado);
+            return CreatedAtAction(
+                nameof(ObtenerPorId),
+                new { idPuntuacion = creado.idPuntuacion },
+                creado);
         }
         catch (ArgumentException ex)
         {
@@ -55,7 +58,7 @@ public class PuntuacionController : ControllerBase
 
     [HttpGet("{idPuntuacion}")]
     //[HttpGet]
-    public ActionResult<Puntuacion> ObtenerPorId(byte idPuntuacion)
+    public ActionResult<Puntuacion> ObtenerPorId(uint idPuntuacion)
     {
         try
         {
@@ -73,7 +76,7 @@ public class PuntuacionController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{idPuntuacion}")]
     public ActionResult Eliminar(uint idPuntuacion)
     {
         try
